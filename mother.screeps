@@ -14,7 +14,7 @@ module.exports = {
         }
         var harvesters = _.filter(Game.creeps, function(creep)
             {return creep.memory.role == 'harvester'});
-        if(harvesters.length < 5) {
+        if(harvesters.length < 2) {
             var newName = Game.spawns['Spawn1'].createCreep([WORK,CARRY,MOVE], undefined, {role: 'harvester'});
         }
         var upgraders = _.filter(Game.creeps, function(creep)
