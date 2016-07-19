@@ -1,1 +1,1 @@
-module.exports={run:function(){}};
+module.exports={run:function(){"undefined"!==typeof Memory.muhid&&(Memory.muhid=1);for(var a in Memory.creeps)Game.creeps[a]||delete Memory.creeps[a];2>_.filter(Game.creeps,function(a){return"harvester"==a.memory.role}).length&&(a="Spawn"+Memory.muhid,Memory.muhid++,a=Game.spawns[a].createCreep([WORK,CARRY,MOVE],void 0,{role:"harvester"}),console.log("Spawning new harvester: "+a))}};
