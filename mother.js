@@ -1,5 +1,13 @@
 // vim: syntax=screeps tabstop=8 softtabstop=0 expandtab shiftwidth=4 smarttab
 
+function minimum_creeps(role, amount) {
+    var creeps = _.filter(Game.creeps, function(creep)
+        {return creep.memory.role == role});
+    if(creeps.length < amount) {
+        var newName = Game.spawns['Spawn1'].createCreep([WORK,CARRY,MOVE], undefined, {role: role});
+    }
+}
+
 module.exports = {
     run : function() {
         if (typeof Memory.muhid !== 'undefined') {
@@ -12,15 +20,8 @@ module.exports = {
                 delete Memory.creeps[name];
             }
         }
-        var harvesters = _.filter(Game.creeps, function(creep)
-            {return creep.memory.role == 'harvester'});
-        if(harvesters.length < 2) {
-            var newName = Game.spawns['Spawn1'].createCreep([WORK,CARRY,MOVE], undefined, {role: 'harvester'});
-        }
-        var upgraders = _.filter(Game.creeps, function(creep)
-            {return creep.memory.role == 'upgrader'});
-        if(upgraders.length < 2) {
-            var newName = Game.spawns['Spawn1'].createCreep([WORK,CARRY,MOVE], undefined, {role: 'upgrader'});
-        }
+        minimum_creeps('harvester', 2)
+        minimum_creeps('upgrader', 2)
+        minimum_creeps('builder', 2)
     }
 }
