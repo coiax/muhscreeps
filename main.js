@@ -1,8 +1,11 @@
+// vim: syntax=screeps tabstop=8 softtabstop=0 expandtab shiftwidth=4 smarttab
 var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
+var mother = require('mother');
 
 module.exports.loop = function () {
+    mother.run();
 
     var tower = Game.getObjectById('TOWER_ID');
     if(tower) {
