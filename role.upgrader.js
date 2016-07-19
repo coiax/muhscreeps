@@ -1,1 +1,27 @@
-var roleUpgrader={run:function(a){a.memory.upgrading&&0==a.carry.energy&&(a.memory.upgrading=!1);!a.memory.upgrading&&a.carry.energy==a.carryCapacity&&(a.memory.upgrading=!0);if(a.memory.upgrading)a.upgradeController(a.room.controller)==ERR_NOT_IN_RANGE&&a.moveTo(a.room.controller);else{var b=a.room.find(FIND_SOURCES);a.harvest(b[0])==ERR_NOT_IN_RANGE&&a.moveTo(b[0])}}};module.exports=roleUpgrader;
+var roleUpgrader = {
+
+    /** @param {Creep} creep **/
+    run: function(creep) {
+
+        if(creep.memory.upgrading && creep.carry.energy == 0) {
+            creep.memory.upgrading = false;
+        }
+        if(!creep.memory.upgrading && creep.carry.energy == creep.carryCapacity) {
+            creep.memory.upgrading = true;
+        }
+
+        if(creep.memory.upgrading) {
+            if(creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(creep.room.controller);
+            }
+        }
+        else {
+            var sources = creep.room.find(FIND_SOURCES);
+            if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(sources[0]);
+            }
+        }
+    }
+};
+
+module.exports = roleUpgrader;

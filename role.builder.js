@@ -1,1 +1,30 @@
-var roleBuilder={run:function(a){a.memory.building&&0==a.carry.energy&&(a.memory.building=!1);!a.memory.building&&a.carry.energy==a.carryCapacity&&(a.memory.building=!0);if(a.memory.building){var b=a.room.find(FIND_CONSTRUCTION_SITES);b.length&&a.build(b[0])==ERR_NOT_IN_RANGE&&a.moveTo(b[0])}else b=a.room.find(FIND_SOURCES),a.harvest(b[0])==ERR_NOT_IN_RANGE&&a.moveTo(b[0])}};module.exports=roleBuilder;
+var roleBuilder = {
+
+    /** @param {Creep} creep **/
+    run: function(creep) {
+
+        if(creep.memory.building && creep.carry.energy == 0) {
+            creep.memory.building = false;
+        }
+        if(!creep.memory.building && creep.carry.energy == creep.carryCapacity) {
+            creep.memory.building = true;
+        }
+
+        if(creep.memory.building) {
+            var targets = creep.room.find(FIND_CONSTRUCTION_SITES);
+            if(targets.length) {
+                if(creep.build(targets[0]) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(targets[0]);
+                }
+            }
+        }
+        else {
+            var sources = creep.room.find(FIND_SOURCES);
+            if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(sources[0]);
+            }
+        }
+    }
+};
+
+module.exports = roleBuilder;

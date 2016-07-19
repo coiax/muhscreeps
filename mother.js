@@ -1,1 +1,24 @@
-module.exports={run:function(){"undefined"!==typeof Memory.muhid&&(Memory.muhid=1);for(var a in Memory.creeps)Game.creeps[a]||delete Memory.creeps[a];2>_.filter(Game.creeps,function(a){return"harvester"==a.memory.role}).length&&(a="Spawn"+Memory.muhid,Memory.muhid++,a=Game.spawns[a].createCreep([WORK,CARRY,MOVE],void 0,{role:"harvester"}),console.log("Spawning new harvester: "+a))}};
+// vim: syntax=screeps tabstop=8 softtabstop=0 expandtab shiftwidth=4 smarttab
+
+module.exports = {
+    run : function() {
+        if (typeof Memory.muhid !== 'undefined') {
+            // the variable is defined
+            Memory.muhid = 1;
+        }
+        // Mother; maintains population of colony.
+        for(var name in Memory.creeps) {
+            if(!Game.creeps[name]) {
+                delete Memory.creeps[name];
+            }
+        }
+        var harvesters = _.filter(Game.creeps, function(creep)
+            {return creep.memory.role == 'harvester'});
+        if(harvesters.length < 2) {
+            var id = 'Spawn' + Memory.muhid;
+            Memory.muhid++;
+            var newName = Game.spawns[id].createCreep([WORK,CARRY,MOVE], undefined, {role: 'harvester'});
+            console.log('Spawning new harvester: ' + newName);
+        }
+    }
+}
