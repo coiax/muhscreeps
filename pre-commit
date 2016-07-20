@@ -15,6 +15,14 @@ for dirpath, dirnames, filenames in os.walk('.'):
             continue
         full_name = os.path.join(dirpath, name)
         js_name = full_name.replace(".screeps", ".js")
+
+        full_stats = os.stat(full_name)
+        js_stats = os.stat(js_name)
+
+        if full_stats.st_mtime <= js_stats.st_mtime:
+            print("{} is up to date".format(full_name))
+            continue
+
         fmt = "Closure Compiler{} ({} -> {})"
         if check_only:
             check_msg = " (CHECK ONLY)"
@@ -28,6 +36,6 @@ for dirpath, dirnames, filenames in os.walk('.'):
             args.append(js_name)
         subprocess.call(args)
         if check_only:
-            shutil.copy(full_name, js_name)
+            shutil.copyfile(full_name, js_name)
 
         subprocess.call(["git","add",js_name])

@@ -65,7 +65,7 @@ var roleCow = {
             var slots = [];
             // Get all adjacent non-wall positions
             for(var source in sources) {
-                slots.concat(_.reject(source.ordinals,
+                slots.concat(_.reject(source.pos.ordinals(),
                     function(mp) {return mp.is_wall();})
                 );
             }
