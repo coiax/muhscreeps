@@ -96,8 +96,9 @@ var roleCow = {
             return
         }
         if(!gs.isEqualTo(creep.pos)) {
+            creep.say("moving");
             creep.moveTo(creep.memory.grazing_spot);
-            gs.createFlag(creep.name + "'s grazing spot");
+            gs.createFlag(creep.name + " grazing spot", COLOR_GREEN);
             return;
         }
         creep.say("nom");
