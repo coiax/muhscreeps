@@ -72,7 +72,6 @@ var roleCow = {
             sources.forEach(function(source) {
                 slots = slots.concat(source.pos.non_wall_adjacent());
             });
-            creep.memory._slots = slots; // XXX DEBUG
             // Remove any positions already in use by cows in this room
             /*
             room_cows.forEach(function(cow) {
@@ -88,6 +87,10 @@ var roleCow = {
             return;
         }
         var gs = Game.getObjectById(creep.memory.grazing_spot);
+        if(!gs) {
+            creep.say("BADID!");
+            return
+        }
         if(!gs.isEqualTo(creep.pos)) {
             creep.moveTo(creep.memory.grazing_spot);
             gs.createFlag(creep.name + "'s grazing spot");
