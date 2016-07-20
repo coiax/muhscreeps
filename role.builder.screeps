@@ -1,11 +1,11 @@
 function sort_construction_sites(con_sites) {
-    return _.sortby(con_sites, function(con_site) {
+    return _.sortBy(con_sites, function(con_site) {
         return con_site.progress - con_site.progressTotal;
     });
 }
 
 function sort_structures(structs) {
-    return _.sortby(structs, function(struct) {
+    return _.sortBy(structs, function(struct) {
         return struct.hits - struct.hitsMax;
     });
 }
