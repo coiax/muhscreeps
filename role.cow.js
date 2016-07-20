@@ -136,9 +136,11 @@ var roleCow = {
         if(!gs.isEqualTo(creep.pos)) {
             creep.say("moving");
             creep.moveTo(gs);
-            var flag = gs.createFlag(creep.name + "'s grazing spot",
-                COLOR_GREEN);
-            creep.memory.flag_id = flag.id;
+            var flag_name = creep.name + "'s grazing spot"
+            var flag = gs.createFlag(flag_name, COLOR_GREEN);
+            if(flag == flag_name) {
+                creep.memory.flag_id = Game.flags[flag_name].id;
+            }
             return;
         } else {
             var flag = Game.getObjectById(creep.memory.flag_id);

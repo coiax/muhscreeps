@@ -17,8 +17,7 @@ module.exports = {
         if(creep.carryCapacity == creep.carry.energy) {
             return true;
         }
-        var sources = creep.room.find(FIND_SOURCES);
-        var selected = sources[0];
+        var selected = creep.pos.findClosestByPath(FIND_SOURCES);
         var rv = creep.harvest(selected);
         if(rv == ERR_NOT_IN_RANGE) {
             creep.moveTo(selected);
