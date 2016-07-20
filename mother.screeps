@@ -4,7 +4,9 @@ function minimum_creeps(role, amount) {
     var creeps = _.filter(Game.creeps, function(creep)
         {return creep.memory.role == role});
     if(creeps.length < amount) {
-        var newName = Game.spawns['Spawn1'].createCreep([WORK,CARRY,MOVE], undefined, {role: role});
+        var newMuhid = Memory.muhid;
+        Memory.muhid++;
+        var newName = Game.spawns['Spawn1'].createCreep([WORK,CARRY,MOVE], role + newMuhid, {role: role});
     }
 }
 
