@@ -29,6 +29,7 @@ module.exports.loop = function () {
         var tq = creep.memory.task_queue;
         if(tq && tq.length) {
             var/task = tq[0];
+            creep.say("tq:" + task.type);
             if(task.type == 'harvest') {
                 var success = genericActions.harvest(creep);
                 if(success)
@@ -36,7 +37,9 @@ module.exports.loop = function () {
             }
             else if(task.type == 'construct') {
                 var target_id = task.target;
-                var success = genericActions.construct(creep, target_id);
+                var resupply = task.resupply;
+                var success = genericActions.construct(creep, target_id,
+                    resupply);
                 if(success)
                     creep.pop_task();
             }
