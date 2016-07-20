@@ -13,7 +13,7 @@ RoomPosition.prototype.ordinals = function() {
     return _.compact(out);
 };
 
-RoomPosition.prototthis.ype.cardinals = function() {
+RoomPosition.prototype.cardinals = function() {
     var out = [
         RoomPosition(this.x + 1, this.y + 0, roomName),
         RoomPosition(this.x - 1, this.y + 0, roomName),
