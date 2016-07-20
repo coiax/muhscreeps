@@ -10,6 +10,9 @@ module.exports.loop = function () {
 
     for(var name in Game.creeps) {
         var creep = Game.creeps[name];
+        if(creep.spawning) {
+            continue;
+        }
         var tq = creep.memory.task_queue;
         if(tq && tq.length) {
             var task = tq[0];

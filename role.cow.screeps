@@ -144,6 +144,7 @@ var roleCow = {
             var flag = Game.getObjectById(creep.memory.flag_id);
             if(flag) {
                 flag.remove();
+                creep.memory.flag_id = undefined;
             }
         }
         if(!creep.memory.output_container_id) {
@@ -164,7 +165,7 @@ var roleCow = {
             var opposite_dir = util.opposite_dir(dir_to_resource);
             var container_pos = creep.pos.step(opposite_dir);
             var rc = container_pos.createConstructionSite(STRUCTURE_CONTAINER);
-            creep.add_task({type: "construct", target: rc.id, resupply:TRUE});
+            creep.add_task({type: "construct", target: rc.id, resupply:true});
             return
         }
         creep.say("nom");
