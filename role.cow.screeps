@@ -78,7 +78,7 @@ var roleCow = {
             creep.memory.grazing_spot = _.sample(slots);
         }
         if(!creep.memory.grazing_spot) {
-            say("NOGRASS!");
+            creep.say("NOGRASS!");
             return;
         }
         var gs = creep.memory.grazing_spot;
@@ -87,7 +87,7 @@ var roleCow = {
             gs.createFlag(creep.name + "'s grazing spot");
             return;
         }
-        say("nom");
+        creep.say("nom");
         // Then scan for a container to move stuff into
         // If not present, then place the construction site and then
         // build it
