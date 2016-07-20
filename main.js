@@ -37,13 +37,5 @@ module.exports.loop = function () {
         if(creep.memory.role == 'cow') {
             roleCow.run(creep);
         }
-        for(var i in Game.spawns) {
-            var old_ttl = creep.ticksToLive.valueOf();
-            var code = Game.spawns[i].renewCreep(creep);
-            var new_ttl = creep.ticksToLive.valueOf();
-            if(code == OK && (old_ttl != new_ttl)) {
-                creep.say(old_ttl + "->" + new_ttl);
-            }
-        }
     }
 }
