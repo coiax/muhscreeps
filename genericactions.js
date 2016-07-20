@@ -44,8 +44,10 @@ module.exports = {
                 return true;
             }
         }
-        if(target.hits == target.hitsMax) {
-            return true;
+        if(typeof target.progress == 'undefined') {
+            if(target.hits == target.hitsMax) {
+                return true;
+            }
         }
         var rv = creep.repair(target);
         if(rv == ERR_NOT_IN_RANGE) {

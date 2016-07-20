@@ -169,8 +169,7 @@ var roleCow = {
             if(sites.length) {
                 site = sites[0];
             } else {
-                var dir_to_resource = creep.pos.getDirectionTo(gs);
-                var opposite_dir = util.opposite_dir(dir_to_resource);
+                var opposite_dir = gs.getDirectionTo(creep);
                 var site_pos = creep.pos.step(opposite_dir);
                 var rc = site_pos.createConstructionSite(STRUCTURE_CONTAINER);
                 // It will be found next work tick.
