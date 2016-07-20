@@ -12,7 +12,7 @@ function minimum_creeps(role, amount) {
 
 module.exports = {
     run : function() {
-        if (typeof Memory.muhid !== 'undefined') {
+        if (typeof Memory.muhid == 'undefined') {
             // the variable is defined
             Memory.muhid = 1;
         }
