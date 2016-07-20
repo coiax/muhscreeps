@@ -21,10 +21,15 @@ var roleBuilder = {
                 filter: function(structure)
                     {return structure.hits < structure.hitsMax}
             });
-            damaged_structures = damaged_structures.concat(creep.room.find(FIND_STRUCTURES, {
+            var damaged_walls = creep.room.find(FIND_STRUCTURES, {
                 filter: function(structure)
                     {return structure.hits < structure.hitsMax}
             }));
+            damaged_walls = _.sortBy(damaged_walls, function(structure) {
+                return structure.hits - structure.hitsMax
+            });
+
+            damaged_structures = damaged_structures.concat(damaged_walls);
             if(damaged_structures.length) {
                 if(creep.repair(damaged_structures[0]) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(damaged_structures[0]);
