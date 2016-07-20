@@ -70,7 +70,7 @@ var roleCow = {
             var slots = [];
             // Get all adjacent non-wall positions
             sources.forEach(function(source) {
-                slots.concat(source.pos.non_wall_adjacent());
+                slots = slots.concat(source.pos.non_wall_adjacent());
             });
             creep.memory._slots = slots; // XXX DEBUG
             // Remove any positions already in use by cows in this room
