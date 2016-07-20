@@ -14,7 +14,6 @@ var roleBuilder = {
     /** @param {Creep} creep **/
     run: function(creep) {
         if(creep.carry.energy == 0) {
-            creep.say("I refuel");
             creep.add_task({type: "harvest"})
             return;
         }

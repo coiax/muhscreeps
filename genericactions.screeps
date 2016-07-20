@@ -19,6 +19,7 @@ module.exports = {
         var rv = creep.harvest(selected);
         if(rv == ERR_NOT_IN_RANGE) {
             creep.moveTo(selected);
+            return false;
         }
         if(creep.carryCapacity == creep.carry.energy) {
             return true;
