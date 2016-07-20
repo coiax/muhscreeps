@@ -5,12 +5,20 @@ function minimum_creeps(role, amount) {
         var newMuhid = Memory.muhid;
         var proposedName = role + newMuhid;
         var parts;
-        var spawn = Game.spawns['Spawn1']
+        var spawn = Game.spawns['Spawn2']
         var capacity = spawn.room.energyCapacityAvailable;
         if(capacity >= 400) {
-            parts = [WORK,WORK,CARRY,CARRY,MOVE,MOVE];
+            if(role == "guard") {
+                parts = [RANGED_ATTACK, RANGED_ATTACK, MOVE, MOVE];
+            } else {
+                parts = [WORK,WORK,CARRY,CARRY,MOVE,MOVE];
+            }
         } else {
-            parts = [WORK,CARRY,MOVE];
+            if(role == "guard") {
+                parts = [RANGED_ATTACK, MOVE];
+            } else {
+                parts = [WORK,CARRY,MOVE];
+            }
         }
         var newName = spawn.createCreep(parts, proposedName, {role: role});
         if(newName == proposedName) {
