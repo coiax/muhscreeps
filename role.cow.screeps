@@ -50,6 +50,10 @@ RoomPosition.prototype.non_wall_adjacent = function () {
     return _.reject(this.ordinals(), function(mp) {return mp.is_wall();});
 };
 
+function memoryPosition(obj) {
+    return new RoomPosition(obj.x, obj.y, obj.roomName);
+}
+
 var roleCow = {
     /** @param {Creep} creep **/
     run: function(creep) {
@@ -80,15 +84,15 @@ var roleCow = {
             });
             */
             // Select one randomly from any left
-            creep.memory.grazing_spot = _.sample(slots).id;
+            creep.memory.grazing_spot = _.sample(slots);
         }
         if(!creep.memory.grazing_spot) {
             creep.say("NOGRASS!");
             return;
         }
-        var gs = Game.getObjectById(creep.memory.grazing_spot);
+        var gs = memoryPosition(creep.memory.grazing_spot);
         if(!gs) {
-            creep.say("BADID!");
+            creep.say("???");
             return
         }
         if(!gs.isEqualTo(creep.pos)) {
