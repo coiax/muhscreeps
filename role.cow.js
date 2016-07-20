@@ -74,10 +74,12 @@ var roleCow = {
             });
             creep.memory._slots = slots; // XXX DEBUG
             // Remove any positions already in use by cows in this room
+            /*
+            room_cows.forEach(function(cow) {
             for(var name in room_cows) {
-                var other_cow = Game.creeps[name];
-                _.pull(slots, other_cow.memory.grazing_spot);
-            }
+                _.pull(slots, cow.memory.grazing_spot);
+            });
+            */
             // Select one randomly from any left
             creep.memory.grazing_spot = _.sample(slots);
         }
