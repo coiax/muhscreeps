@@ -1,12 +1,18 @@
-// vim: syntax=screeps tabstop=8 softtabstop=0 expandtab shiftwidth=4 smarttab
-
 function minimum_creeps(role, amount) {
     var creeps = _.filter(Game.creeps, function(creep)
         {return creep.memory.role == role});
     if(creeps.length < amount) {
         var newMuhid = Memory.muhid;
         var proposedName = role + newMuhid;
-        var newName = Game.spawns['Spawn1'].createCreep([WORK,CARRY,MOVE], proposedName, {role: role});
+        var parts;
+        var spawn = Game.spawns['Spawn1']
+        var capacity = spawn.room.energyCapacityAvailable;
+        if(capacity >= 400) {
+            parts = [WORK,WORK,CARRY,CARRY,MOVE,MOVE];
+        } else {
+            parts = [WORK,CARRY,MOVE];
+        }
+        var newName = spawn.createCreep(parts, proposedName, {role: role});
         if(newName == proposedName) {
             Memory.muhid++;
         }
