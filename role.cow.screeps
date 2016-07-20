@@ -161,12 +161,23 @@ var roleCow = {
         // If not present, then place the construction site and then
         // build it
         if(!creep.memory.output_container_id) {
-            var dir_to_resource = creep.pos.getDirectionTo(gs);
-            var opposite_dir = util.opposite_dir(dir_to_resource);
-            var container_pos = creep.pos.step(opposite_dir);
-            var rc = container_pos.createConstructionSite(STRUCTURE_CONTAINER);
-            creep.add_task({type: "construct", target: rc.id, resupply:true});
-            return
+            var sites = creep.pos.findInRange(FIND_MY_CONSTRUCTION_SITES, 1,
+                filter = function(site) {
+                    return site.structureType == STRUCTURE_CONTAINER;
+            });
+            var site;
+            if(sites.length) {
+                site = sites[0];
+            } else {
+                var dir_to_resource = creep.pos.getDirectionTo(gs);
+                var opposite_dir = util.opposite_dir(dir_to_resource);
+                var site_pos = creep.pos.step(opposite_dir);
+                var rc = site_pos.createConstructionSite(STRUCTURE_CONTAINER);
+                // It will be found next work tick.
+                return;
+            }
+            creep.add_task({type: "construct", target: site.id, resupply:true});
+            return;
         }
         creep.say("nom");
 
