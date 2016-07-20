@@ -33,8 +33,13 @@ module.exports.loop = function () {
         if(creep.memory.role == 'builder') {
             roleBuilder.run(creep);
         }
-        if(Math.random() < 0.05) {
-            creep.say("TTL " + creep.ticksToLive);
+        for(var i in Game.spawns) {
+            var old_ttl = creep.ticksToLive;
+            var code = Game.spawns[i].renewCreep(creep);
+            if(code == OK) {
+                var new_ttl = creep.ticksToLive;
+                creep.say(old_ttl + "->" + new_ttl);
+            }
         }
     }
 }
