@@ -1,24 +1,24 @@
 RoomPosition.prototype.ordinals = function() {
     var out = [
-        RoomPosition(this.x + 1, this.y + 1, roomName),
-        RoomPosition(this.x + 0, this.y + 1, roomName),
-        RoomPosition(this.x - 1, this.y + 1, roomName),
-        RoomPosition(this.x + 1, this.y + 0, roomName),
-        //RoomPosition(this.x + 0, this.y + 0, roomName),
-        RoomPosition(this.x - 1, this.y + 0, roomName),
-        RoomPosition(this.x + 1, this.y - 1, roomName),
-        RoomPosition(this.x + 0, this.y - 1, roomName),
-        RoomPosition(this.x - 1, this.y - 1, roomName)
+        RoomPosition(this.x + 1, this.y + 1, this.roomName),
+        RoomPosition(this.x + 0, this.y + 1, this.roomName),
+        RoomPosition(this.x - 1, this.y + 1, this.roomName),
+        RoomPosition(this.x + 1, this.y + 0, this.roomName),
+        //RoomPosition(this.x + 0, this.y + 0, this.roomName),
+        RoomPosition(this.x - 1, this.y + 0, this.roomName),
+        RoomPosition(this.x + 1, this.y - 1, this.roomName),
+        RoomPosition(this.x + 0, this.y - 1, this.roomName),
+        RoomPosition(this.x - 1, this.y - 1, this.roomName)
     ];
     return _.compact(out);
 };
 
 RoomPosition.prototype.cardinals = function() {
     var out = [
-        RoomPosition(this.x + 1, this.y + 0, roomName),
-        RoomPosition(this.x - 1, this.y + 0, roomName),
-        RoomPosition(this.x + 0, this.y + 1, roomName),
-        RoomPosition(this.x + 0, this.y - 1, roomName)
+        RoomPosition(this.x + 1, this.y + 0, this.roomName),
+        RoomPosition(this.x - 1, this.y + 0, this.roomName),
+        RoomPosition(this.x + 0, this.y + 1, this.roomName),
+        RoomPosition(this.x + 0, this.y - 1, this.roomName)
     ];
     return _.compact(out);
 };
