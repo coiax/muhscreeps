@@ -26,7 +26,8 @@ RoomPosition.prototype.cardinals = function() {
 RoomPosition.prototype.is_terrain = function(terrain_type) {
     var contains = this.look();
     for(var o in contains) {
-        if((o.type == 'terrain') && (o.terrain == terrain_type)) {
+        var obj = contains[o];
+        if((obj.type == 'terrain') && (obj.terrain == terrain_type)) {
             return true;
         }
     }
