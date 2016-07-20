@@ -47,7 +47,7 @@ var roleBuilder = {
         }
 
         if(creep.memory.repair_target_id) {
-            var/rt = Game.getObjectById(creep.memory.repair_target_id);
+            var rt = Game.getObjectById(creep.memory.repair_target_id);
             if(!rt) {
                 creep.memory.repair_target_id = null;
                 creep.say("it vanished?");
