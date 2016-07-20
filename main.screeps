@@ -2,6 +2,7 @@ var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
 var roleCow = require('role.cow');
+var genericActions = require('genericactions');
 var mother = require('mother');
 
 module.exports.loop = function () {
@@ -25,6 +26,12 @@ module.exports.loop = function () {
 
     for(var name in Game.creeps) {
         var creep = Game.creeps[name];
+        if(creep.memory.generic_action) {
+            if(creep.memory.generic_action == 'harvest') {
+                genericActions.harvest(creep);
+            }
+            continue;
+        }
         if(creep.memory.role == 'harvester') {
             roleHarvester.run(creep);
         }
