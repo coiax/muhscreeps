@@ -34,11 +34,11 @@ RoomPosition.prototype.is_terrain = function(terrain_type) {
 };
 
 RoomPosition.prototype.is_swamp = function () {
-    return is_terrain('swamp');
+    return this.is_terrain('swamp');
 };
 
 RoomPosition.prototype.is_wall = function () {
-    return is_terrain('wall');
+    return this.is_terrain('wall');
 };
 
 RoomPosition.prototype.is_plain = function () {
