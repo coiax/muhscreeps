@@ -14,7 +14,7 @@ var roleBuilder = {
             targets.concat(creep.room.find(FIND_MY_STRUCTURES, {
                 filter: function(structure)
                     {return structure.hits < structure.hitsMax}
-            });
+            }));
             if(targets.length) {
                 if(creep.build(targets[0]) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(targets[0]);
