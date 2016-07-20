@@ -34,7 +34,7 @@ module.exports.loop = function () {
             roleBuilder.run(creep);
         }
         if(Math.random() < 0.05) {
-            creep.say(creep.ticksToLive);
+            creep.say("Ticks to live: " + creep.ticksToLive);
         }
     }
 }
