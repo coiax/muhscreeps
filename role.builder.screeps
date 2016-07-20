@@ -23,7 +23,7 @@ var roleBuilder = {
             });
             if(damaged_structures.length) {
                 if(creep.repair(damaged_structures[0]) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(targets[0]);
+                    creep.moveTo(damaged_structures[0]);
                 }
                 return;
             }
