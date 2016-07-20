@@ -1,5 +1,5 @@
 Creep.prototype.add_task = function(obj) {
-    if(typeof this.memory.task_queue == 'undefined') {
+    if(!this.memory.task_queue) {
         this.memory.task_queue = [];
     }
     this.memory.task_queue.unshift(obj);
