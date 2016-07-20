@@ -65,10 +65,9 @@ var roleCow = {
             var slots = [];
             // Get all adjacent non-wall positions
             for(var source in sources) {
-                creep.memory._source = source;
-                /*slots.concat(_.reject(source.pos.ordinals(),
+                slots.concat(_.reject(source.pos.ordinals(),
                     function(mp) {return mp.is_wall();})
-                );*/
+                );
             }
             // Remove any positions already in use by cows in this room
             for(var name in room_cows) {
