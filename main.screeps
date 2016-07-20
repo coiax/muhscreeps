@@ -33,6 +33,8 @@ module.exports.loop = function () {
         if(creep.memory.role == 'builder') {
             roleBuilder.run(creep);
         }
-        creep.say(creep.ticksToLive);
+        if(Math.random() < 0.05) {
+            creep.say(creep.ticksToLive);
+        }
     }
 }
