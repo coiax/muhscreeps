@@ -7,7 +7,7 @@ import os.path
 import subprocess
 import shutil
 
-check_only = True
+check_only = False
 
 for dirpath, dirnames, filenames in os.walk('.'):
     for name in filenames:
@@ -29,11 +29,11 @@ for dirpath, dirnames, filenames in os.walk('.'):
         else:
             check_msg = ""
         print(fmt.format(check_msg, full_name, js_name))
-        args = ["closure-compiler", "--js", full_name, "--js_output_file"]
+        args = ["closure-compiler", "--js", full_name]
         if check_only:
-            args.append("/dev/null")
+            pass
         else:
-            args.append(js_name)
+            args.extend(["--js_output_file", js_name])
         rc = subprocess.call(args)
         if rc == 0:
             if check_only:
