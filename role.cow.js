@@ -98,8 +98,15 @@ var roleCow = {
         if(!gs.isEqualTo(creep.pos)) {
             creep.say("moving");
             creep.moveTo(gs);
-            gs.createFlag(creep.name + "'s grazing spot", COLOR_GREEN);
+            var flag = gs.createFlag(creep.name + "'s grazing spot",
+                COLOR_GREEN);
+            creep.memory.flag_id = flag.id;
             return;
+        } else {
+            var flag = Game.getObjectByGameId(creep.memory.flag_id);
+            if(flag) {
+                flag.remove();
+            }
         }
         creep.say("nom");
         // Then scan for a container to move stuff into
