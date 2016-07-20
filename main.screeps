@@ -36,8 +36,8 @@ module.exports.loop = function () {
         for(var i in Game.spawns) {
             var old_ttl = creep.ticksToLive;
             var code = Game.spawns[i].renewCreep(creep);
-            if(code == OK) {
-                var new_ttl = creep.ticksToLive;
+            var new_ttl = creep.ticksToLive;
+            if(code == OK && (old_ttl != new_ttl)) {
                 creep.say(old_ttl + "->" + new_ttl);
             }
         }
