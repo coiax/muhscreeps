@@ -21,7 +21,7 @@ var roleBuilder = {
                 filter: function(structure)
                     {return structure.hits < structure.hitsMax}
             });
-            damaged_structures.concat(creep.room.find(FIND_STRUCTURES, {
+            damaged_structures = damaged_structures.concat(creep.room.find(FIND_STRUCTURES, {
                 filter: function(structure)
                     {return structure.hits < structure.hitsMax}
             }));
