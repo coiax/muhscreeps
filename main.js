@@ -1,6 +1,7 @@
 var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
+var roleCow = require('role.cow');
 var mother = require('mother');
 
 module.exports.loop = function () {
@@ -32,6 +33,9 @@ module.exports.loop = function () {
         }
         if(creep.memory.role == 'builder') {
             roleBuilder.run(creep);
+        }
+        if(creep.memory.role == 'cow') {
+            roleCow.run(creep);
         }
         for(var i in Game.spawns) {
             var old_ttl = creep.ticksToLive.valueOf();
