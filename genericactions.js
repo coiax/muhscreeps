@@ -15,15 +15,23 @@ Creep.prototype.pop_task = function() {
 module.exports = {
     harvest : function(creep) {
         if(creep.carryCapacity == creep.carry.energy) {
+            creep.memory.selected_source_id = undefined;
             return true;
         }
-        var selected = creep.pos.findClosestByPath(FIND_SOURCES);
+        var selected;
+        if(creep.memory.selected_source_id)
+            selected = Game.getObjectById(creep.memory.selected_source_id);
+        else {
+            selected = creep.pos.findClosestByPath(FIND_SOURCES);
+            creep.memory.selected_source_id = selected.id;
+        }
         var rv = creep.harvest(selected);
         if(rv == ERR_NOT_IN_RANGE) {
             creep.moveTo(selected);
             return false;
         }
         if(creep.carryCapacity == creep.carry.energy) {
+            creep.memory.selected_source_id = undefined;
             return true;
         } else {
             return false;
