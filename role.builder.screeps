@@ -17,6 +17,7 @@ var roleBuilder = {
         if(creep.carry.energy == 0) {
             creep.say("need energy");
             creep.memory.generic_action = 'harvest';
+            creep.memory.repair_target_id = null;
             return;
         }
 
