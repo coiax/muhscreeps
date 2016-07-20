@@ -1,14 +1,14 @@
 Creep.prototype.add_task = function(obj) {
-    if(typeof creep.memory.task_queue == 'undefined') {
-        creep.memory.task_queue = [];
+    if(typeof this.memory.task_queue == 'undefined') {
+        this.memory.task_queue = [];
     }
-    creep.memory.task_queue.unshift(obj);
+    this.memory.task_queue.unshift(obj);
 };
 
 Creep.prototype.pop_task = function() {
-    creep.memory.task_queue = _.drop(creep.memory.task_queue);
-    if(creep.memory.task_queue.length == 0) {
-        creep.memory.task_queue = null;
+    this.memory.task_queue = _.drop(this.memory.task_queue);
+    if(this.memory.task_queue.length == 0) {
+        this.memory.task_queue = null;
     }
 };
 
