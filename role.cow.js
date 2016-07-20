@@ -103,7 +103,7 @@ var roleCow = {
             creep.memory.flag_id = flag.id;
             return;
         } else {
-            var flag = Game.getObjectByGameId(creep.memory.flag_id);
+            var flag = Game.getObjectById(creep.memory.flag_id);
             if(flag) {
                 flag.remove();
             }
