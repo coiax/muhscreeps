@@ -26,7 +26,7 @@ module.exports = {
             return FALSE;
         }
     },
-    construct : function(creep, target_id, resupply=FALSE) {
+    construct : function(creep, target_id, resupply) {
         var target = Game.getObjectById(target_id);
         if(!target) {
             creep.say("cs ?!?");
