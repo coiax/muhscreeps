@@ -81,13 +81,13 @@ var roleCow = {
             });
             */
             // Select one randomly from any left
-            creep.memory.grazing_spot = _.sample(slots);
+            creep.memory.grazing_spot = _.sample(slots).id;
         }
         if(!creep.memory.grazing_spot) {
             creep.say("NOGRASS!");
             return;
         }
-        var gs = creep.memory.grazing_spot;
+        var gs = Game.getObjectById(creep.memory.grazing_spot);
         if(!gs.isEqualTo(creep.pos)) {
             creep.moveTo(creep.memory.grazing_spot);
             gs.createFlag(creep.name + "'s grazing spot");
