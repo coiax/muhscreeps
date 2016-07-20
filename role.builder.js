@@ -11,14 +11,21 @@ var roleBuilder = {
 
         if(creep.memory.building) {
             var targets = creep.room.find(FIND_CONSTRUCTION_SITES);
-            targets.concat(creep.room.find(FIND_MY_STRUCTURES, {
-                filter: function(structure)
-                    {return structure.hits < structure.hitsMax}
-            }));
             if(targets.length) {
                 if(creep.build(targets[0]) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(targets[0]);
                 }
+                return;
+            }
+            var damaged_structures = creep.room.find(FIND_MY_STRUCTURES, {
+                filter: function(structure)
+                    {return structure.hits < structure.hitsMax}
+            });
+            if(damaged_structures.length) {
+                if(creep.repair(damaged_structures[0]) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(targets[0]);
+                }
+                return;
             }
         }
         else {
