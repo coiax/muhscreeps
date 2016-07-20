@@ -65,6 +65,7 @@ var roleCow = {
             var slots = [];
             // Get all adjacent non-wall positions
             for(var source in sources) {
+                creep.memory._source = source;
                 slots.concat(_.reject(source.pos.ordinals(),
                     function(mp) {return mp.is_wall();})
                 );
