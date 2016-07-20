@@ -1,3 +1,63 @@
-var genericActions=require("genericactions"),roleHarvester=require("role.harvester"),roleUpgrader=require("role.upgrader"),roleBuilder=require("role.builder"),roleCow=require("role.cow"),mother=require("mother");
-module.exports.loop=function(){mother.run();var a=Game.getObjectById("TOWER_ID");if(a){var b=a.pos.findClosestByRange(FIND_STRUCTURES,{filter:function(a){return a.hits<a.hitsMax}});b&&a.repair(b);(b=a.pos.findClosestByRange(FIND_HOSTILE_CREEPS))&&a.attack(b)}for(var d in Game.creeps){a=Game.creeps[d];if((b=a.memory.task_queue)&&b.length){var c=b[0];a.say("tq:"+c.type);"harvest"==c.type?(c=genericActions.harvest(a))&&a.pop_task():"construct"==c.type&&(c=genericActions.construct(a,c.target,c.resupply))&&
-a.pop_task();if(!b||!b.length)continue}"harvester"==a.memory.role&&roleHarvester.run(a);"upgrader"==a.memory.role&&roleUpgrader.run(a);"builder"==a.memory.role&&roleBuilder.run(a);"cow"==a.memory.role&&roleCow.run(a)}};
+var genericActions = require('genericactions');
+var roleHarvester = require('role.harvester');
+var roleUpgrader = require('role.upgrader');
+var roleBuilder = require('role.builder');
+var roleCow = require('role.cow');
+var mother = require('mother');
+
+module.exports.loop = function () {
+    mother.run();
+
+    var tower = Game.getObjectById('TOWER_ID');
+    if(tower) {
+        var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
+            filter: function(structure)
+                {return structure.hits < structure.hitsMax}
+        });
+        if(closestDamagedStructure) {
+            tower.repair(closestDamagedStructure);
+        }
+
+        var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+        if(closestHostile) {
+            tower.attack(closestHostile);
+        }
+    }
+
+    for(var name in Game.creeps) {
+        var creep = Game.creeps[name];
+        var tq = creep.memory.task_queue;
+        if(tq && tq.length) {
+            var task = tq[0];
+            creep.say("tq:" + task.type);
+            if(task.type == 'harvest') {
+                var success = genericActions.harvest(creep);
+                if(success)
+                    creep.pop_task();
+            }
+            else if(task.type == 'construct') {
+                var target_id = task.target;
+                var resupply = task.resupply;
+                var success = genericActions.construct(creep, target_id,
+                    resupply);
+                if(success)
+                    creep.pop_task();
+            }
+            if(!tq || !tq.length) {
+                continue;
+            }
+        }
+        if(creep.memory.role == 'harvester') {
+            roleHarvester.run(creep);
+        }
+        if(creep.memory.role == 'upgrader') {
+            roleUpgrader.run(creep);
+        }
+        if(creep.memory.role == 'builder') {
+            roleBuilder.run(creep);
+        }
+        if(creep.memory.role == 'cow') {
+            roleCow.run(creep);
+        }
+    }
+}
