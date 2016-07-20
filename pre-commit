@@ -34,8 +34,9 @@ for dirpath, dirnames, filenames in os.walk('.'):
             args.append("/dev/null")
         else:
             args.append(js_name)
-        subprocess.call(args)
-        if check_only:
-            shutil.copyfile(full_name, js_name)
+        rc = subprocess.call(args)
+        if rc == 0:
+            if check_only:
+                shutil.copyfile(full_name, js_name)
 
-        subprocess.call(["git","add",js_name])
+            subprocess.call(["git","add",js_name])

@@ -24,7 +24,7 @@ var roleBuilder = {
             var damaged_walls = creep.room.find(FIND_STRUCTURES, {
                 filter: function(structure)
                     {return structure.hits < structure.hitsMax}
-            }));
+            });
             damaged_walls = _.sortBy(damaged_walls, function(structure) {
                 return structure.hits - structure.hitsMax
             });
