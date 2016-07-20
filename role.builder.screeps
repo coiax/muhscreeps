@@ -13,55 +13,37 @@ function sort_structures(structs) {
 var roleBuilder = {
     /** @param {Creep} creep **/
     run: function(creep) {
-
         if(creep.carry.energy == 0) {
-            creep.say("need energy");
-            creep.memory.generic_action = 'harvest';
-            creep.memory.repair_target_id = null;
+            creep.say("I refuel");
+            creep.add_task({type: "harvest"})
             return;
         }
 
-        if(!creep.memory.repair_target_id) {
-            var con_sites = sort_construction_sites(
-                creep.room.find(FIND_CONSTRUCTION_SITES));
-            var dam_struct = sort_structures(
-                creep.room.find(FIND_MY_STRUCTURES, {
-                    filter: function(structure) {
-                        return structure.hits < structure.hitsMax
-                }}));
-            var dam_neu_struct = sort_structures(
-                creep.room.find(FIND_STRUCTURES, {
-                    filter: function(structure) {
-                        return structure.hits < structure.hitsMax
-                }}));
-            var target;
-            if(con_sites.length) {
-                target = con_sites[0];
-            } else if(dam_struct.length) {
-                target = dam_struct[0];
-            } else if(dam_neu_struct.length) {
-                target = dam_neu_struct[0];
-            }
-            if(target) {
-                creep.memory.repair_target_id = target.id;
-            }
-        }
+        var con_sites = sort_construction_sites(
+            creep.room.find(FIND_CONSTRUCTION_SITES));
+        var dam_struct = sort_structures(
+            creep.room.find(FIND_MY_STRUCTURES, {
+                filter: function(structure) {
+                    return structure.hits < structure.hitsMax
+            }}));
+        var dam_neu_struct = sort_structures(
+            creep.room.find(FIND_STRUCTURES, {
+                filter: function(structure) {
+                    return structure.hits < structure.hitsMax
+            }}));
 
-        if(creep.memory.repair_target_id) {
-            var rt = Game.getObjectById(creep.memory.repair_target_id);
-            if(!rt) {
-                creep.memory.repair_target_id = null;
-                creep.say("it vanished?");
-                return;
-            }
-            if(rt.hits == rt.hitsMax) {
-                creep.say("all fixed :D");
-                creep.memory.repair_target_id = null;
-                return
-            }
-            if(creep.repair(rt) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(rt)
-            }
+        var target;
+        if(con_sites.length) {
+            target = con_sites[0];
+        } else if(dam_struct.length) {
+            target = dam_struct[0];
+        } else if(dam_neu_struct.length) {
+            target = dam_neu_struct[0];
+        }
+        if(target) {
+            creep.add_task({type: "construct", target: target.id})
+        } else {
+            creep.say("no work");
         }
     }
 };

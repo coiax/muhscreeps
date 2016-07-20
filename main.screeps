@@ -26,11 +26,23 @@ module.exports.loop = function () {
 
     for(var name in Game.creeps) {
         var creep = Game.creeps[name];
-        if(creep.memory.generic_action) {
-            if(creep.memory.generic_action == 'harvest') {
-                genericActions.harvest(creep);
+        var tq = creep.memory.task_queue;
+        if(tq && tq.length) {
+            var/task = tq[0];
+            if(task.type == 'harvest') {
+                var success = genericActions.harvest(creep);
+                if(success)
+                    creep.pop_task();
             }
-            continue;
+            else if(task.type == 'construct') {
+                var target_id = task.target;
+                var success = genericActions.construct(creep, target_id);
+                if(success)
+                    creep.pop_task();
+            }
+            if(!tq || !tq.length) {
+                continue;
+            }
         }
         if(creep.memory.role == 'harvester') {
             roleHarvester.run(creep);

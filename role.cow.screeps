@@ -1,3 +1,5 @@
+var util = require('util');
+
 RoomPosition.prototype.ordinals = function() {
     var out = [
         new RoomPosition(this.x + 1, this.y + 1, this.roomName),
@@ -23,6 +25,42 @@ RoomPosition.prototype.cardinals = function() {
     return _.compact(out);
 };
 
+RoomPosition.prototype.step = function(direction) {
+    var x = this.x;
+    var y = this.y;
+    var roomName = this.roomName;
+    switch(direction) {
+        TOP:
+            y -= 1;
+            break;
+        TOP_RIGHT:
+            x += 1;
+            y -= 1;
+            break;
+        RIGHT:
+            x += 1;
+            break;
+        BOTTOM_RIGHT:
+            x += 1;
+            y += 1;
+            break;
+        BOTTOM:
+            y += 1;
+            break;
+        BOTTOM_LEFT:
+            x -= 1;
+            y += 1;
+            break;
+        LEFT:
+            x -= 1;
+            break;
+        TOP_LEFT:
+            x -= 1;
+            y -= 1;
+            break;
+    }
+    return new RoomPosition(x, y, roomName);
+};
 RoomPosition.prototype.is_terrain = function(terrain_type) {
     var contains = this.look();
     for(var o in contains) {
@@ -93,7 +131,7 @@ var roleCow = {
         var gs = memoryPosition(creep.memory.grazing_spot);
         if(!gs) {
             creep.say("???");
-            return
+            return;
         }
         if(!gs.isEqualTo(creep.pos)) {
             creep.say("moving");
@@ -108,10 +146,29 @@ var roleCow = {
                 flag.remove();
             }
         }
-        creep.say("nom");
-        // Then scan for a container to move stuff into
+        if(!creep.memory.output_container_id) {
+            // Then scan for a container to move stuff into
+            var containers = creep.pos.findInRange(FIND_MY_STRUCTURES, 1,
+                filter = function(structure) {
+                    return structure.structureType == STRUCTURE_CONTAINER;
+            });
+            if(containers.length) {
+                var container = containers[0];
+                creep.memory.output_container_id = container.id;
+            }
+        }
         // If not present, then place the construction site and then
         // build it
+        if(!creep.memory.output_container_id) {
+            var dir_to_resource = creep.pos.getDirectionTo(gs);
+            var opposite_dir = util.opposite_dir(dir_to_resource);
+            var container_pos = creep.pos.step(opposite_dir);
+            var rc = container_pos.createConstructionSite(STRUCTURE_CONTAINER);
+            creep.add_task({type: "construct", target: rc.id, resupply=TRUE});
+            return
+        }
+        creep.say("nom");
+
         // Then spend the rest of our lifespan harvesting and moving that
         // into the container, repairing the container first if needed.
     }
