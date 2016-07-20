@@ -46,6 +46,10 @@ RoomPosition.prototype.is_plain = function () {
     return is_terrain('plain');
 };
 
+RoomPosition.prototype.non_wall_adjacent = function () {
+    return _.reject(this.ordinals(), function(mp) {return mp.is_wall();});
+};
+
 var roleCow = {
     /** @param {Creep} creep **/
     run: function(creep) {
@@ -65,12 +69,9 @@ var roleCow = {
             var sources = creep.room.find(FIND_SOURCES);
             var slots = [];
             // Get all adjacent non-wall positions
-            for(var i in sources) {
-                var source = sources[i];
-                slots.concat(_.reject(source.pos.ordinals(),
-                    function(mp) {return mp.is_wall();})
-                );
-            }
+            sources.forEach(function(source) {
+                slots.concat(source.pos.non_wall_adjacent());
+            });
             creep.memory._slots = slots; // XXX DEBUG
             // Remove any positions already in use by cows in this room
             for(var name in room_cows) {
