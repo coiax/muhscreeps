@@ -30,31 +30,31 @@ RoomPosition.prototype.step = function(direction) {
     var y = this.y;
     var roomName = this.roomName;
     switch(direction) {
-        TOP:
+        case TOP:
             y -= 1;
             break;
-        TOP_RIGHT:
+        case TOP_RIGHT:
             x += 1;
             y -= 1;
             break;
-        RIGHT:
+        case RIGHT:
             x += 1;
             break;
-        BOTTOM_RIGHT:
+        case BOTTOM_RIGHT:
             x += 1;
             y += 1;
             break;
-        BOTTOM:
+        case BOTTOM:
             y += 1;
             break;
-        BOTTOM_LEFT:
+        case BOTTOM_LEFT:
             x -= 1;
             y += 1;
             break;
-        LEFT:
+        case LEFT:
             x -= 1;
             break;
-        TOP_LEFT:
+        case TOP_LEFT:
             x -= 1;
             y -= 1;
             break;
