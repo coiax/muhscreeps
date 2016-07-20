@@ -9,6 +9,8 @@ import shutil
 
 check_only = True
 
+fail = False
+
 for dirpath, dirnames, filenames in os.walk('.'):
     for name in filenames:
         if not name.endswith('.screeps'):
@@ -43,3 +45,8 @@ for dirpath, dirnames, filenames in os.walk('.'):
                 shutil.copyfile(full_name, js_name)
 
             subprocess.call(["git","add",js_name])
+        else:
+            fail = True
+
+if fail:
+    sys.exit(1)
