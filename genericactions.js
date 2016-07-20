@@ -21,32 +21,32 @@ module.exports = {
             creep.moveTo(selected);
         }
         if(creep.carryCapacity == creep.carry.energy) {
-            return TRUE;
+            return true;
         } else {
-            return FALSE;
+            return false;
         }
     },
     construct : function(creep, target_id, resupply) {
         var target = Game.getObjectById(target_id);
         if(!target) {
             creep.say("cs ?!?");
-            return TRUE;
+            return true;
         }
         if(creep.carry.energy == 0) {
             if(resupply) {
                 creep.add_task({type: "harvest"})
-                return FALSE;
+                return false;
             } else {
-                return TRUE;
+                return true;
             }
         }
         if(target.hits == target.hitsMax) {
-            return TRUE;
+            return true;
         }
         var rv = creep.repair(target);
         if(rv == ERR_NOT_IN_RANGE) {
             creep.moveTo(target);
         }
-        return FALSE;
+        return false;
     }
 }
