@@ -8,22 +8,6 @@ var mother = require('mother');
 module.exports.loop = function () {
     mother.run();
 
-    var tower = Game.getObjectById('TOWER_ID');
-    if(tower) {
-        var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
-            filter: function(structure)
-                {return structure.hits < structure.hitsMax}
-        });
-        if(closestDamagedStructure) {
-            tower.repair(closestDamagedStructure);
-        }
-
-        var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-        if(closestHostile) {
-            tower.attack(closestHostile);
-        }
-    }
-
     for(var name in Game.creeps) {
         var creep = Game.creeps[name];
         var tq = creep.memory.task_queue;
@@ -42,7 +26,7 @@ module.exports.loop = function () {
                 if(success)
                     creep.pop_task();
             }
-            if(!tq || !tq.length) {
+            if(tq && tq.length) {
                 continue;
             }
         }
