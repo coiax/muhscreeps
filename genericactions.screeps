@@ -14,6 +14,9 @@ Creep.prototype.pop_task = function() {
 
 module.exports = {
     harvest : function(creep) {
+        if(creep.carryCapacity == creep.carry.energy) {
+            return true;
+        }
         var sources = creep.room.find(FIND_SOURCES);
         var selected = sources[0];
         var rv = creep.harvest(selected);
