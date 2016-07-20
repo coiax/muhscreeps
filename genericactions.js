@@ -44,12 +44,15 @@ module.exports = {
                 return true;
             }
         }
+        var rv;
         if(typeof target.progress == 'undefined') {
             if(target.hits == target.hitsMax) {
                 return true;
             }
+            rv = creep.repair(target);
+        } else {
+            rv = creep.build(target);
         }
-        var rv = creep.repair(target);
         if(rv == ERR_NOT_IN_RANGE) {
             creep.moveTo(target);
         }
