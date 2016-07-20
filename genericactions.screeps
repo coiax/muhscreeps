@@ -1,0 +1,14 @@
+module.exports = {
+    harvest : function(creep) {
+        var sources = creep.room.find(FIND_SOURCES);
+        var selected = sources[0];
+        var rv = creep.harvest(selected);
+        if(rv == ERR_NOT_IN_RANGE) {
+            creep.moveTo(selected);
+        }
+        if(creep.carryCapacity == creep.carry.energy) {
+            // exit harvest mode.
+            creep.memory.generic_action = null;
+        }
+    }
+}
