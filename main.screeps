@@ -8,19 +8,19 @@ var mother = require('mother');
 
 module.exports.loop = function () {
     mother.run();
+    var dropped_energies = creep.room.find(FIND_DROPPED_ENERGY);
 
     for(var name in Game.creeps) {
         var creep = Game.creeps[name];
         if(creep.spawning) {
             continue;
         }
-        var dropped_energies = creep.pos.findInRange(FIND_DROPPED_ENERGY, 1);
-        if(dropped_energies.length) {
+        dropped_energies.forEach(function(energy) {
             // might fail, just pickup anything if you can.
-            creep.pickup(dropped_energies[0]);
-        }
+            creep.pickup(energy);
+        });
         var tq = creep.memory.task_queue;
-        if((creep.ticksToLive < 100) && (!creep.memory.no_recharge) &&
+        if((creep.ticksToLive < 100) && creep.memory.recharge &&
             (!tq || (tq.length && (tq[0].type != "renew")))) {
             creep.add_task({type:"renew"});
         }

@@ -7,13 +7,21 @@ function minimum_creeps(role, amount) {
         var parts;
         var spawn = Game.spawns['Spawn2']
         var capacity = spawn.room.energyCapacityAvailable;
-        if(capacity >= 400) {
+        if(!parts && capacity >= 600) {
+            if(role == "guard") {
+                parts = [RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK,
+                        MOVE,MOVE,MOVE];
+            } else {
+                parts = [WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE];
+            }
+        }
+        if(!parts && capacity >= 400) {
             if(role == "guard") {
                 parts = [RANGED_ATTACK, RANGED_ATTACK, MOVE, MOVE];
             } else {
                 parts = [WORK,WORK,CARRY,CARRY,MOVE,MOVE];
             }
-        } else {
+        if(!parts) {
             if(role == "guard") {
                 parts = [RANGED_ATTACK, MOVE];
             } else {
