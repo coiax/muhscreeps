@@ -12,6 +12,10 @@ Creep.prototype.pop_task = function() {
     }
 };
 
+Creep.prototype.renewCost = function() {
+    return floor(600 / this.body.length);
+};
+
 module.exports = {
     harvest : function(task, creep) {
         if(creep.carryCapacity == creep.carry.energy) {
@@ -112,7 +116,7 @@ module.exports = {
         if(rc == ERR_NOT_IN_RANGE) {
             creep.moveTo(spawn)
             return {outcome: "continue"};
-        } else if(rc == ERR_FULL) {
+        } else if((rc == ERR_FULL) || (rc == ERR_NOT_ENOUGH_ENERGY)) {
             return {outcome: "done"};
         }
         return {outcome: "continue"};
