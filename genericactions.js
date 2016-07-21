@@ -92,5 +92,26 @@ module.exports = {
         } else {
             return {outcome: "done"};
         }
+    },
+    renew : function(task, creep) {
+        var spawn = Game.getObjectById(task.spawn_id);
+        if(!spawn) {
+            var spawns = creep.pos.findClosestByPath(FIND_MY_SPAWNS);
+            if(spawns.length) {
+                spawn = spawns[0];
+                task.spawn_id = spawn.id
+            }
+        }
+        if(!spawn) {
+            creep.say("SPN?!?");
+            return {outcome: "done"};
+        }
+        var rc = spawn.renewCreep(creep)
+        if(rc == ERR_NOT_IN_RANGE) {
+            creep.moveTo(spawn)
+            return {outcome: "continue"};
+        } else if(rc == ERR_FULL) {
+            return {outcome: "done"};
+        }
     }
 }
