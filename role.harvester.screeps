@@ -23,7 +23,8 @@ var roleHarvester = {
                 creep.moveTo(closest);
             }
         } else if(targets.length) {
-            creep.moveTo(_.sample(targets));
+            // wander randomly.
+            creep.move(Math.floor((Math.random() * 8) + 1));
         }
     }
 };
