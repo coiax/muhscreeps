@@ -74,7 +74,7 @@ module.exports = {
         if(!gas_station) {
             var possible_stations = creep.room.find(FIND_STRUCTURES, {
                 filter: function(st) {
-                    if(!st.structureType == STRUCTURE_CONTAINER) {
+                    if(st.structureType != STRUCTURE_CONTAINER) {
                         return false;
                     }
                     var energy_stored = st.store[RESOURCE_ENERGY];
