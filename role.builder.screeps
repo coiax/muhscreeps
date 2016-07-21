@@ -18,7 +18,7 @@ var roleBuilder = {
             return;
         }
 
-        var con_sites = creep.room.find(FIND_CONSTRUCTION_SITES);
+        var con_site = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
         var dam_struct = sort_structures(
             creep.room.find(FIND_MY_STRUCTURES, {
                 filter: function(structure) {
@@ -31,8 +31,8 @@ var roleBuilder = {
             }}));
 
         var target;
-        if(con_sites.length) {
-            target = con_sites[0];
+        if(con_site) {
+            target = con_site;
         } else if(dam_struct.length) {
             target = dam_struct[0];
         } else if(dam_neu_struct.length) {
