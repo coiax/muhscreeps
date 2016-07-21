@@ -29,9 +29,17 @@ var roleBuilder = {
                 filter: function(structure) {
                     return structure.hits < structure.hitsMax
             }}));
+        var priority_flag = Game.flags["Priority"];
 
         var target;
-        if(con_site) {
+        if(priority_flag && priority_flag.pos.roomName == creep.pos.roomName) {
+            var con_sites = priority_flag.pos.lookFor(FIND_CONSTRUCTION_SITES);
+            if(con_sites.length) {
+                target = con_sites[0];
+            } else {
+                priority_flag.remove();
+            }
+        } else if(con_site) {
             target = con_site;
         } else if(dam_struct.length) {
             target = dam_struct[0];
