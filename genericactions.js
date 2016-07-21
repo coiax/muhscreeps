@@ -96,11 +96,9 @@ module.exports = {
     renew : function(task, creep) {
         var spawn = Game.getObjectById(task.spawn_id);
         if(!spawn) {
-            var spawns = creep.pos.findClosestByPath(FIND_MY_SPAWNS);
-            if(spawns.length) {
-                spawn = spawns[0];
+            spawn = creep.pos.findClosestByPath(FIND_MY_SPAWNS);
+            if(spawn)
                 task.spawn_id = spawn.id
-            }
         }
         if(!spawn) {
             creep.say("SPN?!?");
