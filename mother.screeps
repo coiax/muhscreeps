@@ -43,5 +43,6 @@ module.exports = {
         minimum_creeps('builder', 2);
         minimum_creeps('upgrader', 4);
         minimum_creeps('harvester', 2);
+        minimum_creeps('cow', 4);
     }
 }
