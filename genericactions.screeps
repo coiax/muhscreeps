@@ -80,8 +80,10 @@ module.exports = {
                     var energy_stored = st.store[RESOURCE_ENERGY];
                     return energy_stored < remaining_capacity;
             }});
-            gas_station = creep.pos.findClosestByPath(possible_stations);
-            task.gas_station_id = gas_station.id;
+            if(possible_stations.length) {
+                gas_station = creep.pos.findClosestByPath(possible_stations);
+                task.gas_station_id = gas_station.id;
+            }
         }
         if(!gas_station) {
             return {outcome: "replace", task: {type: "harvest"}};

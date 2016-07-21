@@ -1,5 +1,126 @@
-Creep.prototype.add_task=function(d){this.memory.task_queue||(this.memory.task_queue=[]);this.memory.task_queue.unshift(d)};Creep.prototype.pop_task=function(){this.memory.task_queue=_.drop(this.memory.task_queue);0==this.memory.task_queue.length&&(this.memory.task_queue=void 0)};Creep.prototype.renewCost=function(){return floor(600/this.body.length)};
-module.exports={harvest:function(d,a){if(a.carryCapacity==a.carry.energy)return{outcome:"done"};var b=Game.getObjectById(d.selected_source_id);b||(b=a.pos.findClosestByPath(FIND_SOURCES),d.selected_source_id=b.id);return a.harvest(b)==ERR_NOT_IN_RANGE?(a.moveTo(b),{outcome:"continue"}):a.carryCapacity==a.carry.energy?{outcome:"done"}:{outcome:"continue"}},construct:function(d,a){var b=d.resupply,c=Game.getObjectById(d.target_id);if(!c)return a.say("cs ?!?"),{outcome:"done"};if(0==a.carry.energy)return b?
-{outcome:"newtask",task:{type:b}}:{outcome:"done"};if("undefined"==typeof c.progress){if(c.hits==c.hitsMax)return{outcome:"done"};b=a.repair(c)}else b=a.build(c);b==ERR_NOT_IN_RANGE&&a.moveTo(c);return{outcome:"continue"}},resupply:function(d,a){var b=a.carryCapacity-a.carry.energy;if(0==b)return{outcome:"done"};var c=Game.getObjectById(d.gas_station_id);c||(c=a.room.find(FIND_STRUCTURES,{filter:function(a){return a.structureType!=STRUCTURE_CONTAINER?!1:a.store[RESOURCE_ENERGY]<b}}),c=a.pos.findClosestByPath(c),
-d.gas_station_id=c.id);if(!c)return{outcome:"replace",task:{type:"harvest"}};var e=a.withdraw(c,RESOURCE_ENERGY);return e==ERR_NOT_IN_RANGE?(a.moveTo(c),{outcome:"continue"}):e!=OK?(a.say("rs"+e),{outcome:"continue"}):{outcome:"done"}},renew:function(d,a){if(1400<=a.ticksToLive)return{outcome:"done"};var b=Game.getObjectById(d.spawn_id);if(!b&&(b=a.pos.findClosestByPath(FIND_MY_SPAWNS)))d.spawn_id=b.id;if(!b)return a.say("SPN?!?"),{outcome:"done"};var c=b.renewCreep(a);a.transfer(b,RESOURCE_ENERGY);
-if(c==ERR_NOT_IN_RANGE)a.moveTo(b);else if(c==ERR_FULL||c==ERR_NOT_ENOUGH_ENERGY)return{outcome:"done"};return{outcome:"continue"}}};
+Creep.prototype.add_task = function(obj) {
+    if(!this.memory.task_queue) {
+        this.memory.task_queue = [];
+    }
+    this.memory.task_queue.unshift(obj);
+};
+
+Creep.prototype.pop_task = function() {
+    this.memory.task_queue = _.drop(this.memory.task_queue);
+    if(this.memory.task_queue.length == 0) {
+        this.memory.task_queue = undefined;
+    }
+};
+
+Creep.prototype.renewCost = function() {
+    return floor(600 / this.body.length);
+};
+
+module.exports = {
+    harvest : function(task, creep) {
+        if(creep.carryCapacity == creep.carry.energy) {
+            return {outcome: "done"};
+        }
+        var selected = Game.getObjectById(task.selected_source_id);
+        if(!selected) {
+            selected = creep.pos.findClosestByPath(FIND_SOURCES);
+            task.selected_source_id = selected.id;
+        }
+        var rv = creep.harvest(selected);
+        if(rv == ERR_NOT_IN_RANGE) {
+            creep.moveTo(selected);
+            return {outcome: "continue"};
+        }
+        if(creep.carryCapacity == creep.carry.energy) {
+            return {outcome: "done"};
+        } else {
+            return {outcome: "continue"};
+        }
+    },
+    construct : function(task, creep) {
+        var resupply = task.resupply;
+        var target = Game.getObjectById(task.target_id);
+        if(!target) {
+            creep.say("cs ?!?");
+            return {outcome: "done"};
+        }
+        if(creep.carry.energy == 0) {
+            if(resupply) {
+                return {outcome: "newtask", task: {type: resupply}};
+            } else {
+                return {outcome: "done"};
+            }
+        }
+        var rv;
+        if(typeof target.progress == 'undefined') {
+            if(target.hits == target.hitsMax) {
+                return {outcome: "done"};
+            }
+            rv = creep.repair(target);
+        } else {
+            rv = creep.build(target);
+        }
+        if(rv == ERR_NOT_IN_RANGE) {
+            creep.moveTo(target);
+        }
+        return {outcome: "continue"};
+    },
+    resupply : function(task, creep) {
+        var remaining_capacity = creep.carryCapacity - creep.carry.energy;
+        if(remaining_capacity == 0) {
+            return {outcome: "done"};
+        }
+        var gas_station = Game.getObjectById(task.gas_station_id);
+        if(!gas_station) {
+            var possible_stations = creep.room.find(FIND_STRUCTURES, {
+                filter: function(st) {
+                    if(st.structureType != STRUCTURE_CONTAINER) {
+                        return false;
+                    }
+                    var energy_stored = st.store[RESOURCE_ENERGY];
+                    return energy_stored < remaining_capacity;
+            }});
+            if(possible_stations.length) {
+                gas_station = creep.pos.findClosestByPath(possible_stations);
+                task.gas_station_id = gas_station.id;
+            }
+        }
+        if(!gas_station) {
+            return {outcome: "replace", task: {type: "harvest"}};
+        }
+        var rc = creep.withdraw(gas_station, RESOURCE_ENERGY);
+        if(rc == ERR_NOT_IN_RANGE) {
+            creep.moveTo(gas_station);
+            return {outcome: "continue"};
+        } else if(rc != OK) {
+            creep.say("rs" + rc);
+            return {outcome: "continue"};
+        } else {
+            return {outcome: "done"};
+        }
+    },
+    renew : function(task, creep) {
+        if(creep.ticksToLive >= 1400) {
+            return {outcome: "done"};
+        }
+        var spawn = Game.getObjectById(task.spawn_id);
+        if(!spawn) {
+            spawn = creep.pos.findClosestByPath(FIND_MY_SPAWNS);
+            if(spawn)
+                task.spawn_id = spawn.id
+        }
+        if(!spawn) {
+            creep.say("SPN?!?");
+            return {outcome: "done"};
+        }
+        var rc = spawn.renewCreep(creep)
+        creep.transfer(spawn, RESOURCE_ENERGY);
+        if(rc == ERR_NOT_IN_RANGE) {
+            creep.moveTo(spawn)
+            return {outcome: "continue"};
+        } else if((rc == ERR_FULL) || (rc == ERR_NOT_ENOUGH_ENERGY)) {
+            return {outcome: "done"};
+        }
+        return {outcome: "continue"};
+    }
+}
