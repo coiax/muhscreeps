@@ -105,6 +105,7 @@ module.exports = {
             return {outcome: "done"};
         }
         var rc = spawn.renewCreep(creep)
+        creep.transfer(spawn, RESOURCE_ENERGY);
         if(rc == ERR_NOT_IN_RANGE) {
             creep.moveTo(spawn)
             return {outcome: "continue"};
