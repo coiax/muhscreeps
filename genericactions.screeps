@@ -30,7 +30,7 @@ module.exports = {
         }
         if(!selected) {
             creep.say("!sr?:(");
-            return {outcome: "replace", task: {type: "resupply"}};
+            return {outcome: "newtask", task: {type: "resupply"}};
         }
         var rv = creep.harvest(selected);
         if(rv == ERR_NOT_IN_RANGE) {
@@ -84,7 +84,7 @@ module.exports = {
                         return false;
                     }
                     var energy_stored = st.store[RESOURCE_ENERGY];
-                    return energy_stored < remaining_capacity;
+                    return energy_stored > remaining_capacity;
             }});
             if(possible_stations.length) {
                 gas_station = creep.pos.findClosestByPath(possible_stations);
