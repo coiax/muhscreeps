@@ -73,17 +73,17 @@ module.exports = {
         var gas_station = Game.getObjectById(task.gas_station_id);
         if(!gas_station) {
             var possible_stations = creep.room.find(FIND_STRUCTURES, {
-                filter: function(structure) {
-                    return structure.structureType == STRUCTURE_CONTAINER;
+                filter: function(st) {
+                    if(!st.structureType == STRUCTURE_CONTAINER) {
+                        return false;
+                    }
+                    var energy_stored = st.store[RESOURCE_ENERGY];
+                    return energy_stored < remaining_capacity;
             }});
             gas_station = creep.pos.findClosestByPath(possible_stations);
             task.gas_station_id = gas_station.id;
         }
         if(!gas_station) {
-            return {outcome: "replace", task: {type: "harvest"}};
-        }
-        var energy_stored = gas_station.store[RESOURCE_ENERGY];
-        if(energy_stored < remaining_capacity) {
             return {outcome: "replace", task: {type: "harvest"}};
         }
         var rc = creep.withdraw(gas_station, RESOURCE_ENERGY);
