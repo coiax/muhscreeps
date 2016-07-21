@@ -16,7 +16,7 @@ var roleHarvester = {
         var need_energy = _.filter(targets, function(st) {
             return st.energy < st.energyCapacity;
         });
-        var closest = creep.pos.findClosestByPath(need_energy);
+        var closest = creep.pos.findClosestByRange(need_energy);
         if(closest) {
             var rc = creep.transfer(closest, RESOURCE_ENERGY);
             if(rc == ERR_NOT_IN_RANGE) {

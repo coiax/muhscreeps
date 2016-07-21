@@ -23,7 +23,7 @@ module.exports = {
         }
         var selected = Game.getObjectById(task.selected_source_id);
         if(!selected) {
-            selected = creep.pos.findClosestByPath(FIND_SOURCES);
+            selected = creep.pos.findClosestByRange(FIND_SOURCES);
             if(selected) {
                 task.selected_source_id = selected.id;
             }
@@ -87,7 +87,7 @@ module.exports = {
                     return energy_stored > remaining_capacity;
             }});
             if(possible_stations.length) {
-                gas_station = creep.pos.findClosestByPath(possible_stations);
+                gas_station = creep.pos.findClosestByRange(possible_stations);
                 task.gas_station_id = gas_station.id;
             }
         }
@@ -111,7 +111,7 @@ module.exports = {
         }
         var spawn = Game.getObjectById(task.spawn_id);
         if(!spawn) {
-            spawn = creep.pos.findClosestByPath(FIND_MY_SPAWNS);
+            spawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS);
             if(spawn)
                 task.spawn_id = spawn.id
         }
