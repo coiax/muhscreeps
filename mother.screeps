@@ -39,8 +39,9 @@ module.exports = {
             }
         }
         // Apparently the last issued order is the highest priority
-        minimum_creeps('builder', 2)
-        minimum_creeps('upgrader', 4)
-        minimum_creeps('harvester', 2)
+        minimum_creeps('guard', 2);
+        minimum_creeps('builder', 2);
+        minimum_creeps('upgrader', 4);
+        minimum_creeps('harvester', 2);
     }
 }
