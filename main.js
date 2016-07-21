@@ -14,10 +14,11 @@ module.exports.loop = function () {
         if(creep.spawning) {
             continue;
         }
-        if((creep.ticksToLive < 100) && (!creep.memory.no_recharge)) {
+        var tq = creep.memory.task_queue;
+        if((creep.ticksToLive < 100) && (!creep.memory.no_recharge) &&
+            tq && tq.length && (tq[0].type != "renew")) {
             creep.add_task({type:"renew"});
         }
-        var tq = creep.memory.task_queue;
         if(tq && tq.length) {
             var task = tq[0];
             if(typeof task.times_run == 'undefined') {
