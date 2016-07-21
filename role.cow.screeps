@@ -128,7 +128,7 @@ var roleCow = {
         var container = Game.getObjectById(creep.memory.output_container_id);
         if(!container) {
             // Then scan for a container to move stuff into
-            var containers = creep.pos.findInRange(FIND_MY_STRUCTURES, 1,
+            var containers = creep.pos.findInRange(FIND_STRUCTURES, 1,
                 filter = function(structure) {
                     return structure.structureType == STRUCTURE_CONTAINER;
             });
@@ -141,7 +141,7 @@ var roleCow = {
         // If not present, then place the construction site and then
         // build it
         if(!container) {
-            var sites = creep.pos.findInRange(FIND_MY_CONSTRUCTION_SITES, 1,
+            var sites = creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 1,
                 filter = function(site) {
                     return site.structureType == STRUCTURE_CONTAINER;
             });
@@ -149,7 +149,7 @@ var roleCow = {
             if(sites.length) {
                 site = sites[0];
             } else {
-                var opposite_dir = gs.getDirectionTo(creep);
+                var opposite_dir = source.getDirectionTo(creep);
                 var site_pos = creep.pos.step(opposite_dir);
                 var rc = site_pos.createConstructionSite(STRUCTURE_CONTAINER);
                 // It will be found next work tick.
