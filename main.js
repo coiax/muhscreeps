@@ -15,7 +15,7 @@ module.exports.loop = function () {
             continue;
         }
         if((creep.ticksToLive < 100) && (!creep.memory.no_recharge)) {
-            creep.addTask({type:"renew"});
+            creep.add_task({type:"renew"});
         }
         var tq = creep.memory.task_queue;
         if(tq && tq.length) {
