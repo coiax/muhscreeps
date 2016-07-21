@@ -168,7 +168,9 @@ var roleCow = {
         // into the container, repairing the container first if needed.
         // The priority system SHOULD just make this all happen.
         creep.harvest(source);
-        creep.repair(container);
+        if(container.hits < container.hitsMax) {
+            creep.repair(container);
+        }
         creep.transfer(container, RESOURCE_ENERGY);
     }
 };
