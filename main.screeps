@@ -3,6 +3,7 @@ var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
 var roleCow = require('role.cow');
+var roleGuard = require('role.guard');
 var mother = require('mother');
 
 module.exports.loop = function () {
