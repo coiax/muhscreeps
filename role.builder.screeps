@@ -38,7 +38,7 @@ var roleBuilder = {
             target = dam_neu_struct[0];
         }
         if(target) {
-            creep.add_task({type: "construct", target: target.id})
+            creep.add_task({type: "construct", target_id: target.id})
         } else {
             creep.say("no work");
         }
