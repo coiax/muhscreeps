@@ -24,7 +24,13 @@ module.exports = {
         var selected = Game.getObjectById(task.selected_source_id);
         if(!selected) {
             selected = creep.pos.findClosestByPath(FIND_SOURCES);
-            task.selected_source_id = selected.id;
+            if(selected) {
+                task.selected_source_id = selected.id;
+            }
+        }
+        if(!selected) {
+            creep.say("!sr?:(");
+            return {outcome: "continue"};
         }
         var rv = creep.harvest(selected);
         if(rv == ERR_NOT_IN_RANGE) {
