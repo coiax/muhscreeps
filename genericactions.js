@@ -30,7 +30,7 @@ module.exports = {
         }
         if(!selected) {
             creep.say("!sr?:(");
-            return {outcome: "continue"};
+            return {outcome: "replace", task: {type: "resupply"}};
         }
         var rv = creep.harvest(selected);
         if(rv == ERR_NOT_IN_RANGE) {
