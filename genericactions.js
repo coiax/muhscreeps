@@ -19,7 +19,7 @@ Creep.prototype.renewCost = function() {
 module.exports = {
     harvest : function(task, creep) {
         if(creep.carryCapacity == creep.carry.energy) {
-            return {outcome: "done"};
+            return {outcome: "didnothing"};
         }
         var selected = Game.getObjectById(task.selected_source_id);
         if(!selected) {
@@ -48,19 +48,19 @@ module.exports = {
         var target = Game.getObjectById(task.target_id);
         if(!target) {
             creep.say("cs ?!?");
-            return {outcome: "done"};
+            return {outcome: "didnothing"};
         }
         if(creep.carry.energy == 0) {
             if(resupply) {
                 return {outcome: "newtask", task: {type: resupply}};
             } else {
-                return {outcome: "done"};
+                return {outcome: "didnothing"};
             }
         }
         var rv;
         if(typeof target.progress == 'undefined') {
             if(target.hits == target.hitsMax) {
-                return {outcome: "done"};
+                return {outcome: "didnothing"};
             }
             rv = creep.repair(target);
         } else {
@@ -74,7 +74,7 @@ module.exports = {
     resupply : function(task, creep) {
         var remaining_capacity = creep.carryCapacity - creep.carry.energy;
         if(remaining_capacity == 0) {
-            return {outcome: "done"};
+            return {outcome: "didnothing"};
         }
         var gas_station = Game.getObjectById(task.gas_station_id);
         if(!gas_station) {

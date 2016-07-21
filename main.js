@@ -19,7 +19,7 @@ module.exports.loop = function () {
             (!tq || (tq.length && (tq[0].type != "renew")))) {
             creep.add_task({type:"renew"});
         }
-        if(tq && tq.length) {
+        while(tq && tq.length) {
             var task = tq[0];
             if(typeof task.times_run == 'undefined') {
                 task.times_run = 0
@@ -41,15 +41,19 @@ module.exports.loop = function () {
             } else if(result.outcome == "replace") {
                 creep.pop_task();
                 creep.add_task(result.task);
+            } else if(result.outcome == "didnothing") {
+                creep.pop_task();
+                continue;
             } else {
                 creep.say("?" + result.outcome);
                 creep.pop_task();
             }
-            if(tq && tq.length) {
-                // Do not fall back to old roles if there are tasks in
-                // the task queue.
-                continue;
-            }
+            break;
+        }
+        if(tq && tq.length) {
+            // Do not fall back to roles if there are tasks in the task
+            // queue.
+            continue;
         }
         if(creep.memory.role == 'harvester') {
             roleHarvester.run(creep);
