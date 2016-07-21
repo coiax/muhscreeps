@@ -63,7 +63,7 @@ module.exports = {
         return {outcome: "continue"};
     },
     resupply : function(task, creep) {
-        var remaining_capacity = creep.carryCapacity - creeep.carry.energy;
+        var remaining_capacity = creep.carryCapacity - creep.carry.energy;
         if(remaining_capacity == 0) {
             return {outcome: "done"};
         }
