@@ -114,6 +114,11 @@ var roleCow = {
             pasture = _.sample(source.pos.non_wall_adjacent());
             creep.memory.pasture_loc = pasture;
         }
+        if(!_.includes(source.pos.non_wall_adjacent(), pasture)) {
+            creep.say("!ploc");
+            creep.memory.pasture_loc = null;
+            return;
+        }
         if(!pasture.isEqualTo(creep.pos)) {
             creep.moveTo(pasture);
             return;
