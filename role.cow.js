@@ -108,7 +108,21 @@ var roleCow = {
         var source = Game.getObjectById(creep.memory.source_id);
         if(!source) {
             var sources = creep.room.find(FIND_SOURCES);
-            source = _.sample(sources);
+            var cow_count = {};
+            sources.forEach(function(s) {
+                cow_count[s] = 0;
+            });
+
+            creep.room.find(FIND_MY_CREEPS).forEach(function(other) {
+                if((creep == other) || (other.memory.role != "cow"))
+                    return;
+                var other_source = Game.getObjectById(creep.memory.source_id);
+                cow_count[other_source]++;
+            });
+            sources = _.sortBy(sources, function(s) {
+                return cow_count[s];
+            });
+            source = sources[0];
             if(source) {
                 creep.memory.source_id = source.id;
             }
