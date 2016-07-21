@@ -14,6 +14,11 @@ module.exports.loop = function () {
         if(creep.spawning) {
             continue;
         }
+        var dropped_energies = creep.pos.findInRange(FIND_DROPPED_ENERGY, 1);
+        if(dropped_energies.length) {
+            // might fail, just pickup anything if you can.
+            creep.pickup(dropped_energies[0]);
+        }
         var tq = creep.memory.task_queue;
         if((creep.ticksToLive < 100) && (!creep.memory.no_recharge) &&
             (!tq || (tq.length && (tq[0].type != "renew")))) {
