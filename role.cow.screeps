@@ -135,9 +135,9 @@ var roleCow = {
         if(!container) {
             // Then scan for a container to move stuff into
             var containers = creep.pos.findInRange(FIND_STRUCTURES, 1,
-                filter = function(structure) {
+                {filter : function(structure) {
                     return structure.structureType == STRUCTURE_CONTAINER;
-            });
+            }});
             if(containers.length) {
                 container = containers[0];
                 creep.memory.output_container_id = container.id;
