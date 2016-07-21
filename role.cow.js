@@ -165,7 +165,8 @@ var roleCow = {
                 target_id: site.id, resupply:"harvest"});
             return;
         }
-        if(container && container.structureType != STRUCTURE_CONTAINER) {
+        if(container && ((container.structureType != STRUCTURE_CONTAINER) ||
+            (container.getRangeTo(creep) != 1))) {
             creep.say("umm");
             creep.memory.output_container_id = null;
             return;
