@@ -164,6 +164,11 @@ var roleCow = {
             creep.add_task({type: "construct", target: site.id, resupply:true});
             return;
         }
+        if(container && container.structureType != STRUCTURE_CONTAINER) {
+            creep.say("umm");
+            creep.memory.output_container_id = null;
+            return;
+        }
         // Then spend the rest of our lifespan harvesting and moving that
         // into the container, repairing the container first if needed.
         // The priority system SHOULD just make this all happen.
