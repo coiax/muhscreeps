@@ -6,28 +6,24 @@ var roleHarvester = {
             creep.add_task({type: "resupply"});
             return;
         }
-        else {
-            var targets = creep.room.find(FIND_STRUCTURES, {
-                    filter: function(structure) {
-                        return (structure.structureType == STRUCTURE_EXTENSION ||
-                                structure.structureType == STRUCTURE_SPAWN ||
-                                structure.structureType == STRUCTURE_TOWER) && structure.energy < structure.energyCapacity;
-                    }
-            });
-            if(targets.length > 0) {
-                if(creep.transfer(targets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(targets[0]);
+        var targets = creep.room.find(FIND_STRUCTURES, {
+                filter: function(structure) {
+                    return (structure.structureType == STRUCTURE_EXTENSION ||
+                            structure.structureType == STRUCTURE_SPAWN ||
+                            structure.structureType == STRUCTURE_TOWER);
                 }
-            } else {
-                var spawns = creep.room.find(FIND_STRUCTURES, {
-                    filter: function(structure) {
-                        return structure.structureType == STRUCTURE_SPAWN;
-                    }
-                });
-                if(spawns.length > 0) {
-                    creep.moveTo(spawns[0]);
-                }
+        });
+        var need_energy = _.filter(targets, function(st) {
+            return st.energy < st.energyCapacity;
+        });
+        var closest = creep.pos.findClosestByPath(need_energy);
+        if(closest) {
+            var rc = creep.transfer(closest, RESOURCE_ENERGY);
+            if(rc == ERR_NOT_IN_RANGE) {
+                creep.moveTo(closest);
             }
+        } else if(targets.length) {
+            creep.moveTo(targets[0]);
         }
     }
 };
