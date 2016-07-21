@@ -94,6 +94,9 @@ module.exports = {
         }
     },
     renew : function(task, creep) {
+        if(creep.ticksToLive >= 1400) {
+            return {outcome: "done"};
+        }
         var spawn = Game.getObjectById(task.spawn_id);
         if(!spawn) {
             spawn = creep.pos.findClosestByPath(FIND_MY_SPAWNS);
