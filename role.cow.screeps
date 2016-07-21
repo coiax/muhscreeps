@@ -164,7 +164,7 @@ var roleCow = {
             creep.add_task({type: "construct", target: site.id, resupply:true});
             return;
         }
-        creep.say("nom");
+        creep.say("nom!");
         // Then spend the rest of our lifespan harvesting and moving that
         // into the container, repairing the container first if needed.
     }
