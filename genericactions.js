@@ -1,4 +1,97 @@
-Creep.prototype.add_task=function(d){this.memory.task_queue||(this.memory.task_queue=[]);this.memory.task_queue.unshift(d)};Creep.prototype.pop_task=function(){this.memory.task_queue=_.drop(this.memory.task_queue);0==this.memory.task_queue.length&&(this.memory.task_queue=void 0)};
-module.exports={harvest:function(d,a){if(a.carryCapacity==a.carry.energy)return{outcome:"done"};var b=Game.getObjectById(d.selected_source_id);b||(b=a.pos.findClosestByPath(FIND_SOURCES),d.selected_source_id=b.id);return a.harvest(b)==ERR_NOT_IN_RANGE?(a.moveTo(b),{outcome:"continue"}):a.carryCapacity==a.carry.energy?{outcome:"done"}:{outcome:"continue"}},construct:function(d,a){var b=d.resupply,c=Game.getObjectById(d.target_id);if(!c)return a.say("cs ?!?"),{outcome:"done"};if(0==a.carry.energy)return b?
-{outcome:"newtask",task:{type:"harvest"}}:{outcome:"done"};if("undefined"==typeof c.progress){if(c.hits==c.hitsMax)return{outcome:"done"};b=a.repair(c)}else b=a.build(c);b==ERR_NOT_IN_RANGE&&a.moveTo(c);return{outcome:"continue"}},resupply:function(d,a){var b=a.carryCapacity-creeep.carry.energy;if(0==b)return{outcome:"done"};var c=Game.getObjectById(d.gas_station_id);c||(c=a.room.find(FIND_STRUCTURES,{filter:function(a){return a.structureType==STRUCTURE_CONTAINER}}),c=a.pos.findClosestByPath(c),d.gas_station_id=
-c.id);if(!c||c.store[RESOURCE_ENERGY]<b)return{outcome:"replace",task:{type:"harvest"}};b=a.withdraw(c,RESOURCE_ENERGY);return b==ERR_NOT_IN_RANGE?(a.moveTo(target),{outcome:"continue"}):b!=OK?(a.say("rs"+b),{outcome:"continue"}):{outcome:"done"}}};
+Creep.prototype.add_task = function(obj) {
+    if(!this.memory.task_queue) {
+        this.memory.task_queue = [];
+    }
+    this.memory.task_queue.unshift(obj);
+};
+
+Creep.prototype.pop_task = function() {
+    this.memory.task_queue = _.drop(this.memory.task_queue);
+    if(this.memory.task_queue.length == 0) {
+        this.memory.task_queue = undefined;
+    }
+};
+
+module.exports = {
+    harvest : function(task, creep) {
+        if(creep.carryCapacity == creep.carry.energy) {
+            return {outcome: "done"};
+        }
+        var selected = Game.getObjectById(task.selected_source_id);
+        if(!selected) {
+            selected = creep.pos.findClosestByPath(FIND_SOURCES);
+            task.selected_source_id = selected.id;
+        }
+        var rv = creep.harvest(selected);
+        if(rv == ERR_NOT_IN_RANGE) {
+            creep.moveTo(selected);
+            return {outcome: "continue"};
+        }
+        if(creep.carryCapacity == creep.carry.energy) {
+            return {outcome: "done"};
+        } else {
+            return {outcome: "continue"};
+        }
+    },
+    construct : function(task, creep) {
+        var target_id = task.target_id;
+        var resupply = task.resupply;
+        var target = Game.getObjectById(target_id);
+        if(!target) {
+            creep.say("cs ?!?");
+            return {outcome: "done"};
+        }
+        if(creep.carry.energy == 0) {
+            if(resupply) {
+                return {outcome: "newtask", task: {type: "harvest"}};
+            } else {
+                return {outcome: "done"};
+            }
+        }
+        var rv;
+        if(typeof target.progress == 'undefined') {
+            if(target.hits == target.hitsMax) {
+                return {outcome: "done"};
+            }
+            rv = creep.repair(target);
+        } else {
+            rv = creep.build(target);
+        }
+        if(rv == ERR_NOT_IN_RANGE) {
+            creep.moveTo(target);
+        }
+        return {outcome: "continue"};
+    },
+    resupply : function(task, creep) {
+        var remaining_capacity = creep.carryCapacity - creeep.carry.energy;
+        if(remaining_capacity == 0) {
+            return {outcome: "done"};
+        }
+        var gas_station = Game.getObjectById(task.gas_station_id);
+        if(!gas_station) {
+            var possible_stations = creep.room.find(FIND_STRUCTURES, {
+                filter: function(structure) {
+                    return structure.structureType == STRUCTURE_CONTAINER;
+            }});
+            gas_station = creep.pos.findClosestByPath(possible_stations);
+            task.gas_station_id = gas_station.id;
+        }
+        if(!gas_station) {
+            return {outcome: "replace", task: {type: "harvest"}};
+        }
+        var energy_stored = gas_station.store[RESOURCE_ENERGY];
+        if(energy_stored < remaining_capacity) {
+            return {outcome: "replace", task: {type: "harvest"}};
+        }
+        var rc = creep.withdraw(gas_station, RESOURCE_ENERGY);
+        if(rc == ERR_NOT_IN_RANGE) {
+            creep.moveTo(target);
+            return {outcome: "continue"};
+        } else if(rc != OK) {
+            creep.say("rs" + rc);
+            return {outcome: "continue"};
+        } else {
+            return {outcome: "done"};
+        }
+    }
+}
