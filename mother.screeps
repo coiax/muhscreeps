@@ -1,9 +1,12 @@
+Game.prototype.creeps_of_role = function(role) {
+    return _.filter(this.creeps, function(c) {
+        return c.memory.role == role;
+    });
+}
+
 function minimum_creeps(role, amount) {
-    var creeps = _.filter(Game.creeps, function(creep)
-        {return creep.memory.role == role});
+    var creeps = Game.creeps_of_role(role);
     if(creeps.length < amount) {
-        var newMuhid = Memory.muhid;
-        var proposedName = role + newMuhid;
         var parts;
         var spawn = Game.spawns['Spawn2']
         var capacity = spawn.room.energyCapacityAvailable;
@@ -21,6 +24,7 @@ function minimum_creeps(role, amount) {
             } else {
                 parts = [WORK,WORK,CARRY,CARRY,MOVE,MOVE];
             }
+        }
         if(!parts) {
             if(role == "guard") {
                 parts = [RANGED_ATTACK, MOVE];
@@ -28,10 +32,12 @@ function minimum_creeps(role, amount) {
                 parts = [WORK,CARRY,MOVE];
             }
         }
-        var newName = spawn.createCreep(parts, proposedName, {role: role});
-        if(newName == proposedName) {
-            Memory.muhid++;
+        if(!spawn.canCreateCreep(parts)) {
+            return;
         }
+        var creep_name = role + Memory.muhid;
+        Memory.muhid++;
+        spawn.createCreep(parts, creep_name, {role: role});
     }
 }
 

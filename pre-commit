@@ -12,7 +12,7 @@ check_only = False
 fail = False
 
 for dirpath, dirnames, filenames in os.walk('.'):
-    for name in filenames:
+    for name in sorted(filenames):
         if not name.endswith('.screeps'):
             continue
         full_name = os.path.join(dirpath, name)
