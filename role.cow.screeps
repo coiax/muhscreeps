@@ -175,8 +175,9 @@ var roleCow = {
         creep.harvest(source);
         if(container.hits < container.hitsMax) {
             creep.repair(container);
+        } else {
+            creep.transfer(container, RESOURCE_ENERGY);
         }
-        creep.transfer(container, RESOURCE_ENERGY);
     }
 };
 
