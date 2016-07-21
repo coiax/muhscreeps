@@ -1,11 +1,11 @@
-Game.prototype.creeps_of_role = function(role) {
-    return _.filter(this.creeps, function(c) {
+function creeps_of_role(role) {
+    return _.filter(Game.creeps, function(c) {
         return c.memory.role == role;
     });
 }
 
 function minimum_creeps(role, amount) {
-    var creeps = Game.creeps_of_role(role);
+    var creeps = creeps_of_role(role);
     if(creeps.length < amount) {
         var parts;
         var spawn = Game.spawns['Spawn2']
