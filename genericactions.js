@@ -111,5 +111,6 @@ module.exports = {
         } else if(rc == ERR_FULL) {
             return {outcome: "done"};
         }
+        return {outcome: "continue"};
     }
 }
