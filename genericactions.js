@@ -34,16 +34,15 @@ module.exports = {
         }
     },
     construct : function(task, creep) {
-        var target_id = task.target_id;
         var resupply = task.resupply;
-        var target = Game.getObjectById(target_id);
+        var target = Game.getObjectById(task.target_id);
         if(!target) {
             creep.say("cs ?!?");
             return {outcome: "done"};
         }
         if(creep.carry.energy == 0) {
             if(resupply) {
-                return {outcome: "newtask", task: {type: "harvest"}};
+                return {outcome: "newtask", task: {type: resupply}};
             } else {
                 return {outcome: "done"};
             }

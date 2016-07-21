@@ -161,7 +161,8 @@ var roleCow = {
                 // It will be found next work tick.
                 return;
             }
-            creep.add_task({type: "construct", target: site.id, resupply:true});
+            creep.add_task({type: "construct",
+                target_id: site.id, resupply:"harvest"});
             return;
         }
         if(container && container.structureType != STRUCTURE_CONTAINER) {
