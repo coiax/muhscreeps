@@ -16,12 +16,30 @@ module.exports.loop = function () {
         var tq = creep.memory.task_queue;
         if(tq && tq.length) {
             var task = tq[0];
+            if(typeof task.times_run == 'undefined') {
+                task.times_run = 0
+            }
             var ttype = task.type;
             var func = genericActions[ttype];
 
-            var success = func(task, creep);
-            if(success)
+            var result = func(task, creep);
+            if(!result) {
+                creep.say("!octq");
                 creep.pop_task();
+            } else if(result.outcome == "done") {
+                creep.pop_task();
+            } else if(result.outcome == "continue") {
+                task.times_run++;
+            } else if(result.outcome == "newtask") {
+                task.times_run++;
+                creep.add_task(result.task)
+            } else if(result.outcome == "replace") {
+                creep.pop_task();
+                creep.add_task(result.task);
+            } else {
+                creep.say("?" + result.outcome);
+                creep.pop_task();
+            }
             if(tq && tq.length) {
                 // Do not fall back to old roles if there are tasks in
                 // the task queue.
