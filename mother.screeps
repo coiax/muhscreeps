@@ -32,7 +32,7 @@ function minimum_creeps(role, amount) {
                 parts = [WORK,CARRY,MOVE];
             }
         }
-        if(!spawn.canCreateCreep(parts)) {
+        if(spawn.canCreateCreep(parts) != OK) {
             return;
         }
         var creep_name = role + Memory.muhid;
