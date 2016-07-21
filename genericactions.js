@@ -85,7 +85,7 @@ module.exports = {
         }
         var rc = creep.withdraw(gas_station, RESOURCE_ENERGY);
         if(rc == ERR_NOT_IN_RANGE) {
-            creep.moveTo(target);
+            creep.moveTo(gas_station);
             return {outcome: "continue"};
         } else if(rc != OK) {
             creep.say("rs" + rc);
