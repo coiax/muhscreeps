@@ -16,20 +16,15 @@ module.exports.loop = function () {
         var tq = creep.memory.task_queue;
         if(tq && tq.length) {
             var task = tq[0];
-            if(task.type == 'harvest') {
-                var success = genericActions.harvest(creep);
-                if(success)
-                    creep.pop_task();
-            }
-            else if(task.type == 'construct') {
-                var target_id = task.target;
-                var resupply = task.resupply;
-                var success = genericActions.construct(creep, target_id,
-                    resupply);
-                if(success)
-                    creep.pop_task();
-            }
+            var ttype = task.type;
+            var func = genericActions[ttype];
+
+            var success = func(task, creep);
+            if(success)
+                creep.pop_task();
             if(tq && tq.length) {
+                // Do not fall back to old roles if there are tasks in
+                // the task queue.
                 continue;
             }
         }

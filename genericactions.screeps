@@ -13,48 +13,45 @@ Creep.prototype.pop_task = function() {
 };
 
 module.exports = {
-    harvest : function(creep) {
+    harvest : function(task, creep) {
         if(creep.carryCapacity == creep.carry.energy) {
-            creep.memory.selected_source_id = undefined;
-            return true;
+            return {outcome: "done"};
         }
-        var selected;
-        if(creep.memory.selected_source_id)
-            selected = Game.getObjectById(creep.memory.selected_source_id);
-        else {
+        var selected = Game.getObjectById(task.selected_source_id);
+        if(!selected) {
             selected = creep.pos.findClosestByPath(FIND_SOURCES);
-            creep.memory.selected_source_id = selected.id;
+            task.selected_source_id = selected.id;
         }
         var rv = creep.harvest(selected);
         if(rv == ERR_NOT_IN_RANGE) {
             creep.moveTo(selected);
-            return false;
+            return {outcome: "continue"};
         }
         if(creep.carryCapacity == creep.carry.energy) {
-            creep.memory.selected_source_id = undefined;
-            return true;
+            return {outcome: "done"};
         } else {
-            return false;
+            return {outcome: "continue"};
         }
     },
-    construct : function(creep, target_id, resupply) {
+    construct : function(task, creep) {
+        var target_id = task.target_id;
+        var resupply = task.resupply;
         var target = Game.getObjectById(target_id);
         if(!target) {
             creep.say("cs ?!?");
-            return true;
+            return {outcome: "done"};
         }
         if(creep.carry.energy == 0) {
             if(resupply) {
-                creep.add_task({type: "harvest"})
-                return false;
+                return {outcome: "newtask", task: {type: "harvest"}};
             } else {
-                return true;
+                return {outcome: "done"};
             }
         }
         var rv;
         if(typeof target.progress == 'undefined') {
             if(target.hits == target.hitsMax) {
-                return true;
+                return {outcome: "done"};
             }
             rv = creep.repair(target);
         } else {
@@ -63,6 +60,18 @@ module.exports = {
         if(rv == ERR_NOT_IN_RANGE) {
             creep.moveTo(target);
         }
-        return false;
+        return {outcome: "continue"};
+    },
+    resupply : function(task, creep) {
+        var gas_station = Game.getObjectById(task.gas_station_id);
+        if(!gas_station) {
+            var possible_stations = creep.room.find(FIND_STRUCTURES, {
+                filter: function(structure) {
+                    return structure.structureType == STRUCTURE_CONTAINER;
+            }});
+            gas_station = creep.pos.findClosestByPath(possible_stations);
+            task.gas_station_id = gas_station.id;
+        }
+
     }
 }
