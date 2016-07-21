@@ -1,26 +1,32 @@
 var util = require('util');
 
 RoomPosition.prototype.ordinals = function() {
+    var _x = this.x;
+    var _y = this.y;
+    var _roomName = this.roomName;
     var out = [
-        new RoomPosition(this.x + 1, this.y + 1, this.roomName),
-        new RoomPosition(this.x + 0, this.y + 1, this.roomName),
-        new RoomPosition(this.x - 1, this.y + 1, this.roomName),
-        new RoomPosition(this.x + 1, this.y + 0, this.roomName),
-        //new RoomPosition(this.x + 0, this.y + 0, this.roomName),
-        new RoomPosition(this.x - 1, this.y + 0, this.roomName),
-        new RoomPosition(this.x + 1, this.y - 1, this.roomName),
-        new RoomPosition(this.x + 0, this.y - 1, this.roomName),
-        new RoomPosition(this.x - 1, this.y - 1, this.roomName)
+        new RoomPosition(_x + 1, _y + 1, _roomName),
+        new RoomPosition(_x + 0, _y + 1, _roomName),
+        new RoomPosition(_x - 1, _y + 1, _roomName),
+        new RoomPosition(_x + 1, _y + 0, _roomName),
+        //new RoomPosition(_x + 0, _y + 0, _roomName),
+        new RoomPosition(_x - 1, _y + 0, _roomName),
+        new RoomPosition(_x + 1, _y - 1, _roomName),
+        new RoomPosition(_x + 0, _y - 1, _roomName),
+        new RoomPosition(_x - 1, _y - 1, _roomName)
     ];
     return _.compact(out);
 };
 
 RoomPosition.prototype.cardinals = function() {
+    var _x = this.x;
+    var _y = this.y;
+    var _roomName = this.roomName;
     var out = [
-        new RoomPosition(this.x + 1, this.y + 0, this.roomName),
-        new RoomPosition(this.x - 1, this.y + 0, this.roomName),
-        new RoomPosition(this.x + 0, this.y + 1, this.roomName),
-        new RoomPosition(this.x + 0, this.y - 1, this.roomName)
+        new RoomPosition(_x + 1, _y + 0, _roomName),
+        new RoomPosition(_x - 1, _y + 0, _roomName),
+        new RoomPosition(_x + 0, _y + 1, _roomName),
+        new RoomPosition(_x + 0, _y - 1, _roomName)
     ];
     return _.compact(out);
 };
