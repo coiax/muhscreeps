@@ -116,6 +116,7 @@ var roleCow = {
         }
         if(!_.includes(source.pos.non_wall_adjacent(), pasture)) {
             creep.say("!ploc");
+            creep.memory.debug_bad_pasture_loc = pasture;
             creep.memory.pasture_loc = null;
             return;
         }
