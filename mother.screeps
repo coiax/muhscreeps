@@ -1,4 +1,5 @@
 var roles = require('roles');
+var util = require('util');
 
 function creeps_of_role(role) {
     return _.filter(Game.creeps, function(c) {
