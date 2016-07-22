@@ -113,7 +113,7 @@ var roleCow = {
                 cow_count[s] = 0;
             });
 
-            creep.room.find(FIND_MY_CREEPS).forEach(function(other) {
+            Game.creeps.forEach(function(other) {
                 if((creep == other) || (other.memory.role != "cow"))
                     return;
                 var other_source = Game.getObjectById(creep.memory.source_id);
