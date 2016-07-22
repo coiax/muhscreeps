@@ -1,3 +1,7 @@
+RoomPosition.prototype.find = function() {
+    return Game.rooms[this.roomName].find.apply(arguments);
+};
+
 RoomPosition.prototype.findStructures = function(stypes) {
     var filter = _.identity;
     if(stypes) {
