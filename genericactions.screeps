@@ -186,16 +186,16 @@ module.exports = {
                 if(target.hits == target.hitsMax) {
                     return {outcome: "didnothing"};
                 }
-                rc = heal(target);
+                rc = tower.heal(target);
                 break;
             case "repair":
                 if(target.hits == target.hitsMax) {
                     return {outcome: "didnothing"};
                 }
-                rc = repair(target);
+                rc = tower.repair(target);
                 break;
             case "attack":
-                rc = attack(target);
+                rc = tower.attack(target);
                 break;
         }
         switch(rc) {
