@@ -157,8 +157,8 @@ module.exports = {
     },
     transfer_energy : function(task, creep) {
         target = Game.getObjectById(task.target_id);
-        if(!target || (target.energy == target.energyCapacity ||
-            (creep.carry.energy == 0))) {
+        if(!target || (target.energy == target.energyCapacity) ||
+            (creep.carry.energy == 0)) {
             return {outcome: "didnothing"};
         }
         var rc = creep.transfer(target, RESOURCE_ENERGY);
