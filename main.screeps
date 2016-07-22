@@ -11,7 +11,7 @@ var util = require('util');
 module.exports.loop = function () {
     mother.run();
     if(typeof Memory.structures == 'undefined') {
-        Memory.structures = []
+        Memory.structures = {}
     }
     for(var sid in Memory.structures) {
         if(!Game.structures[sid]) {
@@ -27,7 +27,8 @@ module.exports.loop = function () {
         var stype = structure.structureType;
         memory.type = stype;
         var tq = memory.task_queue;
-        util.run_task_queue(structure, tq);
+        if(tq)
+            util.run_task_queue(structure, tq);
         if(tq && tq.length) {
             continue;
         }
