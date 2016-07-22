@@ -14,7 +14,7 @@ var roleHarvester = {
                 }
         });
         var need_energy = _.filter(targets, function(st) {
-            return st.energy < st.energyCapacity;
+            return ((st.energy < st.energyCapacity) && (st.isActive()));
         });
         var closest = creep.pos.findClosestByRange(need_energy);
         if(closest) {
