@@ -9,8 +9,13 @@ var mother = require('mother');
 var util = require('util');
 
 module.exports.loop = function () {
+    util.cpulog("+++");
+    util.cpulog("Starting tick " + Game.time);
+    util.cpulog("---");
     mother.run();
-    Memory.structures = {}
+    if(typeof Memory.structures == 'undefined') {
+        Memory.structures = {};
+    }
     for(var sid in Memory.structures) {
         if(!Game.structures[sid]) {
             delete Memory.structures[sid];
@@ -74,4 +79,7 @@ module.exports.loop = function () {
         }
         util.cpulog("Done role(" + role + ") for " + creep);
     }
+    util.cpulog("---");
+    util.cpulog("Ending tick " + Game.time);
+    util.cpulog("+++");
 }
