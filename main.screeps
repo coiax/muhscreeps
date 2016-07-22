@@ -56,20 +56,23 @@ module.exports.loop = function () {
             // queue.
             continue;
         }
-        if(creep.memory.role == 'harvester') {
+        var role = creep.memory.role;
+        util.cpulog("Running role(" + role + ") for " + creep);
+        if(role == 'harvester') {
             roleHarvester.run(creep);
         }
-        if(creep.memory.role == 'upgrader') {
+        if(role == 'upgrader') {
             roleUpgrader.run(creep);
         }
-        if(creep.memory.role == 'builder') {
+        if(role == 'builder') {
             roleBuilder.run(creep);
         }
-        if(creep.memory.role == 'cow') {
+        if(role == 'cow') {
             roleCow.run(creep);
         }
-        if(creep.memory.role == 'guard') {
+        if(role == 'guard') {
             roleGuard.run(creep);
         }
+        util.cpulog("Done role(" + role + ") for " + creep);
     }
 }
