@@ -49,7 +49,7 @@ function is_damaged(obj) {
 
 function cpulog(msg) {
     console.log(Game.cpu.getUsed() + " " + msg);
-}
+};
 
 module.exports = {
     opposite_dir: function(dir) {
@@ -58,6 +58,7 @@ module.exports = {
             num = num - 8;
         return num;
     },
+    
     needs_energy: needs_energy,
     is_damaged: is_damaged,
     cpulog: cpulog,
@@ -68,12 +69,10 @@ module.exports = {
                 task.times_run = 0
             }
             var ttype = task.type;
-            cpulog("Running " + ttype + " for " + owner)
             var say = owner.say || function(msg){};
             var func = genericActions[ttype];
 
             var result = func(task, owner);
-            cpulog("Finished " + ttype + " for " + owner + ", result: " + result.outcome)
             if(!result) {
                 say("!octq");
                 owner.pop_task();

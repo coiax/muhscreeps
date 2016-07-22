@@ -9,9 +9,6 @@ var mother = require('mother');
 var util = require('util');
 
 module.exports.loop = function () {
-    util.cpulog("+++");
-    util.cpulog("Starting tick " + Game.time);
-    util.cpulog("---");
     mother.run();
     if(typeof Memory.structures == 'undefined') {
         Memory.structures = {};
@@ -80,11 +77,7 @@ module.exports.loop = function () {
         if(role == 'guard') {
             roleGuard.run(creep);
         }
-        util.cpulog("Done role(" + role + ") for " + creep);
     }
-    util.cpulog("---");
-    util.cpulog("Ending tick " + Game.time);
-    util.cpulog("+++");
 
     Memory.cpu_use.push({time: Game.time, use: Game.cpu.getUsed()});
     var avg = _.meanBy(Memory.cpu_use, _.property("time"));
