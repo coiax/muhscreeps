@@ -7,9 +7,11 @@ Creep.prototype.add_task = function(obj) {
 
 Creep.prototype.pop_task = function() {
     this.memory.task_queue.shift();
+    /*
     if(this.memory.task_queue.length == 0) {
-        //this.memory.task_queue = undefined;
+        this.memory.task_queue = undefined;
     }
+    */
 };
 
 Creep.prototype.renewCost = function() {
@@ -36,9 +38,11 @@ Structure.prototype.add_task = function(task) {
 Structure.prototype.pop_task = function() {
     var memory = this.getMemory();
     memory.task_queue.shift();
+    /*
     if(memory.task_queue.length == 0) {
-        //memory.task_queue = undefined;
+        memory.task_queue = undefined;
     }
+    */
 };
 
 
