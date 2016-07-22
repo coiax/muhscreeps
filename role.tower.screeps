@@ -1,0 +1,19 @@
+module.exports = {
+    run : function(tower) {
+        var target;
+        if(!target) {
+            var damaged_structures = tower.pos.findDamagedStructures();
+            target = tower.pos.findClosestByRange(damaged_structures);
+        }
+        if(!target) {
+            target = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+        }
+        if(!target) {
+            var hurt_friendlies = tower.pos.findDamagedFriendlyCreeps();
+            target = tower.pos.findClosestByRange(hurt_friendlies);
+        }
+        if(target) {
+            tower.add_task({type: "tower_target", target_id: target.id})
+        }
+    }
+}
