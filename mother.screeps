@@ -64,7 +64,7 @@ module.exports = {
             'guard': 3
         }
         for(var role in priority) {
-            var current_amount = creeps_of_role(role);
+            var current_amount = creeps_of_role(role).length;
             if(current_amount < required[role]) {
                 build_creep(role);
                 break;
