@@ -148,7 +148,6 @@ var roleCow = {
 
         if(!pasture) {
             var potential_pasture = source.pos.non_wall_adjacent();
-            var cows_already_using_source = [];
             for(var name in Game.creeps) {
                 var other = Game.creeps[name];
                 if(other.memory.role != "cow")
@@ -157,8 +156,12 @@ var roleCow = {
                 if(other_source != source) {
                     continue;
                 }
+                console.log("cow " + name + " is using source " + source);
                 var other_pasture = memoryPosition(other.memory.pasture_loc);
+                console.log("they are using: " + other_pasture);
+                console.log(JSON.stringify(potential_pasture));
                 _.pull(potential_pasture, other_pasture);
+                console.log(JSON.stringify(potential_pasture));
             }
             pasture = _.sample(potential_pasture);
             creep.memory.pasture_loc = pasture;
