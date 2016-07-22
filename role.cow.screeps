@@ -163,7 +163,9 @@ var roleCow = {
                 var other_pasture = memoryPosition(other.memory.pasture_loc);
                 console.log("they are using: " + other_pasture);
                 console.log("before:" + potential_pasture);
-                _.remove(potential_pasture, other_pasture.isEqualTo);
+                _.remove(potential_pasture, function(mp) {
+                    return other_pasture.isEqualTo(mp);
+                });
                 console.log("after:" + potential_pasture);
             }
             pasture = _.sample(potential_pasture);
