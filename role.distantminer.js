@@ -1,1 +1,1 @@
-module.exports={run:function(a){}};
+module.exports={run:function(a){return"FUN!?"}};

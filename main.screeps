@@ -6,7 +6,7 @@ var util = require('util');
 module.exports.loop = function () {
     for(var roomName in Game.rooms) {
         var room = Game.rooms[roomName];
-        //room.scout_room();
+        room.scout_room();
     }
 
     mother.run();
