@@ -4,41 +4,44 @@ function creeps_of_role(role) {
     });
 }
 
-function minimum_creeps(role, amount) {
-    var creeps = creeps_of_role(role);
-    if(creeps.length < amount) {
-        var parts;
-        var spawn = Game.spawns['Spawn2']
-        var capacity = spawn.room.energyCapacityAvailable;
-        if(!parts && capacity >= 600) {
-            if(role == "guard") {
-                parts = [RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK,
-                        MOVE,MOVE,MOVE];
-            } else {
-                parts = [WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE];
-            }
-        }
-        if(!parts && capacity >= 400) {
-            if(role == "guard") {
-                parts = [RANGED_ATTACK, RANGED_ATTACK, MOVE, MOVE];
-            } else {
-                parts = [WORK,WORK,CARRY,CARRY,MOVE,MOVE];
-            }
-        }
-        if(!parts) {
-            if(role == "guard") {
-                parts = [RANGED_ATTACK, MOVE];
-            } else {
-                parts = [WORK,CARRY,MOVE];
-            }
-        }
-        if(spawn.canCreateCreep(parts) != OK) {
-            return;
-        }
-        var creep_name = role + Memory.muhid;
-        Memory.muhid++;
-        spawn.createCreep(parts, creep_name, {role: role});
+function build_creep(role) {
+    var parts;
+    var spawn = Game.spawns['Spawn2']
+    var creeps_in_room = spawn.room.find(FIND_MY_CREEPS).length;
+    var capacity;
+    if(creeps_in_room == 0) {
+        capacity = 300;
+    } else {
+        capacity = spawn.room.energyCapacityAvailable;
     }
+    if(!parts && capacity >= 600) {
+        if(role == "guard") {
+            parts = [RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK,
+                    MOVE,MOVE,MOVE];
+        } else {
+            parts = [WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE];
+        }
+    }
+    if(!parts && capacity >= 400) {
+        if(role == "guard") {
+            parts = [RANGED_ATTACK, RANGED_ATTACK, MOVE, MOVE];
+        } else {
+            parts = [WORK,WORK,CARRY,CARRY,MOVE,MOVE];
+        }
+    }
+    if(!parts) {
+        if(role == "guard") {
+            parts = [RANGED_ATTACK, MOVE];
+        } else {
+            parts = [WORK,CARRY,MOVE];
+        }
+    }
+    if(spawn.canCreateCreep(parts) != OK) {
+        return;
+    }
+    var creep_name = role + Memory.muhid;
+    Memory.muhid++;
+    spawn.createCreep(parts, creep_name, {role: role});
 }
 
 module.exports = {
@@ -52,11 +55,20 @@ module.exports = {
                 delete Memory.creeps[name];
             }
         }
-        // Apparently the last issued order is the highest priority
-        minimum_creeps('guard', 2);
-        minimum_creeps('builder', 2);
-        minimum_creeps('upgrader', 4);
-        minimum_creeps('harvester', 2);
-        minimum_creeps('cow', 4);
+        var priority = ['harvester', 'cow', 'upgrader', 'builder', 'guard'];
+        var required = {
+            'harvester': 2,
+            'cow': 4,
+            'upgrader': 3,
+            'builder': 3,
+            'guard': 3
+        }
+        for(var role in priority) {
+            var current_amount = creeps_of_role(role);
+            if(current_amount < required[role]) {
+                build_creep(role);
+                break;
+            }
+        }
     }
 }
