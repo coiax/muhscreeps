@@ -1,3 +1,4 @@
+var util = require('util');
 var roleHarvester = {
 
     /** @param {Creep} creep **/
@@ -6,23 +7,19 @@ var roleHarvester = {
             creep.add_task({type: "resupply"});
             return;
         }
-        var targets = creep.room.find(FIND_STRUCTURES, {
-                filter: function(structure) {
-                    return (structure.structureType == STRUCTURE_EXTENSION ||
-                            structure.structureType == STRUCTURE_SPAWN ||
-                            structure.structureType == STRUCTURE_TOWER);
-                }
-        });
-        var need_energy = _.filter(targets, function(st) {
-            return ((st.energy < st.energyCapacity) && (st.isActive()));
-        });
-        var closest = creep.pos.findClosestByRange(need_energy);
-        if(closest) {
-            var rc = creep.transfer(closest, RESOURCE_ENERGY);
-            if(rc == ERR_NOT_IN_RANGE) {
-                creep.moveTo(closest);
+        var stypes = [STRUCTURE_EXTENSION, STRUCTURE_SPAWN, STRUCTURE_TOWER];
+        var target;
+        for(var i in stypes) {
+            var stype = stypes[i];
+            var need_energy = creep.pos.findNeedingEnergyStructures(stype);
+            if(need_energy.length) {
+                target = creep.pos.findClosestByRange(need_energy);
+                break;
             }
-        } else if(targets.length) {
+        }
+        if(target) {
+            creep.add_task({type: "transfer_energy", target_id: target.id});
+        } else {
             // wander randomly.
             creep.move(Math.floor((Math.random() * 8) + 1));
         }

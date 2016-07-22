@@ -1,8 +1,87 @@
+RoomPosition.prototype.findStructures = function(stypes) {
+    var filter = _.identity;
+    if(stypes) {
+        if(stypes.constructor != Array) {
+            stypes = [stypes];
+        }
+        filter = function(st) {
+            return _.includes(stypes, st.structureType);
+        }
+    }
+
+    return this.find(FIND_STRUCTURES, {filter: filter});
+};
+
+RoomPosition.prototype.findDamagedStructures = function(stypes) {
+    return _.filter(this.findStructures(stypes), is_damaged);
+};
+
+RoomPosition.prototype.findNeedingEnergyStructures = function(stypes) {
+    return _.filter(this.findStructures(stypes), needs_energy);
+};
+RoomPosition.prototype.findDamagedFriendlyCreeps = function() {
+    return this.find(FIND_MY_CREEPS, {filter: is_damaged});
+};
+
+function needs_energy(st) {
+    if(!st.isActive())
+        return false;
+    if(typeof st.energy == 'undefined')
+        return false;
+    if(typeof st.energyCapacity == 'undefined')
+        return false;
+    return st.energy < st.energyCapacity;
+};
+
+function is_damaged(obj) {
+    if(typeof obj.hits == 'undefined')
+        return false;
+    if(typeof obj.hitsMax == 'undefined')
+        return false;
+    return obj.hits < obj.hitsMax;
+};
+
 module.exports = {
     opposite_dir: function(dir) {
         var num = dir + 4;
         if(num > 8)
             num = num - 8;
         return num;
+    },
+    needs_energy: needs_energy,
+    is_damaged: is_damaged,
+    run_task_queue: function(owner, tq) {
+        while(tq && tq.length) {
+            var task = tq[0];
+            if(typeof task.times_run == 'undefined') {
+                task.times_run = 0
+            }
+            var ttype = task.type;
+            var say = owner.say || function(msg){};
+            var func = genericActions[ttype];
+
+            var result = func(task, owner);
+            if(!result) {
+                say("!octq");
+                owner.pop_task();
+            } else if(result.outcome == "done") {
+                owner.pop_task();
+            } else if(result.outcome == "continue") {
+                task.times_run++;
+            } else if(result.outcome == "newtask") {
+                task.times_run++;
+                owner.add_task(result.task)
+            } else if(result.outcome == "replace") {
+                owner.pop_task();
+                owner.add_task(result.task);
+            } else if(result.outcome == "didnothing") {
+                owner.pop_task();
+                continue;
+            } else {
+                say("?" + result.outcome);
+                owner.pop_task();
+            }
+            break;
+        }
     }
 }

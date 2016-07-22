@@ -4,29 +4,36 @@ var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
 var roleCow = require('role.cow');
 var roleGuard = require('role.guard');
+var roleTower = require('role.tower');
 var mother = require('mother');
 
 module.exports.loop = function () {
     mother.run();
-    for(var sid in Game.structures) {
-        var structure = Game.structures[sid];
-        if(structure.structureType == STRUCTURE_TOWER) {
-            var tower = structure;
-            var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
-                filter: function(structure) {
-                    return structure.hits < structure.hitsMax;
-            }});
-            if(closestDamagedStructure) {
-                tower.repair(closestDamagedStructure);
-            }
-
-            var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-            if(closestHostile) {
-                tower.attack(closestHostile);
-            }
+    if(typeof Memory.structures == 'undefined') {
+        Memory.structures = []
+    }
+    for(var sid in Memory.structures) {
+        if(!Game.structures[sid]) {
+            delete Memory.structures[sid];
         }
     }
-
+    for(var sid in Game.structures) {
+        var structure = Game.structures[sid];
+        if(!structure.isActive()) {
+            continue;
+        }
+        var memory = structure.getMemory();
+        var stype = structure.structureType;
+        memory.type = stype;
+        var tq = memory.task_queue;
+        util.run_task_queue(structure, tq);
+        if(tq && tq.length) {
+            continue;
+        }
+        if(stype == STRUCTURE_TOWER) {
+            roleTower.run(structure);
+        }
+    }
     for(var name in Game.creeps) {
         var creep = Game.creeps[name];
         if(creep.spawning) {
@@ -42,37 +49,7 @@ module.exports.loop = function () {
             (!tq || (tq.length && (tq[0].type != "renew")))) {
             creep.add_task({type:"renew"});
         }
-        while(tq && tq.length) {
-            var task = tq[0];
-            if(typeof task.times_run == 'undefined') {
-                task.times_run = 0
-            }
-            var ttype = task.type;
-            var func = genericActions[ttype];
-
-            var result = func(task, creep);
-            if(!result) {
-                creep.say("!octq");
-                creep.pop_task();
-            } else if(result.outcome == "done") {
-                creep.pop_task();
-            } else if(result.outcome == "continue") {
-                task.times_run++;
-            } else if(result.outcome == "newtask") {
-                task.times_run++;
-                creep.add_task(result.task)
-            } else if(result.outcome == "replace") {
-                creep.pop_task();
-                creep.add_task(result.task);
-            } else if(result.outcome == "didnothing") {
-                creep.pop_task();
-                continue;
-            } else {
-                creep.say("?" + result.outcome);
-                creep.pop_task();
-            }
-            break;
-        }
+        util.run_task_queue(creep, tq)
         if(tq && tq.length) {
             // Do not fall back to roles if there are tasks in the task
             // queue.
