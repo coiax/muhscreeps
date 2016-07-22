@@ -86,7 +86,7 @@ module.exports.loop = function () {
     util.cpulog("Ending tick " + Game.time);
     util.cpulog("+++");
 
-    Memory.cpu_use.push({time: Game.time, use: Game.cpu.getUse()});
+    Memory.cpu_use.push({time: Game.time, use: Game.cpu.getUsed()});
     var avg = _.meanBy(Memory.cpu_use, _property("time"));
     Memory.avg_cpu = avg;
     if(Memory.cpu_use.length > 100)
