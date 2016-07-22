@@ -1,6 +1,7 @@
 var genericActions = require('genericactions');
 RoomPosition.prototype.find = function() {
-    return Game.rooms[this.roomName].find.apply(arguments);
+    var room = Game.rooms[this.roomName];
+    return room.find.apply(room, arguments);
 };
 
 RoomPosition.prototype.findStructures = function(stypes) {
