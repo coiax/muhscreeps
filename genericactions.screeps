@@ -177,7 +177,8 @@ module.exports = {
     tower_target : function(task, tower) {
         target = Game.getObjectById(task.target_id);
         mode = task.mode
-        if(!mode || !target)
+        // towers should reevaluate targets after 25 times
+        if(!mode || !target || (task.times_run && task.times_run > 25))
             return {outcome: "didnothing"};
         var rc;
         switch(mode) {
