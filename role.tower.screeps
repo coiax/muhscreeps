@@ -1,19 +1,24 @@
 module.exports = {
     run : function(tower) {
         var target;
+        var mode;
         if(!target) {
             var damaged_structures = tower.pos.findDamagedStructures();
             target = tower.pos.findClosestByRange(damaged_structures);
+            mode = "repair";
         }
         if(!target) {
             target = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+            mode = "attack";
         }
         if(!target) {
             var hurt_friendlies = tower.pos.findDamagedFriendlyCreeps();
             target = tower.pos.findClosestByRange(hurt_friendlies);
+            mode = "heal";
         }
         if(target) {
-            tower.add_task({type: "tower_target", target_id: target.id})
+            tower.add_task({type: "tower_target", target_id: target.id,
+                mode: mode})
         }
     }
 }
