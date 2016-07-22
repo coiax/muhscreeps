@@ -39,7 +39,7 @@ function build_creep(role_name) {
     if(spawn.canCreateCreep(selected_parts) != OK) {
         return;
     }
-    var creep_name = role + Memory.muhid;
+    var creep_name = role_name + Memory.muhid;
     Memory.muhid++;
     spawn.createCreep(selected_parts, creep_name, {role: role_name});
 }
