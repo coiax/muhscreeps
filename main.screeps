@@ -16,6 +16,9 @@ module.exports.loop = function () {
     if(typeof Memory.structures == 'undefined') {
         Memory.structures = {};
     }
+    if(typeof Memory.cpu_use == 'undefined') {
+        Memory.cpu_use = [];
+    }
     for(var sid in Memory.structures) {
         if(!Game.structures[sid]) {
             delete Memory.structures[sid];
@@ -82,4 +85,10 @@ module.exports.loop = function () {
     util.cpulog("---");
     util.cpulog("Ending tick " + Game.time);
     util.cpulog("+++");
+
+    Memory.cpu_use.push({time: Game.time, use: Game.cpu.getUse()});
+    var avg = _.meanBy(Memory.cpu_use, _property("time"));
+    Memory.avg_cpu = avg;
+    if(Memory.cpu_use.length > 100)
+        Memory.cpu_use.splice(0, Memory.cpu_use.length - 100);
 }
