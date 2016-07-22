@@ -67,8 +67,10 @@ module.exports = {
             var role = priority[i];
             var current_amount = creeps_of_role(role).length;
             var required_amount = required[role];
+            /*
             console.log(role + "|C:" + current_amount +
                 "|R:" + required_amount);
+            */
             if(current_amount < required[role]) {
                 build_creep(role);
                 break;
