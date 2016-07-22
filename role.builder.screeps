@@ -19,11 +19,9 @@ var roleBuilder = {
         }
         var dismantle_flag = Game.flags["Dismantle"];
         if(dismantle_flag) {
-            var structures = dismantle_flag.pos.lookFor(LOOK_STRUCTURES);
-            if(structures && structures.length) {
-                structures.forEach(function(item) {
-                    creep.add_task({type: "dismantle", target: item.id});
-                });
+            var item = dismantle_flag.pos.findClosestByRange(FIND_STRUCTURES);
+            if(item) {
+                creep.add_task({type: "dismantle", target: item.id});
             }
             dismantle_flag.remove();
         }
