@@ -229,10 +229,12 @@ module.exports = {
         }
         if(creep.carry.energy == creep.carryCapacity) {
             var stores = creep.pos.findNeedingEnergyStructures();
+            Console.log(JSON.stringify(stores));
             if(stores.length)
                 var nearest = creep.pos.findClosestByPath(stores);
-                var task = {type: "transfer_energy", target_id: nearest.id}
-                return {outcome: "newtask", task: task}
+                if(nearest)
+                    var task = {type: "transfer_energy", target_id: nearest.id}
+                    return {outcome: "newtask", task: task}
         }
         var rc = creep.dismantle(target);
         switch(rc) {
