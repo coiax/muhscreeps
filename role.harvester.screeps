@@ -1,11 +1,11 @@
 var util = require('util');
-var roleHarvester = {
+module.exports = {
     parts: [[WORK, CARRY, MOVE],
         [WORK, CARRY,CARRY, MOVE,MOVE],
         [WORK, CARRY,CARRY,CARRY, MOVE,MOVE],
-        [CARRY,CARRY,CARRY,CARRY,WORK,MOVE,MOVE,MOVE]
-        [CARRY,CARRY,CARRY,CARRY,CARRY,WORK,MOVE,MOVE,MOVE]
-        [CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,WORK,MOVE,MOVE,MOVE,MOVE]
+        [CARRY,CARRY,CARRY,CARRY,WORK,MOVE,MOVE,MOVE],
+        [CARRY,CARRY,CARRY,CARRY,CARRY,WORK,MOVE,MOVE,MOVE],
+        [CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,WORK,MOVE,MOVE,MOVE,MOVE],
         [CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,WORK,MOVE,MOVE,MOVE,MOVE]
     ],
 
@@ -35,5 +35,3 @@ var roleHarvester = {
         }
     }
 };
-
-module.exports = roleHarvester;
