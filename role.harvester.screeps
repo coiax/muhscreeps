@@ -3,6 +3,7 @@ var roleHarvester = {
 
     /** @param {Creep} creep **/
     run: function(creep) {
+        console.log("harvester: " + creep + " CPU:" + Game.cpu.getUsed());
         if(creep.carry.energy == 0) {
             creep.add_task({type: "resupply"});
             return;
