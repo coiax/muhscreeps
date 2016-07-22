@@ -10,9 +10,7 @@ var util = require('util');
 
 module.exports.loop = function () {
     mother.run();
-    if(typeof Memory.structures == 'undefined') {
-        Memory.structures = {}
-    }
+    Memory.structures = {}
     for(var sid in Memory.structures) {
         if(!Game.structures[sid]) {
             delete Memory.structures[sid];
