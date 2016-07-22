@@ -41,7 +41,7 @@ function build_creep(role_name) {
     }
     var creep_name = role + Memory.muhid;
     Memory.muhid++;
-    spawn.createCreep(selected_parts, creep_name, {role: role});
+    spawn.createCreep(selected_parts, creep_name, {role: role_name});
 }
 
 module.exports = {
