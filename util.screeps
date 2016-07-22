@@ -65,7 +65,7 @@ module.exports = {
         });
         return sum;
     },
-    
+
     needs_energy: needs_energy,
     is_damaged: is_damaged,
     cpulog: cpulog,

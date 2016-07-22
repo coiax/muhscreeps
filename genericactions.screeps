@@ -171,6 +171,17 @@ module.exports = {
                 creep.moveTo(target);
                 return {outcome: "continue"};
             case ERR_FULL:
+                // note the lack of break, falling through to didnothing
+                // is the intent.
+                if(task.dump_excess_on_target) {
+                    if(creep.pos != target.pos) {
+                        creep.moveTo(target);
+                        return {outcome: "continue"};
+                    } else {
+                        creep.drop(RESOURCE_ENERGY);
+                        return {outcome: "done"};
+                    }
+                }
             case ERR_INVALID_TARGET:
                 return {outcome: "didnothing"};
             case OK:
@@ -209,6 +220,29 @@ module.exports = {
             case OK:
             case ERR_NOT_ENOUGH_RESOURCES:
                 return {outcome: "continue"};
+        }
+    },
+    dismantle : function(task, creep) {
+        var target = Game.getObjectById(task.target_id);
+        if(!target) {
+            return {outcome: "didnothing"};
+        }
+        if(creep.carry.energy == creep.carryCapacity) {
+            var stores = creep.pos.findNeedingEnergyStructures();
+            if(stores.length)
+                var nearest = creep.pos.findClosestByPath(stores);
+                var task = {type: "transfer_energy", target_id: nearest.id}
+                return {outcome: "newtask", task: task}
+        }
+        var rc = creep.dismantle(target);
+        switch(rc) {
+            case ERR_NOT_IN_RANGE:
+                creep.moveTo(target);
+                return {outcome: "continue"};
+            case OK:
+                return {outcome: "done"};
+            default:
+                return {outcome: "didnothing"};
         }
     }
 }

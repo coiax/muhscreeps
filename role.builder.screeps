@@ -17,6 +17,14 @@ var roleBuilder = {
             creep.add_task({type: "resupply"})
             return;
         }
+        var dismantle_flag = Game.flags["Dismantle"];
+        if(dismantle_flag) {
+            var structures = dismantle_flag.pos.lookFor(FIND_STRUCTURES);
+            structures.forEach(function(item) {
+                creep.add_task({type: "dismantle", target: item.id});
+            });
+            dismantle_flag.remove();
+        }
 
         var con_site = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
         var dam_struct = sort_structures(
