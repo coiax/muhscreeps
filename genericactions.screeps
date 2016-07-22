@@ -166,7 +166,8 @@ module.exports = {
             case ERR_NOT_IN_RANGE:
                 creep.moveTo(target);
                 return {outcome: "continue"};
-            case ERR_FULL, ERR_INVALID_TARGET:
+            case ERR_FULL:
+            case ERR_INVALID_TARGET:
                 return {outcome: "didnothing"};
             case OK:
                 return {outcome: "done"};
@@ -197,9 +198,11 @@ module.exports = {
                 break;
         }
         switch(rc) {
-            case ERR_INVALID_TARGET, ERR_RCL_NOT_ENOUGH:
+            case ERR_INVALID_TARGET:
+            case ERR_RCL_NOT_ENOUGH:
                 return {outcome: "didnothing"};
-            case OK, ERR_NOT_ENOUGH_RESOURCES:
+            case OK:
+            case ERR_NOT_ENOUGH_RESOURCES:
                 return {outcome: "continue"};
         }
     }
