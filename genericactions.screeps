@@ -128,8 +128,11 @@ module.exports = {
         if(rc == ERR_NOT_IN_RANGE) {
             creep.moveTo(gas_station);
             return {outcome: "continue"};
+        } else if(rc == ERR_NOT_ENOUGH_RESOURCES) {
+            task.gas_station_id = null
+            return {outcome: "continue"};
         } else if(rc != OK) {
-            creep.say("rs" + rc);
+            creep.say("rs!" + rc);
             return {outcome: "continue"};
         } else {
             return {outcome: "done"};
