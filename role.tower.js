@@ -1,0 +1,1 @@
+module.exports={run:function(b){var a,c;a||(a=b.pos.findDamagedStructures(),a=b.pos.findClosestByRange(a),c="repair");a||(a=b.pos.findClosestByRange(FIND_HOSTILE_CREEPS),c="attack");a||(a=b.pos.findDamagedFriendlyCreeps(),a=b.pos.findClosestByRange(a),c="heal");a&&b.add_task({type:"tower_target",target_id:a.id,mode:c})}};
