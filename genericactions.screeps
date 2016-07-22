@@ -18,6 +18,31 @@ Creep.prototype.renewCost = function() {
     return floor(600 / this.body.length);
 };
 
+Room.prototype.scout_room = function() {
+    this.memory.intel = {}
+    var intel = this.memory.intel;
+    intel.time_scouted = Game.time;
+    intel.sources = {};
+    this.find(FIND_SOURCES).forEach(function(source) {
+        intel.sources[source.id] = {"pos":source.pos};
+    });
+    intel.minerals = {};
+    this.find(FIND_MINERALS).forEach(function(mineral) {
+        intel.minerals[mineral.id] = {"pos":mineral.pos,
+            "type":mineral.mineralType, "amount":mineral.mineralAmount,
+            "ticksToRegeneration": mineral.ticksToRegeneration};
+    });
+    if(!this.controller) {
+        intel.controller = null;
+    } else {
+        intel.controller = {};
+        intel.controller.level = this.controller.level;
+        intel.controller.owner = this.controller.owner;
+        intel.controller.reservation = this.controller.reservation;
+        intel.controller.id = this.controller.id;
+    }
+};
+
 Structure.prototype.getMemory = function() {
     var mem = Memory.structures[this.id];
     if(mem) {
