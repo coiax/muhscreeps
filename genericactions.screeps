@@ -229,7 +229,7 @@ module.exports = {
         }
         if(creep.carry.energy == creep.carryCapacity) {
             var stores = creep.pos.findNeedingEnergyStructures();
-            Console.log(JSON.stringify(stores));
+            console.log(JSON.stringify(stores));
             if(stores.length)
                 var nearest = creep.pos.findClosestByPath(stores);
                 if(nearest)
