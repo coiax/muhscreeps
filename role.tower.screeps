@@ -17,15 +17,15 @@ module.exports = {
         }
         // then repair the containers, roads, walls
         var order = [STRUCTURE_CONTAINER, STRUCTURE_ROAD, STRUCTURE_WALL];
-        for(var i in order) {
-            var stype = order[i]
-            var damaged = tower.pos.findDamagedStructures(i);
-            if(damaged.length) {
-                target = tower.pos.findClosestByRange(damaged);
-                mode = "repair";
-                break;
+        order.forEach(function(stype){
+            if(!target) {
+                var damaged = tower.pos.findDamagedStructures(stype);
+                if(damaged.length) {
+                    target = tower.pos.findClosestByRange(damaged);
+                    mode = "repair";
+                }
             }
-        }
+        });
         if(!target) {
             var hurt_friendlies = tower.pos.findDamagedFriendlyCreeps();
             target = tower.pos.findClosestByRange(hurt_friendlies);
