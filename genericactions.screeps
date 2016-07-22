@@ -231,6 +231,7 @@ module.exports = {
             var stores = creep.pos.findNeedingEnergyStructures();
             console.log(JSON.stringify(stores));
             if(stores.length)
+                console.log(stores.length);
                 var nearest = creep.pos.findClosestByPath(stores);
                 if(nearest)
                     var task = {type: "transfer_energy", target_id: nearest.id}
