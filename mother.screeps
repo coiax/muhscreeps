@@ -63,7 +63,8 @@ module.exports = {
             'builder': 3,
             'guard': 3
         }
-        for(var role in priority) {
+        for(var i in priority) {
+            var role = priority[i];
             var current_amount = creeps_of_role(role).length;
             var required_amount = required[role];
             console.log(role + "|C:" + current_amount +
