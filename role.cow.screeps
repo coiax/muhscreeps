@@ -115,8 +115,14 @@ var roleCow = {
             });
             for(var name in Game.creeps) {
                 var other = Game.creeps[name];
-                if((creep == other) || (other.memory.role != "cow"))
-                    return;
+                if(creep.name == other.name) {
+                    console.log(name + " is me");
+                    continue;
+                }
+                if(other.memory.role != "cow") {
+                    console.log(name + " is not a cow");
+                    continue;
+                }
                 var other_source = Game.getObjectById(creep.memory.source_id);
                 console.log("found cow" + creep + " using source" + other_source);
                 cow_count[other_source]++;
