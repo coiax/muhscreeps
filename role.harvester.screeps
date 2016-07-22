@@ -12,8 +12,11 @@ var roleHarvester = {
         for(var i in stypes) {
             var stype = stypes[i];
             var need_energy = creep.pos.findNeedingEnergyStructures(stype);
-            if(need_energy.length) {
+            if(need_energy.length > 1) {
                 target = creep.pos.findClosestByRange(need_energy);
+                break;
+            } else if(need_energy.length == 1) {
+                target = need_energy[0];
                 break;
             }
         }
