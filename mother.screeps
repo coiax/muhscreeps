@@ -1,12 +1,19 @@
+var roles = require('roles');
+
 function creeps_of_role(role) {
     return _.filter(Game.creeps, function(c) {
         return c.memory.role == role;
     });
-}
+};
 
-function build_creep(role) {
-    var parts;
+function build_creep(role_name) {
+    var module = roles[role_name];
+    var possible_parts = module.parts;
+    if(!possible_parts)
+        possible_parts = roles.default_parts;
+
     var spawn = Game.spawns['Spawn2']
+
     var creeps_in_room = spawn.room.find(FIND_MY_CREEPS).length;
     var capacity;
     if(creeps_in_room == 0) {
@@ -14,34 +21,26 @@ function build_creep(role) {
     } else {
         capacity = spawn.room.energyCapacityAvailable;
     }
-    if(!parts && capacity >= 600) {
-        if(role == "guard") {
-            parts = [RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK,
-                    MOVE,MOVE,MOVE];
+    var selected_parts;
+    for(var i in possible_parts) {
+        var partlist = possible_parts[i];
+        var cost = util.body_cost(partlist);
+        if(cost <= capacity) {
+            selected_parts = partlist;
         } else {
-            parts = [WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE];
+            break;
         }
     }
-    if(!parts && capacity >= 400) {
-        if(role == "guard") {
-            parts = [RANGED_ATTACK, RANGED_ATTACK, MOVE, MOVE];
-        } else {
-            parts = [WORK,WORK,CARRY,CARRY,MOVE,MOVE];
-        }
+    if(!selected_parts) {
+        console.log("Part failure: " + role_name + ", budget:" + capacity);
+        return;
     }
-    if(!parts) {
-        if(role == "guard") {
-            parts = [RANGED_ATTACK, MOVE];
-        } else {
-            parts = [WORK,CARRY,MOVE];
-        }
-    }
-    if(spawn.canCreateCreep(parts) != OK) {
+    if(spawn.canCreateCreep(selected_parts) != OK) {
         return;
     }
     var creep_name = role + Memory.muhid;
     Memory.muhid++;
-    spawn.createCreep(parts, creep_name, {role: role});
+    spawn.createCreep(selected_parts, creep_name, {role: role});
 }
 
 module.exports = {

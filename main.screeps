@@ -1,10 +1,5 @@
 var genericActions = require('genericactions');
-var roleHarvester = require('role.harvester');
-var roleUpgrader = require('role.upgrader');
-var roleBuilder = require('role.builder');
-var roleCow = require('role.cow');
-var roleGuard = require('role.guard');
-var roleTower = require('role.tower');
+var roles = require('roles');
 var mother = require('mother');
 var util = require('util');
 
@@ -36,7 +31,7 @@ module.exports.loop = function () {
             continue;
         }
         if(stype == STRUCTURE_TOWER) {
-            roleTower.run(structure);
+            roles['tower'].run(structure);
         }
     }
     for(var name in Game.creeps) {
@@ -61,21 +56,7 @@ module.exports.loop = function () {
             continue;
         }
         var role = creep.memory.role;
-        if(role == 'harvester') {
-            roleHarvester.run(creep);
-        }
-        if(role == 'upgrader') {
-            roleUpgrader.run(creep);
-        }
-        if(role == 'builder') {
-            roleBuilder.run(creep);
-        }
-        if(role == 'cow') {
-            roleCow.run(creep);
-        }
-        if(role == 'guard') {
-            roleGuard.run(creep);
-        }
+        roles[creep.memory.role].run(creep);
     }
 
     Memory.cpu_use.push({time: Game.time, use: Game.cpu.getUsed()});

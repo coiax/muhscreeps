@@ -103,7 +103,14 @@ function memoryPosition(obj) {
 }
 
 var roleCow = {
-    /** @param {Creep} creep **/
+    parts: [
+        [WORK, CARRY, MOVE],
+        [WORK, WORK, CARRY, MOVE],
+        [WORK, WORK, WORK, CARRY, MOVE, MOVE],
+        [WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE],
+        [WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE],
+        [WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE]
+    ],
     run: function(creep) {
         var source = Game.getObjectById(creep.memory.source_id);
         if(!source) {

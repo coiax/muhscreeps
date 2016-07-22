@@ -1,0 +1,13 @@
+module.exports = {
+    harvester : require('role.harvester'),
+    cow : require('role.cow'),
+    upgrader : require('role.upgrader'),
+    builder : require('role.builder'),
+    guard : require('role.guard'),
+    tower : require('role.tower'),
+    default_parts : [[WORK, CARRY, MOVE],
+        [WORK,WORK, CARRY,CARRY, MOVE,MOVE],
+        [WORK,WORK,WORK, CARRY,CARRY,CARRY, MOVE,MOVE,MOVE],
+        [WORK,WORK,WORK,WORK, CARRY,CARRY,CARRY,CARRY, MOVE,MOVE,MOVE,MOVE]
+    ]
+};

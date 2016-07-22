@@ -16,7 +16,12 @@ var roleGuard = {
         } else {
             creep.moveTo(target);
         }
-    }
+    },
+    parts: [
+        [RANGED_ATTACK,MOVE],
+        [RANGED_ATTACK,RANGED_ATTACK,MOVE,MOVE],
+        [RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,MOVE,MOVE,MOVE]
+    ]
 };
 
 module.exports = roleGuard;
