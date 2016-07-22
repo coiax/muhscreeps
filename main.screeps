@@ -8,6 +8,24 @@ var mother = require('mother');
 
 module.exports.loop = function () {
     mother.run();
+    for(var sid in Game.structures) {
+        var structure = Game.structures[sid];
+        if(structure.structureType == STRUCTURE_TOWER) {
+            var tower = structure;
+            var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
+                filter: function(structure) {
+                    return structure.hits < structure.hitsMax;
+            }});
+            if(closestDamagedStructure) {
+                tower.repair(closestDamagedStructure);
+            }
+
+            var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+            if(closestHostile) {
+                tower.attack(closestHostile);
+            }
+        }
+    }
 
     for(var name in Game.creeps) {
         var creep = Game.creeps[name];
