@@ -47,6 +47,10 @@ function is_damaged(obj) {
     return obj.hits < obj.hitsMax;
 };
 
+function cpulog(msg) {
+    console.log(Game.gpu.getUsed() + " " + msg);
+}
+
 module.exports = {
     opposite_dir: function(dir) {
         var num = dir + 4;
@@ -56,6 +60,7 @@ module.exports = {
     },
     needs_energy: needs_energy,
     is_damaged: is_damaged,
+    cpulog: cpulog,
     run_task_queue: function(owner, tq) {
         while(tq && tq.length) {
             var task = tq[0];
@@ -63,10 +68,12 @@ module.exports = {
                 task.times_run = 0
             }
             var ttype = task.type;
+            cpulog("Running " + ttype + " for " + owner)
             var say = owner.say || function(msg){};
             var func = genericActions[ttype];
 
             var result = func(task, owner);
+            cpulog("Finished " + ttype + " for " + owner + ", result: " + result.outcome)
             if(!result) {
                 say("!octq");
                 owner.pop_task();

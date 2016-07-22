@@ -3,7 +3,6 @@ var roleHarvester = {
 
     /** @param {Creep} creep **/
     run: function(creep) {
-        console.log("harvester-s: " + creep + " CPU:" + Game.cpu.getUsed());
         if(creep.carry.energy == 0) {
             creep.add_task({type: "resupply"});
             return;
@@ -12,11 +11,8 @@ var roleHarvester = {
         var target;
         for(var i in stypes) {
             var stype = stypes[i];
-            console.log("harvester-search : " + creep + " " + stype + " CPU:" + Game.cpu.getUsed());
             var need_energy = creep.pos.findNeedingEnergyStructures(stype);
-            console.log("harvester-foundsearch : " + creep + " " + stype + " CPU:" + Game.cpu.getUsed());
             if(need_energy.length > 1) {
-                console.log("harvester-foundclosestsearch : " + creep + " " + stype + " CPU:" + Game.cpu.getUsed());
                 target = creep.pos.findClosestByRange(need_energy);
                 break;
             } else if(need_energy.length == 1) {
