@@ -20,7 +20,6 @@ module.exports = {
         for(var i in order) {
             var stype = order[i]
             var damaged = tower.pos.findDamagedStructures(i);
-            console.log(stype + damaged);
             if(damaged.length) {
                 target = tower.pos.findClosestByRange(damaged);
                 mode = "repair";
