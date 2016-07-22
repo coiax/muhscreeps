@@ -22,6 +22,7 @@ var roleBuilder = {
             var item = dismantle_flag.pos.findClosestByRange(FIND_STRUCTURES);
             if(item) {
                 creep.add_task({type: "dismantle", target: item.id});
+                return;
             }
             dismantle_flag.remove();
         }
