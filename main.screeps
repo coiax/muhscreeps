@@ -61,7 +61,6 @@ module.exports.loop = function () {
             continue;
         }
         var role = creep.memory.role;
-        util.cpulog("Running role(" + role + ") for " + creep);
         if(role == 'harvester') {
             roleHarvester.run(creep);
         }
@@ -80,7 +79,11 @@ module.exports.loop = function () {
     }
 
     Memory.cpu_use.push({time: Game.time, use: Game.cpu.getUsed()});
-    var avg = _.meanBy(Memory.cpu_use, _.property("time"));
+    var avg = 0;
+    for(var i in Memory.cpu_use) {
+        avg += Memory.cpu_use[i].use;
+    };
+    avg = (avg / Memory.cpu_use.length);
     Memory.avg_cpu = avg;
     if(Memory.cpu_use.length > 100)
         Memory.cpu_use.splice(0, Memory.cpu_use.length - 100);
