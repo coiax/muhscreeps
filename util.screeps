@@ -48,7 +48,7 @@ function is_damaged(obj) {
 };
 
 function cpulog(msg) {
-    console.log(Game.gpu.getUsed() + " " + msg);
+    console.log(Game.cpu.getUsed() + " " + msg);
 }
 
 module.exports = {
