@@ -10,7 +10,7 @@ function build_creep(role) {
     var creeps_in_room = spawn.room.find(FIND_MY_CREEPS).length;
     var capacity;
     if(creeps_in_room == 0) {
-        capacity = 300;
+        capacity = spawn.room.energyAvailable;
     } else {
         capacity = spawn.room.energyCapacityAvailable;
     }
