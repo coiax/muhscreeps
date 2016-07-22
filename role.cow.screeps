@@ -129,6 +129,10 @@ var roleCow = {
                 creep.memory.source_id = source.id;
             }
         }
+        if(!source) {
+            creep.say("!?src");
+            return;
+        }
 
         var pasture = memoryPosition(creep.memory.pasture_loc);
 
