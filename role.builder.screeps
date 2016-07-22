@@ -19,12 +19,14 @@ var roleBuilder = {
         }
         var dismantle_flag = Game.flags["Dismantle"];
         if(dismantle_flag) {
-            var item = dismantle_flag.pos.findClosestByRange(FIND_STRUCTURES);
-            if(item) {
+            var items = dismantle_flag.pos.findInRange(FIND_STRUCTURES, 0);
+            if(items && items.length) {
+                var item = items[0];
                 creep.add_task({type: "dismantle", target: item.id});
+                return;
+            } else {
+                dismantle_flag.remove();
             }
-            dismantle_flag.remove();
-            return;
         }
 
         var con_site = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
