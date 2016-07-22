@@ -6,6 +6,7 @@ var roleCow = require('role.cow');
 var roleGuard = require('role.guard');
 var roleTower = require('role.tower');
 var mother = require('mother');
+var util = require('util');
 
 module.exports.loop = function () {
     mother.run();
