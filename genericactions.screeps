@@ -228,14 +228,15 @@ module.exports = {
             return {outcome: "didnothing"};
         }
         if(creep.carry.energy == creep.carryCapacity) {
-            var stores = creep.pos.findNeedingEnergyStructures();
-            console.log(JSON.stringify(stores));
-            if(stores.length)
-                console.log(stores.length);
-                var nearest = creep.pos.findClosestByPath(stores);
-                if(nearest)
-                    var task = {type: "transfer_energy", target_id: nearest.id}
-                    return {outcome: "newtask", task: task}
+            var stores = creep.pos.findStructures(STRUCTURE_CONTAINER);
+            var nearest = creep.pos.findClosestByPath(stores);
+            if(nearest) {
+                var task = {type: "transfer_energy", target_id: nearest.id,
+                    dump_excess_on_target: true}
+                return {outcome: "newtask", task: task}
+            } else {
+                creep.drop(RESOURCE_ENERGY);
+            }
         }
         var rc = creep.dismantle(target);
         switch(rc) {
