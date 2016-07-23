@@ -54,5 +54,3 @@ Structure.prototype.maintain_cost = function() {
     var cost = hits_per_tick * REPAIR_COST;
     return cost;
 };
-
-
