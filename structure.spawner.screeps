@@ -28,7 +28,7 @@ function build_creep(obj, initial_task) {
         console.log("Part failure: " + role_name + ", budget:" + capacity);
         return;
     }
-    var creep_name = initial_task + obj.creep_id;
+    var creep_name = initial_task.replace(".","") + obj.creep_id;
     while(true) {
         var rc = spawn.canCreateCreep(selected_parts, creep_name);
         if(rc == OK) {
