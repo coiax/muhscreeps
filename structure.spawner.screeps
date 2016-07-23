@@ -1,3 +1,6 @@
+var roles = require('roles');
+var util = require('util');
+
 function count_creeps_with_task(ttype) {
     var creeps = [];
     for(var name in Game.creeps) {
@@ -9,9 +12,78 @@ function count_creeps_with_task(ttype) {
     return creeps;
 }
 
+
+function build_creep(initial_task) {
+    var possible_parts = roles.default_parts;
+
+    var spawn = Game.spawns['Spawn2']
+
+    var creeps_in_room = spawn.room.find(FIND_MY_CREEPS).length;
+    var capacity;
+    if(creeps_in_room == 0) {
+        capacity = spawn.room.energyAvailable;
+    } else {
+        capacity = spawn.room.energyCapacityAvailable;
+    }
+    var selected_parts;
+    for(var i in possible_parts) {
+        var partlist = possible_parts[i];
+        var cost = util.body_cost(partlist);
+        if(cost <= capacity) {
+            selected_parts = partlist;
+        } else {
+            break;
+        }
+    }
+    if(!selected_parts) {
+        console.log("Part failure: " + role_name + ", budget:" + capacity);
+        return;
+    }
+    if(spawn.canCreateCreep(selected_parts) != OK) {
+        return;
+    }
+    var creep_name = role_name + Memory.muhid;
+    Memory.muhid++;
+    var memory = {task_queue: [{type: initial_task}]}
+    spawn.createCreep(selected_parts, creep_name, memory);
+}
+
+function setup() {
+    if (typeof memory.muhid == 'undefined') {
+        memory.muhid = 1;
+    }
+}
+
 module.exports = {
     name : "structure.spawner",
     run : function(task, spawner) {
+        setup();
+        counts = {};
+        required = [
+            {task: "role.supplier", amount: 1},
+            {task: "role.cow", amount: 1},
+            {task: "role.upgrader", amount: 1},
+            {task: "role.builder", amount: 1},
+            {task: "role.cow", amount: 2},
+            {task: "role.supplier", amount: 2},
+            {task: "role.cow", amount: 3},
+            {task: "role.supplier", amount: 3},
+            {task: "role.cow", amount: 4},
+            {task: "role.supplier", amount: 4},
+            {task: "role.upgrader", amount: 3},
+            {task: "role.builder", amount: 4},
+            {task: "role.guard", amount: 3}
+        ];
+
+        for(var i in required) {
+            var entry = required[i];
+            if(!counts[entry.task])
+                counts[entry.task] = count_creeps_with_task(entry.task)
+            if(counts[entry.task] < entry.amount)
+                build_creep(entry.task);
+                break;
+        }
+
         return {outcome: "continue"};
     }
 }

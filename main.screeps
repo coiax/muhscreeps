@@ -8,7 +8,6 @@ var gc = require('gc');
 var cpu_tracker = require('cpu_tracker');
 var task_manager = require('task_manager');
 var roles = require('roles');
-var mother = require('mother');
 var util = require('util');
 
 function cpu_debug(msg) {
@@ -25,7 +24,6 @@ module.exports.loop = function () {
         return;
     }
     gc.gc();
-    mother.run();
 
     for(var roomName in Game.rooms) {
         cpu_debug("Scouting " + roomName);
@@ -60,11 +58,6 @@ module.exports.loop = function () {
         cpu_debug("Running tasks for " + name);
         if(creep.spawning) {
             continue;
-        }
-        if(creep.memory.role) {
-            var task_name = roles[creep.memory.role].name;
-            creep.add_task({type: task_name});
-            creep.memory.role = undefined;
         }
         var dropped_energies = creep.room.find(FIND_DROPPED_ENERGY);
         dropped_energies.forEach(function(energy) {

@@ -1,2 +1,0 @@
-var roles=require("roles"),util=require("util");function build_creep(c){var a=roles[c].parts;a||(a=roles.default_parts);var b=Game.spawns.Spawn2,e;e=0==b.room.find(FIND_MY_CREEPS).length?b.room.energyAvailable:b.room.energyCapacityAvailable;var d,f;for(f in a){var g=a[f];if(util.body_cost(g)<=e)d=g;else break}d?b.canCreateCreep(d)==OK&&(a=c+Memory.muhid,Memory.muhid++,b.createCreep(d,a,{role:c})):console.log("Part failure: "+c+", budget:"+e)}
-module.exports={run:function(){"undefined"==typeof Memory.muhid&&(Memory.muhid=1)}};
