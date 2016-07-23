@@ -229,7 +229,7 @@ module.exports = {
                 task.times_run = 0
             }
             var ttype = task.type;
-            var say = owner.say || function(msg){};
+            var say = (owner.say) || function(msg){};
             var func = task_functions[ttype];
             if(!func) {
                 console.log("Task not found: " + ttype);

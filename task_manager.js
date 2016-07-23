@@ -1,10 +1,268 @@
-var cpu_tracker=require("cpu_tracker");
-task_functions={harvest:function(c,a){if(a.carryCapacity==a.carry.energy)return{outcome:"didnothing"};var b=Game.getObjectById(c.selected_source_id);if(!b&&(b=a.pos.findClosestByRange(FIND_SOURCES)))c.selected_source_id=b.id;return!b?(a.say("!sr?:("),{outcome:"newtask",task:{type:"resupply"}}):a.harvest(b)==ERR_NOT_IN_RANGE?(a.moveTo(b),{outcome:"continue"}):a.carryCapacity==a.carry.energy?{outcome:"done"}:{outcome:"continue"}},construct:function(c,a){var b=c.resupply,d=Game.getObjectById(c.target_id);
-if(!d)return a.say("cs ?!?"),{outcome:"didnothing"};if(0==a.carry.energy)return b?{outcome:"newtask",task:{type:b}}:{outcome:"didnothing"};if("undefined"==typeof d.progress){if(d.hits==d.hitsMax)return{outcome:"didnothing"};b=a.repair(d)}else b=a.build(d);b==ERR_NOT_IN_RANGE&&a.moveTo(d);return{outcome:"continue"}},resupply:function(c,a){var b=a.carryCapacity-a.carry.energy;if(0==b)return{outcome:"didnothing"};var d=Game.getObjectById(c.gas_station_id);if(!d){var f=a.room.find(FIND_STRUCTURES,{filter:function(a){return a.structureType!=
-STRUCTURE_CONTAINER?!1:a.store[RESOURCE_ENERGY]>b}});f.length&&(d=a.pos.findClosestByRange(f),c.gas_station_id=d.id)}if(!d)return{outcome:"replace",task:{type:"harvest"}};f=a.withdraw(d,RESOURCE_ENERGY);return f==ERR_NOT_IN_RANGE?(a.moveTo(d),{outcome:"continue"}):f==ERR_NOT_ENOUGH_RESOURCES?(c.gas_station_id=null,{outcome:"continue"}):f!=OK?(a.say("rs!"+f),{outcome:"continue"}):{outcome:"done"}},renew:function(c,a){if(1400<=a.ticksToLive)return{outcome:"done"};var b=Game.getObjectById(c.spawn_id);
-if(!b&&(b=a.pos.findClosestByRange(FIND_MY_SPAWNS)))c.spawn_id=b.id;if(!b)return a.say("SPN?!?"),{outcome:"done"};var d=b.renewCreep(a);a.transfer(b,RESOURCE_ENERGY);if(d==ERR_NOT_IN_RANGE)a.moveTo(b);else if(d==ERR_FULL||d==ERR_NOT_ENOUGH_ENERGY)return{outcome:"done"};return{outcome:"continue"}},transfer_energy:function(c,a){target=Game.getObjectById(c.target_id);if(!target||target.energy==target.energyCapacity||0==a.carry.energy)return{outcome:"didnothing"};switch(a.transfer(target,RESOURCE_ENERGY)){case ERR_NOT_IN_RANGE:a.moveTo(target);
-break;case ERR_FULL:if(c.dump_excess_on_target)if(a.pos!=target.pos){a.moveTo(target);break}else return a.drop(RESOURCE_ENERGY),{outcome:"done"};case ERR_INVALID_TARGET:return{outcome:"didnothing"};case OK:return{outcome:"done"}}return{outcome:"continue"}},tower_target:function(c,a){target=Game.getObjectById(c.target_id);mode=c.mode;if(!mode||!target||c.times_run&&25<c.times_run)return{outcome:"didnothing"};var b;switch(mode){case "heal":if(target.hits==target.hitsMax)return{outcome:"didnothing"};
-b=a.heal(target);break;case "repair":if(target.hits==target.hitsMax)return{outcome:"didnothing"};b=a.repair(target);break;case "attack":b=a.attack(target)}switch(b){case ERR_INVALID_TARGET:case ERR_RCL_NOT_ENOUGH:return{outcome:"didnothing"};case OK:case ERR_NOT_ENOUGH_RESOURCES:return{outcome:"continue"}}},dismantle:function(c,a){var b=Game.getObjectById(c.target_id);if(!b)return{outcome:"didnothing"};if(a.carry.energy==a.carryCapacity){var d=a.pos.findStructures(STRUCTURE_CONTAINER);if(d=a.pos.findClosestByPath(d))return c=
-{type:"transfer_energy",target_id:d.id,dump_excess_on_target:!0},{outcome:"newtask",task:c};a.drop(RESOURCE_ENERGY)}switch(a.dismantle(b)){case ERR_NOT_IN_RANGE:return a.moveTo(b),{outcome:"continue"};case OK:return{outcome:"done"};default:return{outcome:"didnothing"}}},leave_location:function(c,a){var b=util.memoryPosition(c.pos);return a.pos.isEqualTo(b)?(a.say("Aaaaaa!"),a.move(Math.floor(8*Math.random()+1)),{outcome:"done"}):{outcome:"didnothing"}}};
-module.exports={task_functions:task_functions,register:function(c,a){task_functions[c]=a},run_task_queue:function(c,a){for(;a&&a.length;){var b=a[0];"undefined"==typeof b.times_run&&(b.times_run=0);var d=b.type,f=c.say||function(a){},e=task_functions[d];if(!e){console.log("Task not found: "+d);break}var g=Game.cpu.getUsed(),e=e(b,c),h=Game.cpu.getUsed();cpu_tracker.record_task(d,h-g);if(e)if("done"==e.outcome)c.pop_task();else if("continue"==e.outcome)b.times_run++;else if("newtask"==e.outcome)b.times_run++,
-c.add_task(e.task);else if("replace"==e.outcome)c.pop_task(),c.add_task(e.task);else if("didnothing"==e.outcome){c.pop_task();continue}else f("?"+e.outcome),c.pop_task();else f("!octq"),c.pop_task();break}}};
+var cpu_tracker = require('cpu_tracker');
+
+task_functions = {
+    harvest : function(task, creep) {
+        if(creep.carryCapacity == creep.carry.energy) {
+            return {outcome: "didnothing"};
+        }
+        var selected = Game.getObjectById(task.selected_source_id);
+        if(!selected) {
+            selected = creep.pos.findClosestByRange(FIND_SOURCES);
+            if(selected) {
+                task.selected_source_id = selected.id;
+            }
+        }
+        if(!selected) {
+            creep.say("!sr?:(");
+            return {outcome: "newtask", task: {type: "resupply"}};
+        }
+        var rv = creep.harvest(selected);
+        if(rv == ERR_NOT_IN_RANGE) {
+            creep.moveTo(selected);
+            return {outcome: "continue"};
+        }
+        if(creep.carryCapacity == creep.carry.energy) {
+            return {outcome: "done"};
+        } else {
+            return {outcome: "continue"};
+        }
+    },
+    construct : function(task, creep) {
+        var resupply = task.resupply;
+        var target = Game.getObjectById(task.target_id);
+        if(!target) {
+            creep.say("cs ?!?");
+            return {outcome: "didnothing"};
+        }
+        if(creep.carry.energy == 0) {
+            if(resupply) {
+                return {outcome: "newtask", task: {type: resupply}};
+            } else {
+                return {outcome: "didnothing"};
+            }
+        }
+        var rv;
+        if(typeof target.progress == 'undefined') {
+            if(target.hits == target.hitsMax) {
+                return {outcome: "didnothing"};
+            }
+            rv = creep.repair(target);
+        } else {
+            rv = creep.build(target);
+        }
+        if(rv == ERR_NOT_IN_RANGE) {
+            creep.moveTo(target);
+        }
+        return {outcome: "continue"};
+    },
+    resupply : function(task, creep) {
+        var remaining_capacity = creep.carryCapacity - creep.carry.energy;
+        if(remaining_capacity == 0) {
+            return {outcome: "didnothing"};
+        }
+        var gas_station = Game.getObjectById(task.gas_station_id);
+        if(!gas_station) {
+            var possible_stations = creep.room.find(FIND_STRUCTURES, {
+                filter: function(st) {
+                    if(st.structureType != STRUCTURE_CONTAINER) {
+                        return false;
+                    }
+                    var energy_stored = st.store[RESOURCE_ENERGY];
+                    return energy_stored > remaining_capacity;
+            }});
+            if(possible_stations.length) {
+                gas_station = creep.pos.findClosestByRange(possible_stations);
+                task.gas_station_id = gas_station.id;
+            }
+        }
+        if(!gas_station) {
+            return {outcome: "replace", task: {type: "harvest"}};
+        }
+        var rc = creep.withdraw(gas_station, RESOURCE_ENERGY);
+        if(rc == ERR_NOT_IN_RANGE) {
+            creep.moveTo(gas_station);
+            return {outcome: "continue"};
+        } else if(rc == ERR_NOT_ENOUGH_RESOURCES) {
+            task.gas_station_id = null
+            return {outcome: "continue"};
+        } else if(rc != OK) {
+            creep.say("rs!" + rc);
+            return {outcome: "continue"};
+        } else {
+            return {outcome: "done"};
+        }
+    },
+    renew : function(task, creep) {
+        if(creep.ticksToLive >= 1400) {
+            return {outcome: "done"};
+        }
+        var spawn = Game.getObjectById(task.spawn_id);
+        if(!spawn) {
+            spawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS);
+            if(spawn)
+                task.spawn_id = spawn.id
+        }
+        if(!spawn) {
+            creep.say("SPN?!?");
+            return {outcome: "done"};
+        }
+        var rc = spawn.renewCreep(creep)
+        creep.transfer(spawn, RESOURCE_ENERGY);
+        if(rc == ERR_NOT_IN_RANGE) {
+            creep.moveTo(spawn)
+            return {outcome: "continue"};
+        } else if((rc == ERR_FULL) || (rc == ERR_NOT_ENOUGH_ENERGY)) {
+            return {outcome: "done"};
+        }
+        return {outcome: "continue"};
+    },
+    transfer_energy : function(task, creep) {
+        target = Game.getObjectById(task.target_id);
+        if(!target || (target.energy == target.energyCapacity) ||
+            (creep.carry.energy == 0)) {
+            return {outcome: "didnothing"};
+        }
+        var rc = creep.transfer(target, RESOURCE_ENERGY);
+        switch(rc) {
+            case ERR_NOT_IN_RANGE:
+                creep.moveTo(target);
+                return {outcome: "continue"};
+            case ERR_FULL:
+                // note the lack of break, falling through to didnothing
+                // is the intent.
+                if(task.dump_excess_on_target) {
+                    if(creep.pos != target.pos) {
+                        creep.moveTo(target);
+                        return {outcome: "continue"};
+                    } else {
+                        creep.drop(RESOURCE_ENERGY);
+                        return {outcome: "done"};
+                    }
+                }
+            case ERR_INVALID_TARGET:
+                return {outcome: "didnothing"};
+            case OK:
+                return {outcome: "done"};
+        }
+        return {outcome: "continue"};
+    },
+    tower_target : function(task, tower) {
+        target = Game.getObjectById(task.target_id);
+        mode = task.mode
+        // towers should reevaluate targets after 25 times
+        if(!mode || !target || (task.times_run && task.times_run > 25))
+            return {outcome: "didnothing"};
+        var rc;
+        switch(mode) {
+            case "heal":
+                if(target.hits == target.hitsMax) {
+                    return {outcome: "didnothing"};
+                }
+                rc = tower.heal(target);
+                break;
+            case "repair":
+                if(target.hits == target.hitsMax) {
+                    return {outcome: "didnothing"};
+                }
+                rc = tower.repair(target);
+                break;
+            case "attack":
+                rc = tower.attack(target);
+                break;
+        }
+        switch(rc) {
+            case ERR_INVALID_TARGET:
+            case ERR_RCL_NOT_ENOUGH:
+                return {outcome: "didnothing"};
+            case OK:
+            case ERR_NOT_ENOUGH_RESOURCES:
+                return {outcome: "continue"};
+        }
+    },
+    dismantle : function(task, creep) {
+        var target = Game.getObjectById(task.target_id);
+        if(!target) {
+            return {outcome: "didnothing"};
+        }
+        if(creep.carry.energy == creep.carryCapacity) {
+            var stores = creep.pos.findStructures(STRUCTURE_CONTAINER);
+            var nearest = creep.pos.findClosestByPath(stores);
+            if(nearest) {
+                var task = {type: "transfer_energy", target_id: nearest.id,
+                    dump_excess_on_target: true}
+                return {outcome: "newtask", task: task}
+            } else {
+                creep.drop(RESOURCE_ENERGY);
+            }
+        }
+        var rc = creep.dismantle(target);
+        switch(rc) {
+            case ERR_NOT_IN_RANGE:
+                creep.moveTo(target);
+                return {outcome: "continue"};
+            case OK:
+                return {outcome: "done"};
+            default:
+                return {outcome: "didnothing"};
+        }
+    },
+    leave_location : function(task, creep) {
+        var pos = util.memoryPosition(task.pos);
+        if(creep.pos.isEqualTo(pos)) {
+            creep.say("Aaaaaa!");
+            creep.move(Math.floor((Math.random() * 8) + 1));
+            return {outcome: "done"};
+        } else {
+            return {outcome: "didnothing"};
+        }
+    }
+}
+module.exports = {
+    task_functions: task_functions,
+    register: function(name, func) {
+        task_functions[name] = func;
+    },
+    run_task_queue: function(owner, tq) {
+        while(tq && tq.length) {
+            var task = tq[0];
+            if(typeof task.times_run == 'undefined') {
+                task.times_run = 0
+            }
+            var ttype = task.type;
+            var say = (owner.say) || function(msg){};
+            var func = task_functions[ttype];
+            if(!func) {
+                console.log("Task not found: " + ttype);
+                return;
+            }
+
+            var start_time = Game.cpu.getUsed();
+            var result = func(task, owner);
+            var end_time = Game.cpu.getUsed();
+
+            cpu_tracker.record_task(ttype, end_time - start_time);
+
+            if(!result) {
+                say("!octq");
+                owner.pop_task();
+            } else if(result.outcome == "done") {
+                owner.pop_task();
+            } else if(result.outcome == "continue") {
+                task.times_run++;
+            } else if(result.outcome == "newtask") {
+                task.times_run++;
+                owner.add_task(result.task)
+            } else if(result.outcome == "replace") {
+                owner.pop_task();
+                owner.add_task(result.task);
+            } else if(result.outcome == "didnothing") {
+                owner.pop_task();
+                continue;
+            } else {
+                say("?" + result.outcome);
+                owner.pop_task();
+            }
+            break;
+        }
+    }
+}
