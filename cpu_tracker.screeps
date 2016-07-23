@@ -43,10 +43,16 @@ function record(obj, used) {
 
 module.exports = {
     record_main : function() {
+        if(Memory.cpu.disabled) {
+            return;
+        }
         setup();
         record(Memory.cpu.main, Game.cpu.getUsed());
     },
     record_task : function(task_name, cpu_use) {
+        if(Memory.cpu.disabled) {
+            return;
+        }
         setup();
         if(!Memory.cpu.tasks[task_name]) {
             Memory.cpu.tasks[task_name] = {};
@@ -54,5 +60,8 @@ module.exports = {
         record(Memory.cpu.tasks[task_name], cpu_use)
     },
     calculate : function() {
+        if(Memory.cpu.disabled) {
+            return;
+        }
     }
 };
