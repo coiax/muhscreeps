@@ -3,6 +3,7 @@ require('prototype.structure');
 require('prototype.room');
 require('prototype.roomposition');
 var gc = require('gc');
+var cpu_tracker = require('cpu_tracker');
 var genericActions = require('genericactions');
 var roles = require('roles');
 var mother = require('mother');
@@ -66,17 +67,5 @@ module.exports.loop = function () {
         roles[creep.memory.role].run(creep);
     }
 
-    if(!Memory.cpu_use) {
-        Memory.cpu_use = [];
-    }
-
-    Memory.cpu_use.push({time: Game.time, use: Game.cpu.getUsed()});
-    var avg = 0;
-    for(var i in Memory.cpu_use) {
-        avg += Memory.cpu_use[i].use;
-    };
-    avg = (avg / Memory.cpu_use.length);
-    Memory.avg_cpu = avg;
-    if(Memory.cpu_use.length > 100)
-        Memory.cpu_use.splice(0, Memory.cpu_use.length - 100);
+    cpu_tracker.record_main();
 }

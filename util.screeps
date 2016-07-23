@@ -20,6 +20,24 @@ function cpulog(msg) {
     console.log(Game.cpu.getUsed() + " " + msg);
 };
 
+function mean(arr) {
+    var sum = 0;
+    arr.forEach(function(num) {
+        sum += num;
+    });
+    return sum / arr.length;
+}
+
+function standard_deviation(arr) {
+    var avg = mean(arr);
+    var sum = 0;
+    arr.forEach(function(num) {
+        sum += Math.pow(num - avg, 2);
+    });
+    sum /= arr.length;
+    return Math.pow(sum, 0.5);
+}
+
 module.exports = {
     opposite_dir: function(dir) {
         var num = dir + 4;
@@ -37,5 +55,7 @@ module.exports = {
 
     needs_energy: needs_energy,
     is_damaged: is_damaged,
-    cpulog: cpulog
+    cpulog: cpulog,
+    mean: mean,
+    standard_deviation: standard_deviation
 }

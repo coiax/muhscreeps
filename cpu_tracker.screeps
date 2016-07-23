@@ -1,0 +1,44 @@
+var util = require('util');
+
+function setup() {
+    if(!Memory.cpu)
+        Memory.cpu = {};
+    if(!Memory.cpu.values_kept)
+        Memory.cpu.values_kept = 1000;
+    if(!Memory.cpu.roles)
+        Memory.cpu.roles = {};
+    if(!Memory.cpu.main)
+        Memory.cpu.main = {};
+};
+
+function add_value(values, obj) {
+    values.push(obj)
+
+    if(values.length > Memory.cpu.values_kept)
+        values.splice(0, values.length - Memory.cpu.values_kept);
+}
+
+function calculate_average(values) {
+    var sum = 0;
+    if(!values) {
+        return 0
+    } else {
+        values.forEach(function(obj) {
+            sum += obj.used
+        });
+        return sum / values.length;
+    }
+}
+
+module.exports = {
+    record_main : function() {
+        var time = Game.time;
+        var used = Game.cpu.getUsed();
+        if(!Memory.cpu.main.values)
+            Memory.cpu.main.values = []
+        add_value(Memory.cpu.main.values, {time:time, used:used})
+        var used_arr = _.map(Memory.cpu.main.values, _.property('used'))
+        Memory.cpu.main.avg = util.mean(used_arr);
+    }
+
+};
