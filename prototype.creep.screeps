@@ -8,12 +8,19 @@ Creep.prototype.add_task = function(obj) {
 };
 
 Creep.prototype.pop_task = function() {
-    this.memory.task_queue.shift();
-    /*
-    if(this.memory.task_queue.length == 0) {
-        this.memory.task_queue = undefined;
+    if(!this.memory.task_queue) {
+        this.memory.task_queue = [];
+    } else {
+        this.memory.task_queue.shift();
     }
-    */
+};
+
+Creep.prototype.has_task_in_queue = function(ttype) {
+    if(!this.memory.task_queue) {
+        this.memory.task_queue = [];
+    }
+    var ttypes = _.map(this.memory.task_queue, _.property('type'));
+    return _.includes(ttype, ttypes);
 };
 
 Creep.prototype.renew_cost = function() {

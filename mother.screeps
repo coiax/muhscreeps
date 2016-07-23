@@ -1,12 +1,6 @@
 var roles = require('roles');
 var util = require('util');
 
-function creeps_of_role(role) {
-    return _.filter(Game.creeps, function(c) {
-        return c.memory.role == role;
-    });
-};
-
 function build_creep(role_name) {
     var module = roles[role_name];
     var possible_parts = module.parts;
@@ -48,28 +42,6 @@ module.exports = {
     run : function() {
         if (typeof Memory.muhid == 'undefined') {
             Memory.muhid = 1;
-        }
-        // Mother; maintains population of colony.
-        var priority = ['harvester', 'cow', 'upgrader', 'builder', 'guard'];
-        var required = {
-            'harvester': 2,
-            'cow': 4,
-            'upgrader': 3,
-            'builder': 3,
-            'guard': 3
-        }
-        for(var i in priority) {
-            var role = priority[i];
-            var current_amount = creeps_of_role(role).length;
-            var required_amount = required[role];
-            /*
-            console.log(role + "|C:" + current_amount +
-                "|R:" + required_amount);
-            */
-            if(current_amount < required[role]) {
-                build_creep(role);
-                break;
-            }
         }
     }
 }

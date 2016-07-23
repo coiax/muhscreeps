@@ -2,6 +2,8 @@ require('prototype.creep');
 require('prototype.structure');
 require('prototype.room');
 require('prototype.roomposition');
+require('structure.tower');
+require('structure.spawner');
 var gc = require('gc');
 var cpu_tracker = require('cpu_tracker');
 var task_manager = require('task_manager');
@@ -28,8 +30,13 @@ module.exports.loop = function () {
         memory.type = stype;
         var tq = memory.task_queue;
         if(!tq || !tq.length) {
-            if(stype == STRUCTURE_TOWER) {
-                structure.add_task({type: "role.tower"});
+            switch(stype) {
+                case STRUCTURE_TOWER:
+                    structure.add_task({type: "structure.tower"});
+                    break;
+                case STRUCTURE_SPAWN:
+                    structure.add_task({type: "structure.spawner"});
+                    break;
             }
         }
         if(tq.length)
