@@ -4,7 +4,7 @@ module.exports = {
             if(!Game.structures[sid]) {
                 delete Memory.structures[sid];
             }
-            if(!Memory.structures[sid]) {
+            if(!Memory.structures[sid] || _.isEmpty(Memory.structures[sid])) {
                 delete Memory.structures[sid];
             }
         }
@@ -12,8 +12,8 @@ module.exports = {
             if(!Game.creeps[name]) {
                 delete Memory.creeps[name];
             }
-            if(!Memory.creeps[sid]) {
-                delete Memory.creeps[sid];
+            if(!Memory.creeps[name] || _.isEmpty(Memory.creeps[name])) {
+                delete Memory.creeps[name];
             }
         }
     }
