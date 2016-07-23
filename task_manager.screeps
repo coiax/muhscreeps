@@ -19,6 +19,10 @@ task_functions = {
             creep.say("!sr?:(");
             return {outcome: "newtask", task: {type: "resupply"}};
         }
+        if(selected.energy == 0) {
+            task.selected_source_id = null;
+            return {outcome: "continue"};
+        }
         var rv = creep.harvest(selected);
         if(rv == ERR_NOT_IN_RANGE) {
             creep.moveTo(selected);
