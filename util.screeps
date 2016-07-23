@@ -59,6 +59,10 @@ module.exports = {
     mean: mean,
     standard_deviation: standard_deviation,
     memoryPosition: function(obj) {
-        return new RoomPosition(obj.x, obj.y, obj.roomName);
+        if(obj) {
+            return new RoomPosition(obj.x, obj.y, obj.roomName);
+        } else {
+            return null;
+        }
     }
 }
