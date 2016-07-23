@@ -3,7 +3,7 @@ var task_manager = require('task_manager');
 
 module.exports = {
     name: "role.tower",
-    run : function(tower) {
+    run : function(task, tower) {
         var target;
         var mode;
         // Hostile targets are top priority.
