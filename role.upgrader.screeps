@@ -10,8 +10,8 @@ var roleUpgrader = {
         var rc = creep.upgradeController(creep.room.controller);
         if(rc == ERR_NOT_IN_RANGE) {
             creep.moveTo(creep.room.controller);
-            return {outcome: "continue"};
         }
+        return {outcome: "continue"};
     }
 };
 
