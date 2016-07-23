@@ -7,7 +7,10 @@ task_functions = {
         }
         var selected = Game.getObjectById(task.selected_source_id);
         if(!selected) {
-            selected = creep.pos.findClosestByRange(FIND_SOURCES);
+            selected = creep.pos.findClosestByRange(FIND_SOURCES, {
+                filter: function(src) {
+                    return src.energy != 0;
+            }});
             if(selected) {
                 task.selected_source_id = selected.id;
             }
