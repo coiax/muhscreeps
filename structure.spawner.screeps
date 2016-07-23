@@ -1,3 +1,14 @@
+function count_creeps_with_task(ttype) {
+    var creeps = [];
+    for(var name in Game.creeps) {
+        var creep = Game.creeps[name];
+        if(creep.has_task_in_queue(ttype)) {
+            creeps.push(creep);
+        }
+    }
+    return creeps;
+}
+
 module.exports = {
     name : "structure.spawner",
     run : function(task, spawner) {

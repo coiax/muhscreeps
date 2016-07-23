@@ -1,1 +1,1 @@
-module.exports={name:"structure.spawner",run:function(a,b){return{outcome:"continue"}}};require("task_manager").register(module.exports.name,module.exports.run);
+function count_creeps_with_task(b){var a=[],c;for(c in Game.creeps){var d=Game.creeps[c];d.has_task_in_queue(b)&&a.push(d)}return a}module.exports={name:"structure.spawner",run:function(b,a){return{outcome:"continue"}}};require("task_manager").register(module.exports.name,module.exports.run);
