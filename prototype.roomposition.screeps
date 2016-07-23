@@ -29,5 +29,122 @@ RoomPosition.prototype.findNeedingEnergyStructures = function(stypes) {
 RoomPosition.prototype.findDamagedFriendlyCreeps = function() {
     return this.find(FIND_MY_CREEPS, {filter: util.is_damaged});
 };
+RoomPosition.prototype.ordinals = function() {
+    var _x = this.x;
+    var _y = this.y;
+    var _roomName = this.roomName;
+    var out = [
+        new RoomPosition(_x + 1, _y + 1, _roomName),
+        new RoomPosition(_x + 0, _y + 1, _roomName),
+        new RoomPosition(_x - 1, _y + 1, _roomName),
+        new RoomPosition(_x + 1, _y + 0, _roomName),
+        //new RoomPosition(_x + 0, _y + 0, _roomName),
+        new RoomPosition(_x - 1, _y + 0, _roomName),
+        new RoomPosition(_x + 1, _y - 1, _roomName),
+        new RoomPosition(_x + 0, _y - 1, _roomName),
+        new RoomPosition(_x - 1, _y - 1, _roomName)
+    ];
+    return _.compact(out);
+};
+
+RoomPosition.prototype.cardinals = function() {
+    var _x = this.x;
+    var _y = this.y;
+    var _roomName = this.roomName;
+    var out = [
+        new RoomPosition(_x + 1, _y + 0, _roomName),
+        new RoomPosition(_x - 1, _y + 0, _roomName),
+        new RoomPosition(_x + 0, _y + 1, _roomName),
+        new RoomPosition(_x + 0, _y - 1, _roomName)
+    ];
+    return _.compact(out);
+};
+
+RoomPosition.prototype.step = function(direction) {
+    var x = this.x;
+    var y = this.y;
+    var roomName = this.roomName;
+    switch(direction) {
+        case TOP:
+            y -= 1;
+            break;
+        case TOP_RIGHT:
+            x += 1;
+            y -= 1;
+            break;
+        case RIGHT:
+            x += 1;
+            break;
+        case BOTTOM_RIGHT:
+            x += 1;
+            y += 1;
+            break;
+        case BOTTOM:
+            y += 1;
+            break;
+        case BOTTOM_LEFT:
+            x -= 1;
+            y += 1;
+            break;
+        case LEFT:
+            x -= 1;
+            break;
+        case TOP_LEFT:
+            x -= 1;
+            y -= 1;
+            break;
+    }
+    return new RoomPosition(x, y, roomName);
+};
+RoomPosition.prototype.is_terrain = function(terrain_type) {
+    var contains = this.lookFor(LOOK_TERRAIN);
+    for(var o in contains) {
+        var obj = contains[o];
+        if((obj.type == 'terrain') && (obj.terrain == terrain_type)) {
+            return true;
+        }
+    }
+    return false;
+};
+
+RoomPosition.prototype.is_swamp = function () {
+    return this.is_terrain('swamp');
+};
+
+RoomPosition.prototype.is_wall = function () {
+    return this.is_terrain('wall');
+};
+
+RoomPosition.prototype.is_plain = function () {
+    return is_terrain('plain');
+};
+
+RoomPosition.prototype.non_wall_adjacent = function () {
+    return _.reject(this.ordinals(), function(mp) {return mp.is_wall();});
+};
+
+RoomPosition.prototype.has_obstacle = function() {
+    var items = [];
+    this.look().forEach(function(obj) {
+        switch(obj.type) {
+            case LOOK_TERRAIN:
+                items.push(obj.terrain);
+                break;
+            case LOOK_STRUCTURES:
+                items.push(obj.structure.structureType);
+                break;
+            case LOOK_CONSTRUCTION_SITES:
+                items.push(obj.constructionSite.structureType);
+                break;
+            case LOOK_SOURCE:
+            case LOOK_CREEPS:
+                items.push(obj.type);
+                break;
+        }
+    });
+    var intersection = _.intersection(items, OBSTACLE_OBJECT_TYPES);
+    return intersection.length;
+};
+
 
 module.exports = {};

@@ -23,4 +23,36 @@ Structure.prototype.pop_task = function() {
     memory.task_queue.shift();
 };
 
+Structure.prototype.maintain_cost = function() {
+    var decay = 0;
+    var decay_time = 0;
+    switch(this.structureType) {
+        case STRUCTURE_CONTAINER:
+            decay = CONTAINER_DECAY;
+            if(this.room.controller && this.room.controller.owner) {
+                decay_time = CONTAINER_DECAY_TIME_OWNED;
+            } else {
+                decay_time = CONTAINER_DECAY_TIME;
+            }
+            break;
+        case STRUCTURE_RAMPART:
+            decay = RAMPART_DECAY_AMOUNT;
+            decay_time = RAMPART_DECAY_TIME;
+            break;
+        case STRUCTURE_ROAD:
+            decay = ROAD_DECAY_AMOUNT;
+            if(this.pos.is_swamp()) {
+                decay *= CONSTRUCTION_COST_ROAD_SWAMP_RATIO;
+            }
+            decay_time = ROAD_DECAY_TIME;
+            break;
+    };
+    if((decay == 0) || (decay_time == 0)) {
+        return 0;
+    }
+    var hits_per_tick = decay / decay_time;
+    var cost = hits_per_tick * REPAIR_COST;
+    return cost;
+};
+
 
