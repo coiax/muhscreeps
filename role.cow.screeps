@@ -56,6 +56,12 @@ var roleCow = {
             pasture = _.sample(potential_pasture);
             task.pasture_loc = pasture;
         }
+        if(!pasture) {
+            creep.say("...moo");
+            task.pasture_loc = null;
+            task.source_id = null;
+            return {outcome: "continue"};
+        }
 
         if(!pasture.isEqualTo(creep.pos)) {
             if(pasture.isNearTo(creep)) {
