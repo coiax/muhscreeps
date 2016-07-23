@@ -8,18 +8,20 @@ Creep.prototype.add_task = function(obj) {
 };
 
 Creep.prototype.pop_task = function() {
-    if(!this.memory.task_queue) {
-        this.memory.task_queue = [];
-    } else {
+    if(this.memory.task_queue) {
         this.memory.task_queue.shift();
+        if(this.memory.task_queue.length == 0) {
+            delete this.memory.task_queue;
+        }
     }
 };
 
 Creep.prototype.has_task_in_queue = function(ttype) {
-    if(!this.memory.task_queue) {
-        this.memory.task_queue = [];
+    var tq = [];
+    if(this.memory.task_queue) {
+        tq = this.memory.task_queue;
     }
-    var ttypes = _.map(this.memory.task_queue, _.property('type'));
+    var ttypes = _.map(tq, _.property('type'));
     return _.includes(ttype, ttypes);
 };
 

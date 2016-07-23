@@ -53,7 +53,7 @@ module.exports.loop = function () {
                     break;
             }
         }
-        if(tq.length)
+        if(memory.task_queue && memory.task_queue.length)
             task_manager.run_task_queue(structure, tq);
     }
     for(var name in Game.creeps) {
@@ -83,7 +83,7 @@ module.exports.loop = function () {
             (!tq || (tq.length && (tq[0].type != "renew")))) {
             creep.add_task({type:"renew"});
         }
-        task_manager.run_task_queue(creep, tq)
+        task_manager.run_task_queue(creep, creep.memory.task_queue);
     }
     cpu_debug("Recording total CPU usage.");
     cpu_tracker.record_main();

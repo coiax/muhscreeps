@@ -4,23 +4,28 @@ Structure.prototype.getMemory = function() {
     }
     var mem = Memory.structures[this.id];
     if(mem) {
-        if(!mem.task_queue) {
-            mem.task_queue = []
-        }
         return mem;
     } else {
-        Memory.structures[this.id] = {task_queue: []};
+        Memory.structures[this.id] = {};
         return Memory.structures[this.id];
     }
 }
 Structure.prototype.add_task = function(task) {
     var memory = this.getMemory();
+    if(!memory.task_queue) {
+        memory.task_queue = [];
+    }
     memory.task_queue.unshift(task);
 }
 
 Structure.prototype.pop_task = function() {
     var memory = this.getMemory();
-    memory.task_queue.shift();
+    if(memory.task_queue) {
+        memory.task_queue.shift();
+        if(memory.task_queue.length == 0) { 
+            delete memory.task_queue;
+        }
+    }
 };
 
 Structure.prototype.maintain_cost = function() {
