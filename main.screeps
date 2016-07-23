@@ -32,7 +32,7 @@ module.exports.loop = function () {
         memory.type = stype;
         var tq = memory.task_queue;
         if(tq)
-            util.run_task_queue(structure, tq);
+            genericActions.run_task_queue(structure, tq);
         if(tq && tq.length) {
             continue;
         }
@@ -61,7 +61,7 @@ module.exports.loop = function () {
             (!tq || (tq.length && (tq[0].type != "renew")))) {
             creep.add_task({type:"renew"});
         }
-        util.run_task_queue(creep, tq)
+        genericActions.run_task_queue(creep, tq)
         if(tq && tq.length) {
             // Do not fall back to roles if there are tasks in the task
             // queue.

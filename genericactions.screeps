@@ -286,5 +286,39 @@ module.exports = {
             default:
                 return {outcome: "didnothing"};
         }
+    },
+    run_task_queue: function(owner, tq) {
+        while(tq && tq.length) {
+            var task = tq[0];
+            if(typeof task.times_run == 'undefined') {
+                task.times_run = 0
+            }
+            var ttype = task.type;
+            var say = owner.say || function(msg){};
+            var func = module.exports[ttype];
+
+            var result = func(task, owner);
+            if(!result) {
+                say("!octq");
+                owner.pop_task();
+            } else if(result.outcome == "done") {
+                owner.pop_task();
+            } else if(result.outcome == "continue") {
+                task.times_run++;
+            } else if(result.outcome == "newtask") {
+                task.times_run++;
+                owner.add_task(result.task)
+            } else if(result.outcome == "replace") {
+                owner.pop_task();
+                owner.add_task(result.task);
+            } else if(result.outcome == "didnothing") {
+                owner.pop_task();
+                continue;
+            } else {
+                say("?" + result.outcome);
+                owner.pop_task();
+            }
+            break;
+        }
     }
 }
