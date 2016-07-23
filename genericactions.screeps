@@ -21,7 +21,11 @@ Creep.prototype.renew_cost = function() {
 };
 
 Creep.prototype.body_cost = function() {
-    return util.body_cost(this.body);
+    var body_list = [];
+    this.body.forEach(function(obj) {
+        bodY_list.push(obj.type);
+    });
+    return util.body_cost(body_list);
 };
 
 Room.prototype.scout_room = function() {
