@@ -7,6 +7,8 @@ function setup() {
         Memory.cpu.values_kept = 1000;
     if(!Memory.cpu.roles)
         Memory.cpu.roles = {};
+    if(!Memory.cpu.tasks)
+        Memory.cpu.tasks = {};
     if(!Memory.cpu.main)
         Memory.cpu.main = {};
 };
@@ -30,18 +32,27 @@ function calculate_average(values) {
     }
 }
 
+function record(obj, used) {
+    var time = Game.time;
+    if(!obj.values)
+        obj.values = []
+    add_value(obj.values, {time:time, used:used})
+    var used_arr = _.map(obj, _.property('used'))
+    obj.last = used;
+    obj.avg = util.mean(used_arr);
+    obj.sd = util.standard_deviation(used_arr);
+};
+
 module.exports = {
     record_main : function() {
         setup();
-        var time = Game.time;
-        var used = Game.cpu.getUsed();
-        if(!Memory.cpu.main.values)
-            Memory.cpu.main.values = []
-        add_value(Memory.cpu.main.values, {time:time, used:used})
-        var used_arr = _.map(Memory.cpu.main.values, _.property('used'))
-        Memory.cpu.main.last = used;
-        Memory.cpu.main.avg = util.mean(used_arr);
-        Memory.cpu.main.sd = util.standard_deviation(used_arr);
+        record(Memory.cpu.main, Game.cpu.getUsed());
+    },
+    record_task : function(task_name, cpu_use) {
+        setup();
+        if(!Memory.cpu.tasks[task_name]) {
+            Memory.cpu.tasks[task_name] = {};
+        }
+        record(Memory.cpu.tasks[task_name], cpu_use)
     }
-
 };

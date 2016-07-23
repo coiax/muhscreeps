@@ -1,3 +1,5 @@
+var cpu_tracker = require('cpu_tracker');
+
 module.exports = {
     harvest : function(task, creep) {
         if(creep.carryCapacity == creep.carry.energy) {
@@ -214,7 +216,12 @@ module.exports = {
             var say = owner.say || function(msg){};
             var func = module.exports[ttype];
 
+            var start_time = Game.cpu.getUsed();
             var result = func(task, owner);
+            var end_time = Game.cpu.getUsed();
+
+            cpu_tracker.record_task(ttype, end_time - start_time);
+
             if(!result) {
                 say("!octq");
                 owner.pop_task();
