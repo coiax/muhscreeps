@@ -1,1 +1,1 @@
-var roleUpgrader={name:"role.upgrader",run:function(a){0==a.carry.energy&&a.add_task({type:"resupply"});a.upgradeController(a.room.controller)==ERR_NOT_IN_RANGE&&a.moveTo(a.room.controller)}};module.exports=roleUpgrader;require("task_manager").register(roleUpgrader.name,roleUpgrader.run);
+var roleUpgrader={name:"role.upgrader",run:function(b,a){0==a.carry.energy&&a.add_task({type:"resupply"});a.upgradeController(a.room.controller)==ERR_NOT_IN_RANGE&&a.moveTo(a.room.controller)}};module.exports=roleUpgrader;require("task_manager").register(roleUpgrader.name,roleUpgrader.run);
