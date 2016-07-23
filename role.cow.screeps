@@ -60,7 +60,7 @@ var roleCow = {
         if(!pasture.isEqualTo(creep.pos)) {
             if(pasture.isNearTo(creep)) {
                 var other_creeps = pasture.lookFor(FIND_CREEPS)
-                if(other_creeps) {
+                if(other_creeps && other_creeps.length) {
                     other_creeps.forEach(function(other) {
                         if(!other.has_task_in_queue(module.exports.name)) {
                             // maybe you should move your fat ass out of the way
