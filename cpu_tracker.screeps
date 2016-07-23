@@ -32,6 +32,7 @@ function calculate_average(values) {
 
 module.exports = {
     record_main : function() {
+        setup();
         var time = Game.time;
         var used = Game.cpu.getUsed();
         if(!Memory.cpu.main.values)
