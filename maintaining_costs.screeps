@@ -26,7 +26,7 @@ Structure.prototype.maintain_cost = function() {
         return 0;
     }
     var hits_per_tick = decay / decay_time;
-    var cost = (hits_per_tick / REPAIR_POWER) * REPAIR_COST;
+    var cost = hits_per_tick * REPAIR_COST;
     return cost;
 };
 
