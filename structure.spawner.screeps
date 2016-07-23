@@ -39,10 +39,18 @@ function build_creep(obj, initial_task) {
         console.log("Part failure: " + role_name + ", budget:" + capacity);
         return;
     }
-    if(spawn.canCreateCreep(selected_parts) != OK) {
-        return;
+    var creep_name = initial_task + obj.creep_id;
+    while(true) {
+        var rc = spawn.canCreateCreep(selected_parts, creep_name);
+        if(rc == OK) {
+            break;
+        } else if(rc == ERR_NAME_EXISTS) {
+            obj.creep_id++;
+            continue;
+        } else {
+            return;
+        }
     }
-    var creep_name = role_name + obj.creep_id;
     obj.creep_id++;
     var memory = {task_queue: [{type: initial_task}]}
     spawn.createCreep(selected_parts, creep_name, memory);
