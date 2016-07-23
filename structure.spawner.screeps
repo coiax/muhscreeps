@@ -74,12 +74,14 @@ module.exports = {
 
         for(var i in required) {
             var entry = required[i];
-            if(!counts[entry.task])
+            if(!counts[entry.task]) {
                 var creeps = util.get_creeps_with_task(entry.task);
                 counts[entry.task] = creeps.length;
-            if(counts[entry.task] < entry.amount)
+            }
+            if(counts[entry.task] < entry.amount) {
                 build_creep(task, entry.task);
                 break;
+            }
         }
 
         return {outcome: "continue"};
