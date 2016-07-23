@@ -23,7 +23,7 @@ Creep.prototype.renew_cost = function() {
 Creep.prototype.body_cost = function() {
     var body_list = [];
     this.body.forEach(function(obj) {
-        bodY_list.push(obj.type);
+        body_list.push(obj.type);
     });
     return util.body_cost(body_list);
 };
