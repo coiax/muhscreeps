@@ -12,8 +12,10 @@ var mother = require('mother');
 var util = require('util');
 
 function cpu_debug(msg) {
-    if(Game.memory.cpu_debug) {
+    if(Memory.cpu_debug) {
         console.log(Game.cpu.getUsed() + ": " + msg);
+    } else {
+        Memory.cpu_debug = false;
     }
 }
 
