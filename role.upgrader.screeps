@@ -5,10 +5,12 @@ var roleUpgrader = {
     run: function(task, creep) {
         if(creep.carry.energy == 0) {
             creep.add_task({type: "resupply"});
+            return {outcome: "continue"};
         }
         var rc = creep.upgradeController(creep.room.controller);
         if(rc == ERR_NOT_IN_RANGE) {
             creep.moveTo(creep.room.controller);
+            return {outcome: "continue"};
         }
     }
 };
