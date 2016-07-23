@@ -39,8 +39,6 @@ function record(obj, used) {
     add_value(obj.values, {time:time, used:used})
     var used_arr = _.map(obj.values, _.property('used'))
     obj.last = used;
-    obj.avg = util.mean(used_arr);
-    obj.sd = util.standard_deviation(used_arr);
 };
 
 module.exports = {
@@ -54,5 +52,7 @@ module.exports = {
             Memory.cpu.tasks[task_name] = {};
         }
         record(Memory.cpu.tasks[task_name], cpu_use)
+    },
+    calculate : function() {
     }
 };

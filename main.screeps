@@ -71,4 +71,5 @@ module.exports.loop = function () {
         task_manager.run_task_queue(creep, tq)
     }
     cpu_tracker.record_main();
+    cpu_tracker.calculate();
 }
