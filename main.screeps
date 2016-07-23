@@ -40,10 +40,10 @@ module.exports.loop = function () {
         if(creep.spawning) {
             continue;
         }
-        if(creep.role) {
-            var task_name = roles[creep.role];
+        if(creep.memory.role) {
+            var task_name = roles[creep.memory.role];
             creep.add_task({type: task_name});
-            creep.role = undefined;
+            creep.memory.role = undefined;
         }
         var dropped_energies = creep.room.find(FIND_DROPPED_ENERGY);
         dropped_energies.forEach(function(energy) {
