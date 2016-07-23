@@ -45,7 +45,7 @@ var roleCow = {
         }
 
         var pasture = util.memoryPosition(task.pasture_loc);
-        if(pasture.getRangeTo(source) != 1) {
+        if(pasture && pasture.getRangeTo(source) != 1) {
             creep.say("Moo?");
             task.pasture_loc = null;
             pasture = null;
