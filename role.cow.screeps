@@ -1,4 +1,5 @@
 var util = require('util');
+var task_manager = require('task_manager');
 
 function memoryPosition(obj) {
     if(obj) {
@@ -9,6 +10,7 @@ function memoryPosition(obj) {
 }
 
 var roleCow = {
+    name: "role.cow",
     parts: [
         [WORK, CARRY, MOVE],
         [WORK, WORK, CARRY, MOVE],
@@ -47,7 +49,7 @@ var roleCow = {
         }
         if(!source) {
             creep.say("!?src");
-            return;
+            return {outcome: "continue"};
         }
 
         var pasture = memoryPosition(creep.memory.pasture_loc);
@@ -77,11 +79,11 @@ var roleCow = {
             creep.say("!ploc");
             creep.memory.debug_bad_pasture_loc = pasture;
             creep.memory.pasture_loc = null;
-            return;
+            return {outcome: "continue"};
         }
         if(!pasture.isEqualTo(creep.pos)) {
             creep.moveTo(pasture);
-            return;
+            return {outcome: "continue"};
         }
 
         var container = Game.getObjectById(creep.memory.output_container_id);
@@ -112,17 +114,17 @@ var roleCow = {
                 var site_pos = creep.pos.step(opposite_dir);
                 var rc = site_pos.createConstructionSite(STRUCTURE_CONTAINER);
                 // It will be found next work tick.
-                return;
+                return {outcome: "continue"};
             }
             creep.add_task({type: "construct",
                 target_id: site.id, resupply:"harvest"});
-            return;
+            return {outcome: "continue"};
         }
         if(container && ((container.structureType != STRUCTURE_CONTAINER) ||
             (container.pos.getRangeTo(creep) != 1))) {
             creep.say("umm");
             creep.memory.output_container_id = null;
-            return;
+            return {outcome: "continue"};
         }
         // Then spend the rest of our lifespan harvesting and moving that
         // into the container, repairing the container first if needed.
@@ -141,7 +143,8 @@ var roleCow = {
         } else {
             creep.transfer(container, RESOURCE_ENERGY);
         }
+        return {outcome: "continue"};
     }
 };
-
+task_manager.register(roleCow.name, roleCow.run);
 module.exports = roleCow;

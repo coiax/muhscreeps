@@ -4,7 +4,7 @@ require('prototype.room');
 require('prototype.roomposition');
 var gc = require('gc');
 var cpu_tracker = require('cpu_tracker');
-var genericActions = require('genericactions');
+var task_manager = require('task_manager');
 var roles = require('roles');
 var mother = require('mother');
 var util = require('util');
@@ -27,19 +27,23 @@ module.exports.loop = function () {
         var stype = structure.structureType;
         memory.type = stype;
         var tq = memory.task_queue;
-        if(tq)
-            genericActions.run_task_queue(structure, tq);
-        if(tq && tq.length) {
-            continue;
+        if(!tq || !tq.length) {
+            if(stype == STRUCTURE_TOWER) {
+                structure.add_task({type: "role.tower"});
+            }
         }
-        if(stype == STRUCTURE_TOWER) {
-            roles['tower'].run(structure);
-        }
+        if(tq.length)
+            task_manager.run_task_queue(structure, tq);
     }
     for(var name in Game.creeps) {
         var creep = Game.creeps[name];
         if(creep.spawning) {
             continue;
+        }
+        if(creep.role) {
+            var task_name = roles[creep.role];
+            creep.add_task({type: task_name});
+            creep.role = undefined;
         }
         var dropped_energies = creep.room.find(FIND_DROPPED_ENERGY);
         dropped_energies.forEach(function(energy) {
@@ -57,15 +61,7 @@ module.exports.loop = function () {
             (!tq || (tq.length && (tq[0].type != "renew")))) {
             creep.add_task({type:"renew"});
         }
-        genericActions.run_task_queue(creep, tq)
-        if(tq && tq.length) {
-            // Do not fall back to roles if there are tasks in the task
-            // queue.
-            continue;
-        }
-        var role = creep.memory.role;
-        roles[creep.memory.role].run(creep);
+        task_manager.run_task_queue(creep, tq)
     }
-
     cpu_tracker.record_main();
 }

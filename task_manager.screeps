@@ -1,6 +1,6 @@
 var cpu_tracker = require('cpu_tracker');
 
-module.exports = {
+task_functions = {
     harvest : function(task, creep) {
         if(creep.carryCapacity == creep.carry.energy) {
             return {outcome: "didnothing"};
@@ -205,6 +205,12 @@ module.exports = {
             default:
                 return {outcome: "didnothing"};
         }
+    }
+}
+module.exports = {
+    task_functions: task_functions,
+    register: function(name, func) {
+        task_functions[name] = func;
     },
     run_task_queue: function(owner, tq) {
         while(tq && tq.length) {
@@ -214,7 +220,7 @@ module.exports = {
             }
             var ttype = task.type;
             var say = owner.say || function(msg){};
-            var func = module.exports[ttype];
+            var func = task_functions[ttype];
 
             var start_time = Game.cpu.getUsed();
             var result = func(task, owner);

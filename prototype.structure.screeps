@@ -4,17 +4,17 @@ Structure.prototype.getMemory = function() {
     }
     var mem = Memory.structures[this.id];
     if(mem) {
+        if(!mem.task_queue) {
+            mem.task_queue = []
+        }
         return mem;
     } else {
-        Memory.structures[this.id] = {};
+        Memory.structures[this.id] = {task_queue: []};
         return Memory.structures[this.id];
     }
 }
 Structure.prototype.add_task = function(task) {
     var memory = this.getMemory();
-    if(!memory.task_queue) {
-        memory.task_queue = []
-    }
     memory.task_queue.unshift(task);
 }
 

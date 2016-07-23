@@ -1,4 +1,6 @@
+var genericActions = require('genericActions');
 var roleUpgrader = {
+    name: "role.upgrader",
 
     /** @param {Creep} creep **/
     run: function(creep) {
@@ -13,3 +15,4 @@ var roleUpgrader = {
 };
 
 module.exports = roleUpgrader;
+genericActions.register_task(roleUpgrader.name, roleUpgrader.run);

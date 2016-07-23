@@ -1,6 +1,8 @@
 var util = require('util');
+var task_manager = require('task_manager');
 
 module.exports = {
+    name: role.tower,
     run : function(tower) {
         var target;
         var mode;
@@ -32,8 +34,12 @@ module.exports = {
             mode = "heal";
         }
         if(target) {
-            tower.add_task({type: "tower_target", target_id: target.id,
-                mode: mode})
+            var task = {type: "tower_target", target_id: target.id,
+                mode: mode};
+            return {"outcome":"newtask", task: task};
+        } else {
+            return {"outcome":"continue"};
         }
     }
 }
+task_manager.register(module.exports.name, module.exports.run);

@@ -7,15 +7,16 @@ var roleGuard = {
             if(flag && (creep.pos.getRangeTo(flag) > 3)) {
                 creep.moveTo(flag);
             }
-            return;
-        }
-        var range = creep.pos.getRangeTo(target);
-        if(range <= 3) {
-            creep.say("pew");
-            creep.rangedAttack(target);
         } else {
-            creep.moveTo(target);
+            var range = creep.pos.getRangeTo(target);
+            if(range <= 3) {
+                creep.say("pew");
+                creep.rangedAttack(target);
+            } else {
+                creep.moveTo(target);
+            }
         }
+        return {outcome: "continue"};
     },
     parts: [
         [RANGED_ATTACK,MOVE],
