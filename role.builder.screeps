@@ -15,7 +15,7 @@ function sort_structures(structs) {
 var roleBuilder = {
     name: "role.builder",
     /** @param {Creep} creep **/
-    run: function(creep) {
+    run: function(task, creep) {
         if(creep.carry.energy == 0) {
             var task = {type: "resupply"};
             return {outcome: "newtask", task:task};
