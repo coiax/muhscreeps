@@ -11,11 +11,19 @@ var roles = require('roles');
 var mother = require('mother');
 var util = require('util');
 
+function cpu_debug(msg) {
+    if(Game.memory.cpu_debug) {
+        console.log(Game.cpu.getUsed() + ": " + msg);
+    }
+}
+
 module.exports.loop = function () {
+    cpu_debug("Start mainloop");
     gc.gc();
     mother.run();
 
     for(var roomName in Game.rooms) {
+        cpu_debug("Scouting " + roomName);
         var room = Game.rooms[roomName];
         room.scout_room();
     }
@@ -27,6 +35,7 @@ module.exports.loop = function () {
         }
         var memory = structure.getMemory();
         var stype = structure.structureType;
+        cpu_debug("Running tasks for " + sid + "(" + stype + ")");
         memory.type = stype;
         var tq = memory.task_queue;
         if(!tq || !tq.length) {
@@ -44,6 +53,7 @@ module.exports.loop = function () {
     }
     for(var name in Game.creeps) {
         var creep = Game.creeps[name];
+        cpu_debug("Running tasks for " + name);
         if(creep.spawning) {
             continue;
         }
@@ -70,6 +80,7 @@ module.exports.loop = function () {
         }
         task_manager.run_task_queue(creep, tq)
     }
+    cpu_debug("Recording total CPU usage.");
     cpu_tracker.record_main();
     cpu_tracker.calculate();
 }
