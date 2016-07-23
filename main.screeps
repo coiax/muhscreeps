@@ -39,7 +39,6 @@ module.exports.loop = function () {
             continue;
         }
         var memory = structure.getMemory();
-        var stype = structure.structureType;
         cpu_debug("Running tasks for " + sid + "(" + stype + ")");
         memory.type = stype;
         var tq = memory.task_queue;
@@ -89,4 +88,5 @@ module.exports.loop = function () {
     cpu_tracker.record_main();
     cpu_tracker.calculate();
     cpu_debug("Main loop complete.");
+    gc.gc();
 }

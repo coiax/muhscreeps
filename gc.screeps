@@ -4,10 +4,16 @@ module.exports = {
             if(!Game.structures[sid]) {
                 delete Memory.structures[sid];
             }
+            if(!Memory.structures[sid]) {
+                delete Memory.structures[sid];
+            }
         }
         for(var name in Memory.creeps) {
             if(!Game.creeps[name]) {
                 delete Memory.creeps[name];
+            }
+            if(!Memory.creeps[sid]) {
+                delete Memory.creeps[sid];
             }
         }
     }
