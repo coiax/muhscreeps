@@ -51,6 +51,10 @@ Room.prototype.scout_room = function() {
     this.find(FIND_STRUCTURES).forEach(function(st) {
         intel.structure_maintain_cost += st.maintain_cost();
     });
+    intel.creep_maintain_cost = 0;
+    this.find(FIND_CREEPS).forEach(function(cr) {
+        intel.creep_maintain_cost += cr.maintain_cost();
+    });
 };
 
 Structure.prototype.getMemory = function() {
