@@ -1,5 +1,5 @@
 module.exports = {
-    harvester : require('role.harvester'),
+    supplier : require('role.supplier'),
     cow : require('role.cow'),
     upgrader : require('role.upgrader'),
     builder : require('role.builder'),
