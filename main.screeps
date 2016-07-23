@@ -1,9 +1,9 @@
-require('prototype.creep');
-require('prototype.structure');
-require('prototype.room');
-require('prototype.roomposition');
-require('structure.tower');
-require('structure.spawner');
+var x1 = require('prototype.creep');
+var x2 = require('prototype.structure');
+var x3 = require('prototype.room');
+var x4 = require('prototype.roomposition');
+var x5 = require('structure.tower');
+var x6 = require('structure.spawner');
 var gc = require('gc');
 var cpu_tracker = require('cpu_tracker');
 var task_manager = require('task_manager');
