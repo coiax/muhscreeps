@@ -66,13 +66,13 @@ module.exports = {
         }
     },
     get_creeps_with_task: function(ttype) {
-        var creeps = [];
+        var taskers = [];
         for(var name in Game.creeps) {
             var creep = Game.creeps[name];
             if(creep.has_task_in_queue(ttype)) {
-                creeps.push(creep);
+                taskers.push(creep);
             }
         }
-        return creeps;
+        return taskers;
     }
 }
