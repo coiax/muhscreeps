@@ -13,7 +13,7 @@ function count_creeps_with_task(ttype) {
 }
 
 
-function build_creep(initial_task) {
+function build_creep(obj, initial_task) {
     var possible_parts = roles.default_parts;
 
     var spawn = Game.spawns['Spawn2']
@@ -42,22 +42,22 @@ function build_creep(initial_task) {
     if(spawn.canCreateCreep(selected_parts) != OK) {
         return;
     }
-    var creep_name = role_name + Memory.muhid;
-    Memory.muhid++;
+    var creep_name = role_name + obj.creep_id;
+    obj.creep_id++;
     var memory = {task_queue: [{type: initial_task}]}
     spawn.createCreep(selected_parts, creep_name, memory);
 }
 
-function setup() {
-    if (typeof memory.muhid == 'undefined') {
-        memory.muhid = 1;
+function setup(task) {
+    if (typeof task.creep_id == 'undefined') {
+        task.creep_id = 1
     }
 }
 
 module.exports = {
     name : "structure.spawner",
     run : function(task, spawner) {
-        setup();
+        setup(task);
         counts = {};
         required = [
             {task: "role.supplier", amount: 1},
@@ -80,7 +80,7 @@ module.exports = {
             if(!counts[entry.task])
                 counts[entry.task] = count_creeps_with_task(entry.task)
             if(counts[entry.task] < entry.amount)
-                build_creep(entry.task);
+                build_creep(task, entry.task);
                 break;
         }
 
