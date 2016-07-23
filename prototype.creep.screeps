@@ -22,7 +22,7 @@ Creep.prototype.has_task_in_queue = function(ttype) {
         tq = this.memory.task_queue;
     }
     var ttypes = _.map(tq, _.property('type'));
-    return _.includes(ttype, ttypes);
+    return _.includes(ttypes, ttype);
 };
 
 Creep.prototype.renew_cost = function() {
