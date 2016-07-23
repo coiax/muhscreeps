@@ -30,13 +30,5 @@ Structure.prototype.maintain_cost = function() {
     return cost;
 };
 
-Creep.prototype.maintain_cost = function() {
-    var has_claim = _.includes(this.body, CLAIM);
-    // claim creeps cannot be renewed.
-    if(has_claim) {
-        return 0;
-    }
-    return this.body_cost() / CREEP_LIFE_TIME;
-};
 
 module.exports = {};

@@ -1,3 +1,8 @@
+require('prototype.creep');
+require('prototype.structure');
+require('prototype.room');
+require('prototype.roomposition');
+var gc = require('gc');
 var maintaining_costs = require('maintaining_costs');
 var genericActions = require('genericactions');
 var roles = require('roles');
@@ -5,23 +10,14 @@ var mother = require('mother');
 var util = require('util');
 
 module.exports.loop = function () {
+    gc.gc();
+    mother.run();
+
     for(var roomName in Game.rooms) {
         var room = Game.rooms[roomName];
         room.scout_room();
     }
 
-    mother.run();
-    if(typeof Memory.structures == 'undefined') {
-        Memory.structures = {};
-    }
-    if(typeof Memory.cpu_use == 'undefined') {
-        Memory.cpu_use = [];
-    }
-    for(var sid in Memory.structures) {
-        if(!Game.structures[sid]) {
-            delete Memory.structures[sid];
-        }
-    }
     for(var sid in Game.structures) {
         var structure = Game.structures[sid];
         if(!structure.isActive()) {
@@ -69,6 +65,10 @@ module.exports.loop = function () {
         }
         var role = creep.memory.role;
         roles[creep.memory.role].run(creep);
+    }
+
+    if(!Memory.cpu_use) {
+        Memory.cpu_use = [];
     }
 
     Memory.cpu_use.push({time: Game.time, use: Game.cpu.getUsed()});

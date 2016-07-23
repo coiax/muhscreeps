@@ -1,0 +1,14 @@
+module.exports = {
+    gc: function() {
+        for(var sid in Memory.structures) {
+            if(!Game.structures[sid]) {
+                delete Memory.structures[sid];
+            }
+        }
+        for(var name in Memory.creeps) {
+            if(!Game.creeps[name]) {
+                delete Memory.creeps[name];
+            }
+        }
+    }
+}

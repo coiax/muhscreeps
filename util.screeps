@@ -1,33 +1,3 @@
-RoomPosition.prototype.find = function() {
-    var room = Game.rooms[this.roomName];
-    return room.find.apply(room, arguments);
-};
-
-RoomPosition.prototype.findStructures = function(stypes) {
-    if(stypes) {
-        if(stypes.constructor != Array) {
-            stypes = [stypes];
-        }
-        filter = function(st) {
-            return _.includes(stypes, st.structureType);
-        }
-        return this.find(FIND_STRUCTURES, {filter: filter});
-    } else {
-        return this.find(FIND_STRUCTURES);
-    }
-};
-
-RoomPosition.prototype.findDamagedStructures = function(stypes) {
-    return _.filter(this.findStructures(stypes), is_damaged);
-};
-
-RoomPosition.prototype.findNeedingEnergyStructures = function(stypes) {
-    return _.filter(this.findStructures(stypes), needs_energy);
-};
-RoomPosition.prototype.findDamagedFriendlyCreeps = function() {
-    return this.find(FIND_MY_CREEPS, {filter: is_damaged});
-};
-
 function needs_energy(st) {
     if(!st.isActive())
         return false;

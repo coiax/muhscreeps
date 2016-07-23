@@ -1,0 +1,40 @@
+var util = require('util');
+
+Creep.prototype.add_task = function(obj) {
+    if(!this.memory.task_queue) {
+        this.memory.task_queue = [];
+    }
+    this.memory.task_queue.unshift(obj);
+};
+
+Creep.prototype.pop_task = function() {
+    this.memory.task_queue.shift();
+    /*
+    if(this.memory.task_queue.length == 0) {
+        this.memory.task_queue = undefined;
+    }
+    */
+};
+
+Creep.prototype.renew_cost = function() {
+    return floor(600 / this.body.length);
+};
+
+Creep.prototype.body_cost = function() {
+    var body_list = [];
+    this.body.forEach(function(obj) {
+        body_list.push(obj.type);
+    });
+    return util.body_cost(body_list);
+};
+
+Creep.prototype.maintain_cost = function() {
+    var has_claim = _.includes(this.body, CLAIM);
+    // claim creeps cannot be renewed.
+    if(has_claim) {
+        return 0;
+    }
+    return this.body_cost() / CREEP_LIFE_TIME;
+};
+
+module.exports = {};

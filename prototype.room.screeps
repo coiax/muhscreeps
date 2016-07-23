@@ -1,0 +1,36 @@
+var util = require('util');
+
+Room.prototype.scout_room = function() {
+    this.memory.intel = {}
+    var intel = this.memory.intel;
+    intel.time_scouted = Game.time;
+    intel.sources = {};
+    this.find(FIND_SOURCES).forEach(function(source) {
+        intel.sources[source.id] = {"pos":source.pos};
+    });
+    intel.minerals = {};
+    this.find(FIND_MINERALS).forEach(function(mineral) {
+        intel.minerals[mineral.id] = {"pos":mineral.pos,
+            "type":mineral.mineralType, "amount":mineral.mineralAmount,
+            "ticksToRegeneration": mineral.ticksToRegeneration};
+    });
+    if(!this.controller) {
+        intel.controller = null;
+    } else {
+        intel.controller = {};
+        intel.controller.level = this.controller.level;
+        intel.controller.owner = this.controller.owner;
+        intel.controller.reservation = this.controller.reservation;
+        intel.controller.id = this.controller.id;
+    }
+    intel.structure_maintain_cost = 0;
+    this.find(FIND_STRUCTURES).forEach(function(st) {
+        intel.structure_maintain_cost += st.maintain_cost();
+    });
+    intel.creep_maintain_cost = 0;
+    this.find(FIND_CREEPS).forEach(function(cr) {
+        intel.creep_maintain_cost += cr.maintain_cost();
+    });
+};
+
+module.exports = {}
