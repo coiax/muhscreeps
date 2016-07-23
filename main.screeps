@@ -41,7 +41,7 @@ module.exports.loop = function () {
             continue;
         }
         if(creep.memory.role) {
-            var task_name = roles[creep.memory.role];
+            var task_name = roles[creep.memory.role].name;
             creep.add_task({type: task_name});
             creep.memory.role = undefined;
         }
