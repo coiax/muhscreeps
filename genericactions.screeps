@@ -1,3 +1,5 @@
+var util = require('util');
+
 Creep.prototype.add_task = function(obj) {
     if(!this.memory.task_queue) {
         this.memory.task_queue = [];
@@ -19,11 +21,7 @@ Creep.prototype.renew_cost = function() {
 };
 
 Creep.prototype.body_cost = function() {
-    var sum = 0;
-    this.body.forEach(function(part) {
-        sum += BODYPART_COST[part];
-    });
-    return sum;
+    return util.body_cost(this.body);
 };
 
 Room.prototype.scout_room = function() {
