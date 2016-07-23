@@ -140,7 +140,7 @@ RoomPosition.prototype.has_obstacle = function() {
             case LOOK_CONSTRUCTION_SITES:
                 items.push(obj.constructionSite.structureType);
                 break;
-            case LOOK_SOURCE:
+            case LOOK_SOURCES:
             case LOOK_CREEPS:
                 items.push(obj.type);
                 break;
