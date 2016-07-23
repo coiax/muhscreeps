@@ -39,8 +39,7 @@ module.exports.loop = function () {
             continue;
         }
         var memory = structure.getMemory();
-        cpu_debug("Running tasks for " + sid + "(" + stype + ")");
-        memory.type = stype;
+        cpu_debug("Running tasks for " + sid + "(" + structure.structureType + ")");
         var tq = memory.task_queue;
         if(!tq || !tq.length) {
             switch(stype) {
