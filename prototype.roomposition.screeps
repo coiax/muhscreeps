@@ -123,6 +123,10 @@ RoomPosition.prototype.non_wall_adjacent = function () {
     return _.reject(this.ordinals(), function(mp) {return mp.is_wall();});
 };
 
+RoomPosition.prototype.walkable_adjacent = function () {
+    return _.reject(this.ordinals(), function(mp) {return mp.has_obstacle();});
+}
+
 RoomPosition.prototype.has_obstacle = function() {
     var items = [];
     this.look().forEach(function(obj) {

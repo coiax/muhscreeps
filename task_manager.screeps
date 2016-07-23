@@ -205,6 +205,16 @@ task_functions = {
             default:
                 return {outcome: "didnothing"};
         }
+    },
+    leave_location : function(task, creep) {
+        var pos = util.memoryPosition(task.pos);
+        if(creep.pos.isEqualTo(pos)) {
+            creep.say("Aaaaaa!");
+            creep.move(Math.floor((Math.random() * 8) + 1));
+            return {outcome: "done"};
+        } else {
+            return {outcome: "didnothing"};
+        }
     }
 }
 module.exports = {

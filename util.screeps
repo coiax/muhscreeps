@@ -58,4 +58,7 @@ module.exports = {
     cpulog: cpulog,
     mean: mean,
     standard_deviation: standard_deviation
+    memoryPosition: function(obj) {
+        return new RoomPosition(obj.x, obj.y, obj.roomName);
+    }
 }

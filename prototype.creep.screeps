@@ -37,6 +37,15 @@ Creep.prototype.body_cost = function() {
     return util.body_cost(body_list);
 };
 
+Creep.prototype.body_part_count = function(btype) {
+    var sum = 0;
+    this.body.forEach(function(obj) {
+        if(obj.type == btype)
+            sum++;
+    });
+    return sum;
+};
+
 Creep.prototype.maintain_cost = function() {
     var has_claim = _.includes(this.body, CLAIM);
     // claim creeps cannot be renewed.
