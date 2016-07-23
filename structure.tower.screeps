@@ -2,7 +2,7 @@ var util = require('util');
 var task_manager = require('task_manager');
 
 module.exports = {
-    name: "role.tower",
+    name: "structure.tower",
     run : function(task, tower) {
         var target;
         var mode;
