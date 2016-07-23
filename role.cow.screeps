@@ -19,7 +19,7 @@ var roleCow = {
         //[WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE],
         //[WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE]
     ],
-    run: function(creep) {
+    run: function(task, creep) {
         var source = Game.getObjectById(creep.memory.source_id);
         if(!source) {
             creep.say("l4s");
