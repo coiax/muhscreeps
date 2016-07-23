@@ -85,4 +85,5 @@ module.exports.loop = function () {
     cpu_debug("Recording total CPU usage.");
     cpu_tracker.record_main();
     cpu_tracker.calculate();
+    cpu_debug("Main loop complete.");
 }
