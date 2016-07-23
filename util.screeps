@@ -58,13 +58,6 @@ module.exports = {
             num = num - 8;
         return num;
     },
-    body_cost: function(parts) {
-        var sum = 0;
-        parts.forEach(function(part) {
-            sum += BODYPART_COST[part];
-        });
-        return sum;
-    },
 
     needs_energy: needs_energy,
     is_damaged: is_damaged,

@@ -14,8 +14,16 @@ Creep.prototype.pop_task = function() {
     */
 };
 
-Creep.prototype.renewCost = function() {
+Creep.prototype.renew_cost = function() {
     return floor(600 / this.body.length);
+};
+
+Creep.prototype.body_cost = function() {
+    var sum = 0;
+    this.body.forEach(function(part) {
+        sum += BODYPART_COST[part];
+    });
+    return sum;
 };
 
 Room.prototype.scout_room = function() {
@@ -41,6 +49,10 @@ Room.prototype.scout_room = function() {
         intel.controller.reservation = this.controller.reservation;
         intel.controller.id = this.controller.id;
     }
+    intel.structure_maintain_cost = 0;
+    this.find(FIND_STRUCTURES).forEach(function(st) {
+        intel.structure_maintain_cost += st.maintain_cost();
+    });
 };
 
 Structure.prototype.getMemory = function() {
