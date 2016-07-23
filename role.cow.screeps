@@ -54,7 +54,7 @@ var roleCow = {
         if(!pasture) {
             var potential_pasture = source.pos.walkable_adjacent();
             pasture = _.sample(potential_pasture);
-            creep.memory.pasture_loc = pasture;
+            task.pasture_loc = pasture;
         }
 
         if(!pasture.isEqualTo(creep.pos)) {
