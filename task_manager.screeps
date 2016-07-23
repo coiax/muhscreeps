@@ -229,7 +229,6 @@ module.exports = {
                 task.times_run = 0
             }
             var ttype = task.type;
-            var say = (owner.say) || function(msg){};
             var func = task_functions[ttype];
             if(!func) {
                 console.log("Task not found: " + ttype);
@@ -243,7 +242,7 @@ module.exports = {
             cpu_tracker.record_task(ttype, end_time - start_time);
 
             if(!result) {
-                say("!octq");
+                console.log("Task did not return result: " + ttype);
                 owner.pop_task();
             } else if(result.outcome == "done") {
                 owner.pop_task();
@@ -259,7 +258,7 @@ module.exports = {
                 owner.pop_task();
                 continue;
             } else {
-                say("?" + result.outcome);
+                console.log("Task (" + ttype + ") returned unrecognised outcome: " + result.outcome);
                 owner.pop_task();
             }
             break;
