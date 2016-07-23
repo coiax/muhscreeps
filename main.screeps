@@ -3,7 +3,6 @@ require('prototype.structure');
 require('prototype.room');
 require('prototype.roomposition');
 var gc = require('gc');
-var maintaining_costs = require('maintaining_costs');
 var genericActions = require('genericactions');
 var roles = require('roles');
 var mother = require('mother');
