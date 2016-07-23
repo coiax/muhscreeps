@@ -1,5 +1,8 @@
 module.exports = {
     run: function(creep) {
-        return "FUN!?";
+        // Find nearest source in unowned territory.
+        // Harvest it.
+        // Return to nearest storage.
+        // Regenerate.
     }
 }
