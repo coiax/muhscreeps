@@ -221,6 +221,10 @@ module.exports = {
             var ttype = task.type;
             var say = owner.say || function(msg){};
             var func = task_functions[ttype];
+            if(!func) {
+                console.log("Task not found: " + ttype);
+                return;
+            }
 
             var start_time = Game.cpu.getUsed();
             var result = func(task, owner);
