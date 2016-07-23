@@ -39,6 +39,7 @@ module.exports = {
             Memory.cpu.main.values = []
         add_value(Memory.cpu.main.values, {time:time, used:used})
         var used_arr = _.map(Memory.cpu.main.values, _.property('used'))
+        Memory.cpu.main.last = used;
         Memory.cpu.main.avg = util.mean(used_arr);
         Memory.cpu.main.sd = util.standard_deviation(used_arr);
     }
