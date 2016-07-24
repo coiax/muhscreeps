@@ -1,7 +1,7 @@
 var roleGuard = {
     name: "role.guard",
     /** @param {Creep} creep **/
-    run: function(creep) {
+    run: function(task, creep) {
         var target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
         if(!target) {
             var flag = Game.flags["Campfire"];
