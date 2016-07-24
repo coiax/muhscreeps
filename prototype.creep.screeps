@@ -21,8 +21,13 @@ Creep.prototype.has_task_in_queue = function(ttype) {
     if(this.memory.task_queue) {
         tq = this.memory.task_queue;
     }
-    var ttypes = _.map(tq, _.property('type'));
-    return _.includes(ttypes, ttype);
+    for(var i in tq) {
+        var task = tq[i];
+        if(ttype == task.type) {
+            return task;
+        }
+    }
+    return null;
 };
 
 Creep.prototype.renew_cost = function() {

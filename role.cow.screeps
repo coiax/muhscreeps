@@ -25,17 +25,19 @@ var roleCow = {
                 if(creep.name == other.name) {
                     continue;
                 }
-                if(!other.has_task_in_queue(module.exports.name)) {
+                var other_task = other.has_task_in_queue(module.exports.name)
+                if(!other_task) {
                     continue;
                 }
-                var other_source = Game.getObjectById(other.memory.source_id);
+                var other_source = Game.getObjectById(other_task.source_id);
                 cow_strength[other_source] += other.body_part_count(WORK);
             };
+            console.log(JSON.stringify(cow_strength));
             sources = _.sortBy(sources, function(s) {
                 return cow_strength[s];
             });
-            source = sources[0];
-            if(source) {
+            if(sources.length) {
+                source = sources[0];
                 task.source_id = source.id;
             }
         }
