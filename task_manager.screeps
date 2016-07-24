@@ -49,6 +49,8 @@ task_functions = {
             }
         }
         var rv;
+        // autorepair can intefere with our construction
+        creep.cancelOrder("repair");
         if(typeof target.progress == 'undefined') {
             if(target.hits == target.hitsMax) {
                 return {outcome: "didnothing"};
