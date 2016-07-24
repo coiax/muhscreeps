@@ -32,7 +32,6 @@ var roleCow = {
                 var other_source = Game.getObjectById(other_task.source_id);
                 cow_strength[other_source] += other.body_part_count(WORK);
             };
-            console.log(JSON.stringify(cow_strength));
             sources = _.sortBy(sources, function(s) {
                 return cow_strength[s];
             });
@@ -139,7 +138,7 @@ var roleCow = {
         // if for some reason the container isn't repaired by others
         // and it drops to half health, then fix it up, but the cow should
         // focus on just harvesting as much as possible
-        if(container.hits < (container.hitsMax / 2)) {
+        if(container.hits < container.hitsMax) {
             creep.repair(container);
         } else {
             creep.transfer(container, RESOURCE_ENERGY);
