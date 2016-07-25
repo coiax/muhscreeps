@@ -18,7 +18,7 @@ function build_creep(spawn, task_obj, initial_task) {
     }
     if(!role_module) {
         possible_parts = default_parts;
-    } else {
+    } else if(role_module.parts) {
         possible_parts = role_module.parts;
     }
 
