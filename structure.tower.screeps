@@ -20,7 +20,10 @@ module.exports = {
         // 3) repair our structures, except ramparts
         if(!target) {
             var target = tower.pos.findClosestByRange(
-                FIND_MY_STRUCTURES, {filter: util.is_damaged});
+                FIND_MY_STRUCTURES, {filter:
+                function(st) {
+                    return ((st.structureType != STRUCTURE_RAMPART) && (st.hits < st.hitsMax));
+                }});
             mode = "repair";
         }
         // then repair the containers, roads, walls+ramparts, but only
