@@ -40,6 +40,7 @@ function build_creep(spawn, task_obj, initial_task) {
     while(true) {
         var rc = spawn.canCreateCreep(selected_parts, creep_name);
         if(rc == OK) {
+            task_obj.currently_spawning = initial_task;
             break;
         } else if(rc == ERR_NAME_EXISTS) {
             task_obj.creep_id++;
@@ -53,17 +54,20 @@ function build_creep(spawn, task_obj, initial_task) {
     spawn.createCreep(selected_parts, creep_name, memory);
 }
 
-function setup(task) {
+function setup(task, spawner) {
     if (typeof task.creep_id == 'undefined') {
         task.creep_id = 1
     }
     task.currently_attempting = null;
+    if(!spawner.spawning) {
+        task.currently_spawning = null;
+    }
 }
 
 module.exports = {
     name : "structure.spawner",
     run : function(task, spawner) {
-        setup(task);
+        setup(task, spawner);
         counts = {};
         required = [
             {task: "role.supplier", amount: 1},
