@@ -2,8 +2,10 @@ Source.prototype.is_harvestable = function(creep) {
     if(this.energy == 0) {
         return false;
     }
-    if(this.pos.isNearTo(creep)) {
-        return true;
+    if(creep) {
+        if(this.pos.isNearTo(creep)) {
+            return true;
+        }
     }
     if(this.pos.walkable_adjacent().length) {
         return true;

@@ -27,10 +27,10 @@ module.exports = {
             mode = "repair";
         }
         // then repair the containers, roads,
-        // (and walls+ramparts on certain ticks)
+        // (and walls+ramparts if enabled
         if(!target) {
             var order = [STRUCTURE_CONTAINER, STRUCTURE_ROAD];
-            if((Game.time % 10) == 0) {
+            if(task.wall_repair) {
                 // wall and rampart being in an [] is deliberate, this means
                 // they'll be treated the same priority.
                 order.push([STRUCTURE_WALL, STRUCTURE_RAMPART]);
