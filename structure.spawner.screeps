@@ -57,6 +57,7 @@ function setup(task) {
     if (typeof task.creep_id == 'undefined') {
         task.creep_id = 1
     }
+    task.currently_attempting = null;
 }
 
 module.exports = {
