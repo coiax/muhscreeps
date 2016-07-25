@@ -6,32 +6,39 @@ module.exports = {
     run : function(task, tower) {
         var target;
         var mode;
-        // Hostile targets are top priority.
+        // 1) attack enemy creeps
         if(!target) {
             target = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
             mode = "attack";
         }
-        // repair our structures
+        // 2) heal friendly creeps
+        if(!target) {
+            var hurt_friendlies = tower.pos.findDamagedFriendlyCreeps();
+            target = tower.pos.findClosestByRange(hurt_friendlies);
+            mode = "heal";
+        }
+        // 3) repair our structures, except ramparts
         if(!target) {
             var target = tower.pos.findClosestByRange(
                 FIND_MY_STRUCTURES, {filter: util.is_damaged});
             mode = "repair";
         }
-        // then repair the containers, roads, walls
-        var order = [STRUCTURE_CONTAINER, STRUCTURE_ROAD, STRUCTURE_WALL];
-        order.forEach(function(stype){
-            if(!target) {
-                var damaged = tower.pos.findDamagedStructures(stype);
-                if(damaged.length) {
-                    target = tower.pos.findClosestByRange(damaged);
-                    mode = "repair";
+        // then repair the containers, roads, walls+ramparts, but only
+        // on certain ticks
+        if(!target && ((Game.time % 10) == 0)) {
+            var order = [STRUCTURE_CONTAINER, STRUCTURE_ROAD,
+                [STRUCTURE_WALL, STRUCTURE_RAMPART]];
+            for(var i in order) {
+                var stypes = order[i]; {
+                    var damaged = tower.pos.findDamagedStructures(stypes);
+                    damaged = _.sortBy(damaged, _.property("hits"));
+                    if(damaged.length) {
+                        target = damaged[0];
+                        mode = "repair";
+                        break;
+                    }
                 }
             }
-        });
-        if(!target) {
-            var hurt_friendlies = tower.pos.findDamagedFriendlyCreeps();
-            target = tower.pos.findClosestByRange(hurt_friendlies);
-            mode = "heal";
         }
         if(target) {
             var task = {type: "tower_target", target_id: target.id,
