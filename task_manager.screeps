@@ -27,7 +27,7 @@ task_functions = {
         }
         var rv = creep.harvest(selected);
         if(rv == ERR_NOT_IN_RANGE) {
-            if(selected.is_harvestable())
+            if(selected.is_harvestable()) {
                 creep.moveTo(selected);
                 return {outcome: "continue"};
             } else {
