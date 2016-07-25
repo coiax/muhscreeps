@@ -9,6 +9,7 @@ var default_parts = [[WORK, CARRY, MOVE],
 function build_creep(spawn, task_obj, initial_task) {
     var possible_parts;
     var role_module;
+    task_obj["currently_attempting"] = initial_task;
     try {
         role_module = require(initial_task);
     } catch(err) {
