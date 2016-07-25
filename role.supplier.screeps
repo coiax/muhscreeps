@@ -17,7 +17,7 @@ module.exports = {
             creep.add_task({type: "resupply"});
             return {"outcome": "continue"};
         }
-        var stypes = [STRUCTURE_TOWER, [STRUCTURE_EXTENSION, STRUCTURE_SPAWN], STRUCTURE_STORAGE];
+        var stypes = [[STRUCTURE_EXTENSION, STRUCTURE_SPAWN], STRUCTURE_TOWER, STRUCTURE_STORAGE];
         var target;
         for(var i in stypes) {
             var stype = stypes[i];
