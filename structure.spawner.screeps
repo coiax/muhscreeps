@@ -1,19 +1,23 @@
 var roles = require('roles');
 var util = require('util');
 
+var default_parts = [[WORK, CARRY, MOVE],
+    [WORK,WORK, CARRY,CARRY, MOVE,MOVE],
+    [WORK,WORK,WORK, CARRY,CARRY,CARRY, MOVE,MOVE,MOVE],
+    [WORK,WORK,WORK,WORK, CARRY,CARRY,CARRY,CARRY, MOVE,MOVE,MOVE,MOVE]
+];
 
-function build_creep(obj, initial_task) {
-    var possible_parts = roles.default_parts;
-
-    var spawn = Game.spawns['Spawn2']
-
-    var creeps_in_room = spawn.room.find(FIND_MY_CREEPS).length;
-    var capacity;
-    if(creeps_in_room == 0) {
-        capacity = spawn.room.energyAvailable;
+function build_creep(spawn, task_obj, initial_task) {
+    var possible_parts;
+    var role_module = require(initial_task);
+    if(!module) {
+        possible_parts = default_parts;
     } else {
-        capacity = spawn.room.energyCapacityAvailable;
+        possible_parts = role_module.parts;
     }
+
+    var capacity = spawn.room.energyAvailable;
+
     var selected_parts;
     for(var i in possible_parts) {
         var partlist = possible_parts[i];
@@ -25,22 +29,21 @@ function build_creep(obj, initial_task) {
         }
     }
     if(!selected_parts) {
-        console.log("Part failure: " + role_name + ", budget:" + capacity);
         return;
     }
-    var creep_name = initial_task.replace(".","_") + obj.creep_id;
+    var creep_name = initial_task.replace(".","_") + task_obj.creep_id;
     while(true) {
         var rc = spawn.canCreateCreep(selected_parts, creep_name);
         if(rc == OK) {
             break;
         } else if(rc == ERR_NAME_EXISTS) {
-            obj.creep_id++;
+            task_obj.creep_id++;
             continue;
         } else {
             return;
         }
     }
-    obj.creep_id++;
+    task_obj.creep_id++;
     var memory = {task_queue: [{type: initial_task}]}
     spawn.createCreep(selected_parts, creep_name, memory);
 }
@@ -79,7 +82,7 @@ module.exports = {
                 counts[entry.task] = creeps.length;
             }
             if(counts[entry.task] < entry.amount) {
-                build_creep(task, entry.task);
+                build_creep(spawner, task, entry.task);
                 break;
             }
         }

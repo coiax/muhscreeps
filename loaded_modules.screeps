@@ -1,0 +1,16 @@
+// loading them runs any prototype stuff, and caches them.
+require('prototype.creep');
+require('prototype.structure');
+require('prototype.source');
+require('prototype.room');
+require('prototype.roomposition');
+
+require('role.builder');
+require('role.cow');
+require('role.distantminer');
+require('role.guard');
+require('role.supplier');
+require('role.upgrader');
+
+require('structure.tower');
+require('structure.spawner');
