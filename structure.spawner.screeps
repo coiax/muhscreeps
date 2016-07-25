@@ -8,8 +8,14 @@ var default_parts = [[WORK, CARRY, MOVE],
 
 function build_creep(spawn, task_obj, initial_task) {
     var possible_parts;
-    var role_module = require(initial_task);
-    if(!module) {
+    var role_module;
+    try {
+        role_module = require(initial_task);
+    } catch(err) {
+        console.log("Error importing task '" + initial_task + "': " + err);
+        // just eat it.
+    }
+    if(!role_module) {
         possible_parts = default_parts;
     } else {
         possible_parts = role_module.parts;
