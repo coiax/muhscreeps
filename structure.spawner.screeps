@@ -16,9 +16,8 @@ function build_creep(spawn, task_obj, initial_task) {
         console.log("Error importing task '" + initial_task + "': " + err);
         // just eat it.
     }
-    if(!role_module) {
-        possible_parts = default_parts;
-    } else if(role_module.parts) {
+    possible_parts = default_parts;
+    if(role_module && role_module.parts) {
         possible_parts = role_module.parts;
     }
 
