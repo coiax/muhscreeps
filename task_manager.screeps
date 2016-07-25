@@ -1,5 +1,7 @@
 var cpu_tracker = require('cpu_tracker');
 
+
+
 task_functions = {
     harvest : function(task, creep) {
         if(creep.carryCapacity == creep.carry.energy) {
@@ -9,7 +11,7 @@ task_functions = {
         if(!selected) {
             selected = creep.pos.findClosestByRange(FIND_SOURCES, {
                 filter: function(src) {
-                    return src.energy != 0;
+                    return src.is_harvestable();
             }});
             if(selected) {
                 task.selected_source_id = selected.id;
@@ -21,12 +23,17 @@ task_functions = {
         }
         if(selected.energy == 0) {
             task.selected_source_id = null;
-            return {outcome: "continue"};
+            return {outcome: "rerun"};
         }
         var rv = creep.harvest(selected);
         if(rv == ERR_NOT_IN_RANGE) {
-            creep.moveTo(selected);
-            return {outcome: "continue"};
+            if(selected.is_harvestable())
+                creep.moveTo(selected);
+                return {outcome: "continue"};
+            } else {
+                task.selected_source_id = null;
+                return {outcome: "rerun"};
+            }
         }
         if(creep.carryCapacity == creep.carry.energy) {
             return {outcome: "done"};
@@ -257,6 +264,9 @@ module.exports = {
                 owner.pop_task();
             } else if(result.outcome == "continue") {
                 task.times_run++;
+            } else if(result.outcome == "rerun") {
+                task.times_run++;
+                continue;
             } else if(result.outcome == "newtask") {
                 task.times_run++;
                 owner.add_task(result.task)
