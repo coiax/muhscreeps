@@ -122,7 +122,7 @@ var roleCow = {
                 target_id: site.id, resupply:"harvest"});
             return {outcome: "continue"};
         }
-        if(container && (container.pos.getRangeTo(creep) <= 1)) {
+        if(container && (container.pos.getRangeTo(creep) > 1)) {
             task.output_container_id = null;
             return {outcome: "continue"};
         }
