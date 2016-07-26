@@ -1,0 +1,28 @@
+module.exports = {
+    name: "role.dumbscout",
+    parts: [[MOVE], [MOVE, TOUGH], [MOVE,MOVE,TOUGH,TOUGH]],
+    run: function(task, creep) {
+        var room_name = creep.room.name;
+        var exits = Game.map.describeExits(room_name);
+        var dirs = [];
+        for(var i in exits) {
+            dirs.push(i);
+        }
+        var exit_position;
+        while(dirs.length && !exit_position) {
+            var chosen_dir = _.sample(dirs);
+            _.pull(dirs, chosen_dir);
+            exit_position = creep.pos.findClosestByRange(chosen_dir);
+        }
+        if(!dirs.length) {
+            // we are somehow marooned.
+            creep.suicide();
+            return {outcome: "continue"};
+        } else {
+            var task = {type: "move_to", destination_pos: exit_position};
+            return {outcome: "newtask", task: task};
+        }
+    }
+}
+
+require('task_manager').register(module.exports.name, module.exports.run);
