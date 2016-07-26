@@ -1,5 +1,9 @@
 Structure.prototype.getMemory = function() {
     if(this.structureType == STRUCTURE_SPAWN) {
+        if(!Memory.spawns)
+            Memory.spawns = {};
+        if(!Memory.spawns[this.name])
+            Memory.spawns[this.name] = {};
         return Memory.spawns[this.name];
     }
     if(!Memory.structures) {
