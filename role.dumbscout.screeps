@@ -1,27 +1,50 @@
+var util = require('util');
+
 module.exports = {
     name: "role.dumbscout",
     parts: [[MOVE]],
     run: function(task, creep) {
         var room_name = creep.room.name;
-        var exits = Game.map.describeExits(room_name);
-        var dirs = [];
-        for(var i in exits) {
-            dirs.push(i);
-        }
-        var exit_position;
-        while(dirs.length && !exit_position) {
-            var chosen_dir = _.sample(dirs);
-            _.pull(dirs, chosen_dir);
-            exit_position = creep.pos.findClosestByRange(parseInt(chosen_dir));
-        }
-        if(exit_position) {
-            var task = {type: "move_to", destination_pos: exit_position};
-            return {outcome: "newtask", task: task};
+        var exit_pos = util.memoryPosition(task.exit_pos);
+
+        if(room_name != task.destination_room) {
+            if(!exit_pos) {
+                task.destination_room = null;
+            } else {
+                creep.moveTo(exit_pos);
+                return {outcome: "continue"};
+            }
         } else {
-            // we are somehow marooned.
-            //creep.suicide();
-            creep.say("bluh");
-            return {outcome: "continue"};
+            creep.say("Ding!");
+            task.destination_room = null;
+            task.exit_pos = null;
+        }
+        if(!task.destination_room) {
+            var exits = Game.map.describeExits(room_name);
+            var dirs = [];
+            for(var i in exits) {
+                dirs.push(i);
+            }
+            var chosen_room;
+            var exit_position;
+            while(dirs.length && !exit_position) {
+                var chosen_dir = _.sample(dirs);
+                chosen_room = exits[chosen_dir];
+                _.pull(dirs, chosen_dir);
+                // the number is a FIND_* constant.
+                var numeric_dir = parseInt(chosen_dir);
+                exit_position = creep.pos.findClosestByRange(numeric_dir);
+            }
+            if(exit_position) {
+                task.destination_room = chosen_room;
+                task.exit_pos = exit_position;
+                return {outcome: "rerun"};
+            } else {
+                // we are somehow marooned.
+                //creep.suicide();
+                creep.say("bluh");
+                return {outcome: "continue"};
+            }
         }
     }
 }
