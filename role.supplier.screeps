@@ -3,14 +3,32 @@ var task_manager = require('task_manager');
 
 module.exports = {
     name: "role.supplier",
-    parts: [[WORK, CARRY, MOVE],
-        [WORK, CARRY,CARRY, MOVE,MOVE],
-        [WORK, CARRY,CARRY,CARRY, MOVE,MOVE],
-        [CARRY,CARRY,CARRY,CARRY,WORK,MOVE,MOVE,MOVE],
-        [CARRY,CARRY,CARRY,CARRY,CARRY,WORK,MOVE,MOVE,MOVE],
-        [CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,WORK,MOVE,MOVE,MOVE,MOVE],
-        [CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,WORK,MOVE,MOVE,MOVE,MOVE]
-    ],
+    parts: null,
+    part_generator: function() {
+        module.exports.parts = [[CARRY,WORK,MOVE]];
+        var parts = module.exports.parts;
+        if(parts.length != 0) {
+            return;
+        }
+        var part_list = [];
+        var carries = 1;
+        var moves = 1;
+        while(true) {
+            carries++;
+            if(carries % 2 == 0)
+                moves++;
+            for(var i = 0; i < carries; i++)
+                part_list.push(CARRY);
+            part_list.push(WORK);
+            for(var i = 0; i < moves; i++)
+                part_list.push(MOVE)
+            if(part_list.length > 50) {
+                break;
+            } else {
+                parts.push(part_list);
+            }
+        }
+    },
 
     run: function(task, creep) {
         if(creep.carry.energy == 0) {
@@ -40,3 +58,4 @@ module.exports = {
     }
 };
 task_manager.register(module.exports.name, module.exports.run);
+module.exports.part_generator();
