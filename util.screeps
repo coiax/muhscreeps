@@ -53,7 +53,7 @@ function room_walk(roomname, func, maximum_depth) {
         console.log(depth + ": " + JSON.stringify(room_list));
         room_list.forEach(function(rn) {
             visited_room = visited_rooms.add(rn);
-            if(func(rn)) {
+            if(func(depth, rn)) {
                 matching_rooms.push(rn);
             } else {
                 exits = Game.map.describeExits(rn);
