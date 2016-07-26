@@ -12,6 +12,7 @@ require('role.guard');
 require('role.supplier');
 require('role.upgrader');
 require('role.claimer');
+require('role.dumbscout');
 
 require('structure.tower');
 require('structure.spawner');
