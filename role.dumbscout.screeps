@@ -12,6 +12,7 @@ module.exports = {
             if(!exit_pos) {
                 task.destination_room = null;
             } else {
+                task.old_room = room_name;
                 creep.moveTo(exit_pos);
                 return {outcome: "continue"};
             }
@@ -31,6 +32,10 @@ module.exports = {
             while(dirs.length && !exit_position) {
                 var chosen_dir = _.sample(dirs);
                 chosen_room = exits[chosen_dir];
+                if((chosen_room == task.old_room) && (dirs.length != 1)) {
+                    // don't go back unless we have to.
+                    continue;
+                }
                 _.pull(dirs, chosen_dir);
                 // the number is a FIND_* constant.
                 var numeric_dir = parseInt(chosen_dir);
