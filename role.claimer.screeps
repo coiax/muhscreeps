@@ -20,7 +20,7 @@ function reservable_controller(room_name, username) {
 
 module.exports = {
     name: "role.claimer",
-    parts: [[MOVE, CLAIM], [MOVE,MOVE,CLAIM,CLAIM]],
+    parts: [[MOVE, CLAIM,CLAIM], [MOVE,MOVE,CLAIM,CLAIM]],
     run: function(task, creep) {
         var controller = Game.getObjectById(task.controller_id);
         var destination = util.memoryPosition(task.destination_pos);
