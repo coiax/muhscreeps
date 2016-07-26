@@ -1,6 +1,6 @@
 module.exports = {
     name: "role.dumbscout",
-    parts: [[MOVE], [MOVE, TOUGH], [MOVE,MOVE,TOUGH,TOUGH]],
+    parts: [[MOVE]],
     run: function(task, creep) {
         var room_name = creep.room.name;
         var exits = Game.map.describeExits(room_name);
