@@ -1,0 +1,65 @@
+var util = require('util');
+var RESERVE_THRESHOLD = 4000;
+
+function reservable_controller(room_name, username) {
+    var mem = Memory.rooms[other_room];
+    if(mem && mem.intel) {
+        var intel = mem.intel;
+        if(intel.controller && (intel.controller.level == 0)) {
+            var ctr = intel.controller;
+            if(!ctr.reservation) {
+                return true;
+            } else if((ctr.reservation.username == username) &&
+                (ctr.ticksToEnd < RESERVE_THRESHOLD)) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+module.exports = {
+    name: "role.claimer",
+    parts: [[MOVE, CLAIM], [MOVE,MOVE,CLAIM,CLAIM]],
+    run: function(task, creep) {
+        var controller = Game.getObjectById(task.controller_id);
+        var destination = util.memoryPosition(task.destination_pos);
+        var current_room = creep.room.name;
+        if(!controller && !destination) {
+            var owner_name = creep.owner.username;
+            var rooms;
+            rooms = util.room_walk(current_room, function(depth, other_room) {
+                return reservable_controller(other_room, owner_name);
+            });
+            if(!rooms.length) {
+                creep.say("noclaim");
+                return {outcome: "continue"};
+            }
+            var room = _.sample(rooms);
+            creep.say(room);
+            var mem = Memory.rooms[room];
+            task.destination_pos = mem.intel.controller.pos;
+            return {outcome: "rerun"};
+        } else if(!controller && destination) {
+            if(destination.roomName == current_room) {
+                task.controller_id = creep.room.controller.id;
+                return {outcome: "rerun"};
+            } else {
+                creep.moveTo(destination);
+                return {outcome: "continue"};
+            }
+        } else if(controller) {
+            task.destination = null;
+            rc = creep.reserveController(controller);
+            if(rc == ERR_NOT_IN_RANGE) {
+                creep.moveTo(controller);
+                return {outcome: "continue"};
+            } else if(rc == ERR_INVALID_TARGET) {
+                task.controller = null;
+                return {outcome: "rerun"};
+            }
+        }
+    }
+}
+
+register('task_manager').register(module.exports.name, module.exports.run);

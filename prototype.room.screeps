@@ -22,6 +22,7 @@ Room.prototype.scout_room = function() {
         intel.controller.owner = this.controller.owner;
         intel.controller.reservation = this.controller.reservation;
         intel.controller.id = this.controller.id;
+        intel.controller.pos = this.controller.pos;
     }
     intel.structure_maintain_cost = 0;
     this.find(FIND_STRUCTURES).forEach(function(st) {
