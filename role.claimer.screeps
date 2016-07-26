@@ -2,7 +2,7 @@ var util = require('util');
 var RESERVE_THRESHOLD = 4000;
 
 function reservable_controller(room_name, username) {
-    var mem = Memory.rooms[other_room];
+    var mem = Memory.rooms[room_name];
     if(mem && mem.intel) {
         var intel = mem.intel;
         if(intel.controller && (intel.controller.level == 0)) {
