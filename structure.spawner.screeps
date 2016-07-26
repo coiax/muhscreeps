@@ -1,10 +1,31 @@
 var util = require('util');
 
-var default_parts = [[WORK, CARRY, MOVE],
-    [WORK,WORK, CARRY,CARRY, MOVE,MOVE],
-    [WORK,WORK,WORK, CARRY,CARRY,CARRY, MOVE,MOVE,MOVE],
-    [WORK,WORK,WORK,WORK, CARRY,CARRY,CARRY,CARRY, MOVE,MOVE,MOVE,MOVE]
-];
+
+function generate_default_parts() {
+    counter = 1;
+    while(true) {
+        var parts = [];
+        for (var i = 0; i < counter; i++) {
+            parts.push(WORK);
+        }
+        for (var i = 0; i < counter; i++) {
+            parts.push(CARRY);
+        }
+        for (var i = 0; i < counter; i++) {
+            parts.push(MOVE);
+        }
+        if(parts.length <= 50) {
+            default_parts.push(parts);
+            counter++;
+            continue;
+        } else {
+            break;
+        }
+    }
+}
+var default_parts = [];
+generate_default_parts();
+console.log(JSON.stringify(default_parts));
 
 function build_creep(spawn, task_obj, initial_task) {
     var possible_parts;
