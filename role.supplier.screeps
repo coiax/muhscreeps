@@ -7,13 +7,10 @@ module.exports = {
     part_generator: function() {
         module.exports.parts = [[CARRY,WORK,MOVE]];
         var parts = module.exports.parts;
-        if(parts.length != 0) {
-            return;
-        }
-        var part_list = [];
         var carries = 1;
         var moves = 1;
         while(true) {
+            var part_list = [];
             carries++;
             if(carries % 2 == 0)
                 moves++;
