@@ -57,6 +57,8 @@ module.exports = {
             } else if(rc == ERR_INVALID_TARGET) {
                 task.controller = null;
                 return {outcome: "rerun"};
+            } else {
+                return {outcome: "continue"};
             }
         }
     }
