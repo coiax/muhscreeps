@@ -4,12 +4,12 @@ module.exports = {
     run: function(task, creep) {
         var room_name = creep.room.name;
         var exits = Game.map.describeExits(room_name);
-        console.log(exits);
+        console.log(JSON.stringify(exits));
         var dirs = [];
         for(var i in exits) {
             dirs.push(i);
         }
-        console.log(dirs);
+        console.log(JSON.stringify(dirs));
         var exit_position;
         while(dirs.length && !exit_position) {
             console.log(exit_position);
