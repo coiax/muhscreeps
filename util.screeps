@@ -38,7 +38,41 @@ function standard_deviation(arr) {
     return Math.pow(sum, 0.5);
 }
 
+function room_walk(roomname, func, maximum_depth) {
+    if(!maximum_depth)
+        maximum_depth = 10;
+    // given a roomname, walk along the map, running func on each room
+    // encountered, returning the first roomname that func returns
+    // true for.
+    var depth = 0;
+    var visited_rooms = new Set();
+    var room_list = [roomname];
+    var matching_rooms = [];
+    var next_list = [];
+    while((matching_rooms.length == 0) && (depth < maximum_depth)) {
+        console.log(depth + ": " + JSON.stringify(room_list));
+        room_list.forEach(function(rn) {
+            visited_rooms.add(rn);
+            if(func(rn)) {
+                matching_rooms.push(rn);
+            } else {
+                exits = Game.map.describeExits(rn);
+                for(var dir in exits) {
+                    var other_rn = exits[dir];
+                    if(!visited_rooms.has(other_rn)) {
+                        next_list.push(other_rn);
+                    }
+                }
+            }
+        });
+        depth++;
+        room_list = next_list;
+    }
+    return matching_rooms;
+}
+
 module.exports = {
+    room_walk: room_walk,
     opposite_dir: function(dir) {
         var num = dir + 4;
         if(num > 8)

@@ -1,6 +1,7 @@
 module.exports = {
     run: function(creep) {
         // Find nearest source in unowned territory.
+        var current_room_name = creep.room.name;
         // Harvest it.
         // Return to nearest storage.
         // Regenerate.

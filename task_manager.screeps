@@ -231,6 +231,18 @@ task_functions = {
         } else {
             return {outcome: "didnothing"};
         }
+    },
+    move_to: function(task, creep) {
+        var destination = util.memoryPosition(task.destination_pos);
+        if(creep.pos.isEqualTo(destination)) {
+            return {outcome: "didnothing"};
+        }
+        var rc = creep.moveTo(destination);
+        if(rc == ERR_NO_PATH) {
+            return {outcome: "didnothing"};
+        } else {
+            return {outcome: "continue"};
+        }
     }
 }
 module.exports = {
