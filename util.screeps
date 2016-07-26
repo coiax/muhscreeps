@@ -59,7 +59,6 @@ function room_walk(roomname, func, maximum_depth) {
                 exits = Game.map.describeExits(rn);
                 for(var dir in exits) {
                     var other_rn = exits[dir];
-                    console.log(dir + other_rn);
                     if(!visited_rooms.has(other_rn)) {
                         next_list.push(other_rn);
                     }
