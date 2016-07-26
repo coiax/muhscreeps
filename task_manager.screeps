@@ -1,6 +1,5 @@
 var cpu_tracker = require('cpu_tracker');
-
-
+var util = require('util');
 
 task_functions = {
     harvest : function(task, creep) {
