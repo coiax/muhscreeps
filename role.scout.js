@@ -1,0 +1,3 @@
+var util=require("util");function setup(b,a){"undefined"==typeof b.rooms&&(b.rooms=[])}
+module.exports={name:"role.scout",parts:[[MOVE],[MOVE,HEAL],[TOUGH,MOVE,MOVE,HEAL],[TOUGH,TOUGH,MOVE,MOVE,MOVE,HEAL],[TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,HEAL]],run:function(b,a){setup(b,a);a.hits<a.hitsMax&&a.heal(a);var c=util.memoryPosition(b.destination_pos);c&&a.moveTo(c)==ERR_NO_PATH&&(b.destination_pos=null);var c=a.room.name,e=Game.map.describeExits(c),f={},d;for(d in e){var g=e[d];_.includes(visited_rooms,g)||(f[d]=g)}b.rooms.push({room_name:c,valid_exits:f})}};
+require("task_manager").register(module.exports.name,module.exports.run);

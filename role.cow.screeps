@@ -6,10 +6,10 @@ var roleCow = {
     parts: [
         [WORK, CARRY, MOVE],
         [WORK, WORK, CARRY, MOVE],
-        [WORK, WORK, WORK, CARRY, MOVE, MOVE]
-        //[WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE],
-        //[WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE],
-        //[WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE]
+        [WORK, WORK, WORK, CARRY, MOVE, MOVE],
+        [WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE],
+        [WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE],
+        [WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE]
     ],
     run: function(task, creep) {
         var source = Game.getObjectById(task.source_id);
