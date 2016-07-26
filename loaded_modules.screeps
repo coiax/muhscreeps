@@ -11,6 +11,7 @@ require('role.distantminer');
 require('role.guard');
 require('role.supplier');
 require('role.upgrader');
+require('role.claimer');
 
 require('structure.tower');
 require('structure.spawner');
