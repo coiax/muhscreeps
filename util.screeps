@@ -39,7 +39,7 @@ function standard_deviation(arr) {
 }
 
 function room_walk(roomname, func, opts) {
-    var maximum_depth = opts.maximum_depth || 10;
+    var maximum_depth = (opts && opts.maximum_depth) || 10;
     // given a roomname, walk along the map, running func on each room
     // encountered, returning the first roomname that func returns
     // true for.
