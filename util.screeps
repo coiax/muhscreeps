@@ -67,6 +67,7 @@ function room_walk(roomname, func, maximum_depth) {
         });
         depth++;
         room_list = next_list;
+        next_list = [];
     }
     return matching_rooms;
 }
