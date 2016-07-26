@@ -45,23 +45,24 @@ function room_walk(roomname, func, maximum_depth) {
     // encountered, returning the first roomname that func returns
     // true for.
     var depth = 0;
-    var visited_rooms = new Set;
+    var visited_rooms = {};
     var room_list = [roomname];
     var matching_rooms = [];
     var next_list = [];
     while((matching_rooms.length == 0) && (depth < maximum_depth)) {
         console.log(depth + ": " + JSON.stringify(visited_rooms));
         room_list.forEach(function(rn) {
-            visited_rooms = visited_rooms.add(rn);
+            if(visited_rooms[rn])
+                return;
+            visited_rooms[rn] = true;
             if(func(depth, rn)) {
                 matching_rooms.push(rn);
             } else {
                 exits = Game.map.describeExits(rn);
                 for(var dir in exits) {
                     var other_rn = exits[dir];
-                    if(!visited_rooms.has(other_rn)) {
+                    if(!visited_rooms[other_rn])
                         next_list.push(other_rn);
-                    }
                 }
             }
         });
