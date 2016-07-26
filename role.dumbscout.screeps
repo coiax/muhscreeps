@@ -4,19 +4,14 @@ module.exports = {
     run: function(task, creep) {
         var room_name = creep.room.name;
         var exits = Game.map.describeExits(room_name);
-        console.log(JSON.stringify(exits));
         var dirs = [];
         for(var i in exits) {
             dirs.push(i);
         }
-        console.log(JSON.stringify(dirs));
         var exit_position;
         while(dirs.length && !exit_position) {
-            console.log(exit_position);
             var chosen_dir = _.sample(dirs);
-            console.log(chosen_dir);
             _.pull(dirs, chosen_dir);
-            console.log(JSON.stringify(dirs));
             exit_position = creep.pos.findClosestByRange(parseInt(chosen_dir));
         }
         if(exit_position) {
