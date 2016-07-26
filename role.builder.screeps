@@ -36,7 +36,8 @@ var roleBuilder = {
         var dam_struct = sort_structures(
             creep.room.find(FIND_MY_STRUCTURES, {
                 filter: function(structure) {
-                    return structure.hits < structure.hitsMax
+                    return (structure.structureType != STRUCTURE_RAMPART) &&
+                        structure.hits < structure.hitsMax;
             }}));
         var dam_neu_struct = sort_structures(
             creep.room.find(FIND_STRUCTURES, {
