@@ -50,7 +50,6 @@ function room_walk(roomname, func, maximum_depth) {
     var matching_rooms = [];
     var next_list = [];
     while((matching_rooms.length == 0) && (depth < maximum_depth)) {
-        console.log(depth + ": " + JSON.stringify(visited_rooms));
         room_list.forEach(function(rn) {
             if(visited_rooms[rn])
                 return;
