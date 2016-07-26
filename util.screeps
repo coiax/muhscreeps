@@ -45,14 +45,14 @@ function room_walk(roomname, func, maximum_depth) {
     // encountered, returning the first roomname that func returns
     // true for.
     var depth = 0;
-    var visited_rooms = new Set();
+    var visited_rooms = new Set;
     var room_list = [roomname];
     var matching_rooms = [];
     var next_list = [];
     while((matching_rooms.length == 0) && (depth < maximum_depth)) {
         console.log(depth + ": " + JSON.stringify(visited_rooms));
         room_list.forEach(function(rn) {
-            visited_room = visited_rooms.add(rn);
+            visited_rooms = visited_rooms.add(rn);
             if(func(depth, rn)) {
                 matching_rooms.push(rn);
             } else {
