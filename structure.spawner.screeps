@@ -25,7 +25,6 @@ function generate_default_parts() {
 }
 var default_parts = [];
 generate_default_parts();
-console.log(JSON.stringify(default_parts));
 
 function build_creep(spawn, task_obj, initial_task) {
     var possible_parts;
