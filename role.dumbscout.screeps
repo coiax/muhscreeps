@@ -4,6 +4,7 @@ module.exports = {
     name: "role.dumbscout",
     parts: [[MOVE]],
     run: function(task, creep) {
+        creep.notifyWhenAttacked(false);
         var room_name = creep.room.name;
         var exit_pos = util.memoryPosition(task.exit_pos);
 
