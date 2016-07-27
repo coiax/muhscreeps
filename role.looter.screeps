@@ -1,0 +1,57 @@
+module.exports = {
+    name : "role.looter",
+    parts : null,
+    generate_parts : function() {
+        module.exports.parts = [[CARRY,MOVE]];
+        var parts = module.exports.parts;
+        counter = 1;
+        while(true) {
+            var new_parts = [];
+            for(var i = 0; i < (counter * 2); i++) {
+                new_parts.push(CARRY);
+            }
+            for(var i = 0; i < counter; i++) {
+                new_parts.push(MOVE);
+            }
+            if(new_parts.length > 50) {
+                break;
+            } else {
+                parts.push(new_parts);
+            }
+        }
+    },
+    run: function(task, creep) {
+        var stypes = [STRUCTURE_CONTAINER, STRUCTURE_STORAGE];
+        if((creep.carryCapacity - creep.carry.energy) != 0) {
+            var flag = Game.flags["Loot"];
+            if(!flag) {
+                creep.say("noflag");
+                return {outcome: "continue"};
+            }
+            var structures = flag.pos.findStructures(stypes);
+            if(!structures.length) {
+                creep.say("nostru");
+                return {outcome: "continue"};
+            }
+            var gas_station = structures[0];
+            var task = {type: "resupply", gas_station_id: gas_station.id};
+            return {outcome: "newtask", task: task};
+        } else {
+            var flag = Game.flags["Dropoff"];
+            if(!flag) {
+                creep.say("noflg2");
+                return {outcome: "continue"};
+            }
+            var structures = flag.pos.findStructures(stypes);
+            if(!structures.length) {
+                creep.say("nostru");
+                return {outcome: "continue"};
+            }
+            var task = {type: "transfer_energy", target_id: structures[0].id};
+            return {outcome: "newtask", task: task};
+        }
+    }
+}
+
+require('task_manager').register(module.exports.name, module.exports.run);
+module.exports.generate_parts();

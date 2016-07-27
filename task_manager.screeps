@@ -79,8 +79,12 @@ task_functions = {
         if(!gas_station) {
             var possible_stations = creep.room.find(FIND_STRUCTURES, {
                 filter: function(st) {
-                    if(st.structureType != STRUCTURE_CONTAINER) {
-                        return false;
+                    switch(st.structureType) {
+                        case STRUCTURE_CONTAINER:
+                        case STRUCTURE_STORAGE:
+                            break;
+                        default:
+                            return false;
                     }
                     var energy_stored = st.store[RESOURCE_ENERGY];
                     return energy_stored > remaining_capacity;
