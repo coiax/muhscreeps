@@ -14,10 +14,10 @@ function cpu_debug(msg) {
 
 module.exports.loop = function () {
     cpu_debug("Start mainloop");
-    gc.gc();
     if(Memory.just_exit) {
         return;
     }
+    gc.gc();
 
     for(var roomName in Game.rooms) {
         cpu_debug("Scouting " + roomName);
