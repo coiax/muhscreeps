@@ -18,6 +18,7 @@ module.exports = {
             } else {
                 parts.push(new_parts);
             }
+            counter++;
         }
     },
     run: function(task, creep) {
