@@ -5,7 +5,7 @@ RoomPosition.prototype.find = function() {
     if(room) {
         return room.find.apply(room, arguments);
     } else {
-        return [];
+        return function() {return [];};
     }
 };
 
