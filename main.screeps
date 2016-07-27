@@ -7,8 +7,6 @@ var util = require('util');
 function cpu_debug(msg) {
     if(Memory.cpu_debug) {
         console.log(Game.cpu.getUsed() + ": " + msg);
-    } else {
-        Memory.cpu_debug = false;
     }
 }
 
@@ -16,6 +14,10 @@ module.exports.loop = function () {
     cpu_debug("Start mainloop");
     if(Memory.just_exit) {
         return;
+    }
+    if(!Memory.cpu) {
+        Memory.cpu = {};
+        Memory.cpu.enabled = false;
     }
     gc.gc();
 
