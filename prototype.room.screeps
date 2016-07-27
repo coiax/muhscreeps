@@ -24,13 +24,33 @@ Room.prototype.scout_room = function() {
         intel.controller.id = this.controller.id;
         intel.controller.pos = this.controller.pos;
     }
-    intel.structure_maintain_cost = 0;
+    intel.structures = {owned: {}, neutral: {}};
     this.find(FIND_STRUCTURES).forEach(function(st) {
-        intel.structure_maintain_cost += st.maintain_cost();
+        var obj;
+        if(st.owner) {
+            if(!intel.structures.owned[st.owner.username])
+                intel.structures.owned[st.owner.username] = {};
+            obj = intel.structures.owned[st.owner.username];
+        } else {
+            obj = intel.structures.neutral;
+        }
+        if(!obj[st.structureType])
+            obj[st.structureType] = 0;
+        obj[st.structureType]++;
     });
-    intel.creep_maintain_cost = 0;
+    intel.creeps = {};
     this.find(FIND_CREEPS).forEach(function(cr) {
-        intel.creep_maintain_cost += cr.maintain_cost();
+        var username = cr.owner.username;
+        if(!intel.creeps[username])
+            intel.creeps[username] = {bodyparts: {}, count: 0};
+        intel.creeps[username]["count"]++;
+        var bintel = intel.creeps[username]["bodyparts"];
+        cr.body.forEach(function(bodyobj) {
+            var btype = bodyobj.type;
+            if(!bintel[btype])
+                bintel[btype] = 0;
+            bintel[btype]++;
+        });
     });
 };
 
