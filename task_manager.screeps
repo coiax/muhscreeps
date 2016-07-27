@@ -246,6 +246,10 @@ task_functions = {
         } else {
             return {outcome: "continue"};
         }
+    },
+    suicide: function(task, creep) {
+        creep.suicide();
+        return {outcome: "continue"};
     }
 }
 module.exports = {
