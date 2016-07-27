@@ -82,6 +82,9 @@ function build_creep(spawn, task_obj, initial_task) {
 }
 
 function setup(task, spawner) {
+    if(!spawner.memory.supported_creeps) {
+        spawner.memory.supported_creeps = []
+    }
     if (typeof task.creep_id == 'undefined') {
         task.creep_id = 1
     }
