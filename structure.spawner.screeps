@@ -70,8 +70,15 @@ function build_creep(spawn, task_obj, initial_task) {
         }
     }
     task_obj.creep_id++;
-    var memory = {task_queue: [{type: initial_task}]}
-    spawn.createCreep(selected_parts, creep_name, memory);
+    var creep_memory = {
+        task_queue: [{type: initial_task}],
+        support: spawn.name
+    }
+    spawn.createCreep(selected_parts, creep_name, creep_memory);
+    var mem = spawn.memory;
+    if(!mem.supported_creeps)
+        mem.supported_creeps = [];
+    mem.supported_creeps.push(creep_name);
 }
 
 function setup(task, spawner) {
