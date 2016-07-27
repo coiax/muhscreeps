@@ -2,7 +2,11 @@ var util = require('util');
 
 RoomPosition.prototype.find = function() {
     var room = Game.rooms[this.roomName];
-    return room.find.apply(room, arguments);
+    if(room) {
+        return room.find.apply(room, arguments);
+    } else {
+        return [];
+    }
 };
 
 RoomPosition.prototype.findStructures = function(stypes) {
