@@ -17,6 +17,7 @@ module.exports = {
 
         if(targets.length) {
             creep.rangedAttack(targets[0]);
+            creep.say("pew!", true);
         }
 
         if(creep.hits < creep.hitsMax) {
