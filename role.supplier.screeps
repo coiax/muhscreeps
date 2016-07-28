@@ -47,6 +47,7 @@ module.exports = {
             creep.add_task({type: "transfer_energy", target_id: target.id});
         } else {
             // wander randomly.
+            creep.say("sidle");
             creep.move(Math.floor((Math.random() * 8) + 1));
         }
         return {"outcome": "continue"};
