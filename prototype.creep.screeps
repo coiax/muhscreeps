@@ -62,7 +62,7 @@ Creep.prototype.maintain_cost = function() {
 
 Creep.prototype.is_full = function() {
     var total = _.sum(this.carry);
-    return total == carryCapacity;
+    return total == this.carryCapacity;
 };
 
 module.exports = {};
