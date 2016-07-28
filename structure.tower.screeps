@@ -1,6 +1,15 @@
 var util = require('util');
 var task_manager = require('task_manager');
 
+function efficient_tower_repair(tower, st) {
+    var dmg_taken = st.hitsMax - st.hits;
+    if(!dmg_taken)
+        return false;
+    var dist = tower.pos.getRangeTo(st);
+    var repair_amount = tower.expected_power("repair", dist);
+    return repair_amount < dmg_taken;
+}
+
 module.exports = {
     name: "structure.tower",
     run : function(task, tower) {
@@ -25,7 +34,9 @@ module.exports = {
             var target = tower.pos.findClosestByRange(
                 FIND_MY_STRUCTURES, {filter:
                 function(st) {
-                    return ((st.structureType != STRUCTURE_RAMPART) && (st.hits < st.hitsMax));
+                    if(st.structureType == STRUCTURE_RAMPART)
+                        return false;
+                    return efficient_tower_repair(tower, st);
                 }});
             mode = "repair";
         }
@@ -40,7 +51,11 @@ module.exports = {
             }
             for(var i in order) {
                 var stypes = order[i]; {
-                    var damaged = tower.pos.findDamagedStructures(stypes);
+                    var damaged = tower.room.find(FIND_STRUCTURES, {filter:
+                        function(st) {
+                            return (_.includes(stypes, st.structureType) &&
+                                efficient_tower_repair(tower, st));
+                    }});
                     damaged = _.sortBy(damaged, _.property("hits"));
                     if(damaged.length) {
                         target = damaged[0];
