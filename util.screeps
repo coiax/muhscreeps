@@ -1,11 +1,16 @@
 function needs_energy(st) {
     if(!st.isActive())
         return false;
-    if(typeof st.energy == 'undefined')
-        return false;
-    if(typeof st.energyCapacity == 'undefined')
-        return false;
-    return st.energy < st.energyCapacity;
+    if(st.store) {
+        var total = _.sum(st.store);
+        return total < st.storeCapacity;
+    } else {
+        if(typeof st.energy == 'undefined')
+            return false;
+        if(typeof st.energyCapacity == 'undefined')
+            return false;
+        return st.energy < st.energyCapacity;
+    }
 };
 
 function is_damaged(obj) {
