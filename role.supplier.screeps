@@ -36,14 +36,12 @@ module.exports = {
         var target;
         for(var i in stypes) {
             var stype = stypes[i];
-            var need_energy = creep.pos.findNeedingEnergyStructures(stype);
-            if(need_energy.length > 1) {
-                target = creep.pos.findClosestByRange(need_energy);
+            target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {filter:
+                function(st) {
+                    return (st.is_type(stype) && util.needs_energy(st));
+            }});
+            if(target)
                 break;
-            } else if(need_energy.length == 1) {
-                target = need_energy[0];
-                break;
-            }
         }
         if(target) {
             creep.add_task({type: "transfer_energy", target_id: target.id});

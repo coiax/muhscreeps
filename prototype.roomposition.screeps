@@ -11,11 +11,8 @@ RoomPosition.prototype.find = function() {
 
 RoomPosition.prototype.findStructures = function(stypes) {
     if(stypes) {
-        if(stypes.constructor != Array) {
-            stypes = [stypes];
-        }
         filter = function(st) {
-            return _.includes(stypes, st.structureType);
+            return st.is_type(stypes);
         }
         return this.find(FIND_STRUCTURES, {filter: filter});
     } else {

@@ -66,3 +66,10 @@ Structure.prototype.maintain_cost = function() {
     var cost = hits_per_tick * REPAIR_COST;
     return cost;
 };
+
+Structure.prototype.is_type = function(stypes) {
+    if(stypes.constructor != Array) {
+        stypes = [stypes];
+    }
+    return _.includes(stypes, this.structureType);
+}
