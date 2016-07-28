@@ -1,8 +1,8 @@
 module.exports = {
     name : "role.assault",
-    parts : [[TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,
+    parts : [[TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,
               RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,
-              RANGED_ATTACK]],
+              RANGED_ATTACK,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE]],
     run : function(task, creep) {
         var targets = [];
         if(!targets.length) {
