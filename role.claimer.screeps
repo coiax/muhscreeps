@@ -22,6 +22,9 @@ module.exports = {
     name: "role.claimer",
     parts: [[MOVE, CLAIM,CLAIM], [MOVE,MOVE,CLAIM,CLAIM]],
     run: function(task, creep) {
+        if(typeof task.full_claim == 'undefined') {
+            task.full_claim = false;
+        }
         var controller = Game.getObjectById(task.controller_id);
         var destination = util.memoryPosition(task.destination_pos);
         var current_room = creep.room.name;
@@ -50,12 +53,20 @@ module.exports = {
             }
         } else if(controller) {
             task.destination = null;
-            rc = creep.reserveController(controller);
+            var rc;
+            if(!task.full_claim) {
+                rc = creep.reserveController(controller);
+            } else {
+                rc = creep.claimController(controller);
+            }
             if(rc == ERR_NOT_IN_RANGE) {
                 creep.moveTo(controller);
                 return {outcome: "continue"};
             } else if(rc == ERR_INVALID_TARGET) {
                 task.controller = null;
+                return {outcome: "rerun"};
+            } else if(rc == ERR_GCL_NOT_ENOUGH) {
+                task.full_claim = false;
                 return {outcome: "rerun"};
             } else {
                 return {outcome: "continue"};
