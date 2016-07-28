@@ -75,19 +75,17 @@ task_functions = {
         if(remaining_capacity == 0) {
             return {outcome: "didnothing"};
         }
+        var energy = creep.pos.findClosestByRange(FIND_DROPPED_ENERGY);
+        if(energy) {
+            var task = {type: "move_to", destination_pos: energy.pos};
+            return {outcome: "newtask", task: task};
+        }
         var gas_station = Game.getObjectById(task.gas_station_id);
         if(!gas_station) {
+            var stypes = [STRUCTURE_CONTAINER, STRUCTURE_STORAGE];
             var possible_stations = creep.room.find(FIND_STRUCTURES, {
                 filter: function(st) {
-                    switch(st.structureType) {
-                        case STRUCTURE_CONTAINER:
-                        case STRUCTURE_STORAGE:
-                            break;
-                        default:
-                            return false;
-                    }
-                    var energy_stored = st.store[RESOURCE_ENERGY];
-                    return energy_stored > remaining_capacity;
+                    return st.is_type(stypes) && st.store[RESOURCE_ENERGY];
             }});
             if(possible_stations.length) {
                 gas_station = creep.pos.findClosestByRange(possible_stations);
