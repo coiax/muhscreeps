@@ -31,4 +31,4 @@ module.exports = {
     }
 }
 
-register('task_manager').register(module.exports.name, module.exports.run);
+require('task_manager').register(module.exports.name, module.exports.run);
