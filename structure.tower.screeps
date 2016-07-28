@@ -7,7 +7,7 @@ function efficient_tower_repair(tower, st) {
         return false;
     var dist = tower.pos.getRangeTo(st);
     var repair_amount = tower.expected_power("repair", dist);
-    return repair_amount < dmg_taken;
+    return dmg_taken >= repair_amount;
 }
 
 module.exports = {
