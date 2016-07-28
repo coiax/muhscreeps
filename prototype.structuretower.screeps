@@ -1,0 +1,19 @@
+StructureTower.prototype.expected_power = function(atype, range) {
+    var power;
+    switch(atype) {
+        case "attack":
+            power = TOWER_POWER_ATTACK;
+            break;
+        case "heal":
+            power = TOWER_POWER_HEAL;
+            break;
+        case "repair":
+            power = TOWER_POWER_REPAIR;
+            break;
+        default:
+            throw "Unrecognised action type";
+    }
+    var optimum_range = TOWER_OPTIMAL_RANGE;
+    var falloff_range = TOWER_FALLOFF_RANGE;
+    var falloff = TOWER_FALLOFF;
+}

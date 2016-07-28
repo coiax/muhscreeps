@@ -29,7 +29,7 @@ Structure.prototype.pop_task = function() {
     var memory = this.getMemory();
     if(memory.task_queue) {
         memory.task_queue.shift();
-        if(memory.task_queue.length == 0) { 
+        if(memory.task_queue.length == 0) {
             delete memory.task_queue;
         }
     }

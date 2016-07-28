@@ -4,6 +4,9 @@ var task_manager = require('task_manager');
 module.exports = {
     name: "structure.tower",
     run : function(task, tower) {
+        if(tower.energy < TOWER_ENERGY_COST) {
+            return {outcome: "continue"};
+        }
         var target;
         var mode;
         // 1) attack enemy creeps
