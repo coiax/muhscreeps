@@ -23,6 +23,8 @@ module.exports = {
         }
 
         if(creep.hits < creep.hitsMax) {
+            console.log(creep.hits);
+            creep.say("run!");
             var flag = Game.flags["Retreat"];
             creep.moveTo(flag);
             return {outcome: "continue"};
