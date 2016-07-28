@@ -60,4 +60,9 @@ Creep.prototype.maintain_cost = function() {
     return this.body_cost() / CREEP_LIFE_TIME;
 };
 
+Creep.protoype.is_full = function() {
+    var total = _.sum(this.carry);
+    return total == carryCapacity;
+};
+
 module.exports = {};

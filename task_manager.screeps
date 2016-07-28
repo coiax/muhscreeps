@@ -75,13 +75,13 @@ task_functions = {
         return {outcome: "continue"};
     },
     resupply : function(task, creep) {
-        var remaining_capacity = creep.carryCapacity - creep.carry.energy;
-        if(remaining_capacity == 0) {
+        var remaining_capacity = creep.carryCapacity - _.sum(creep.carry);
+        if(creep.is_full()) {
             return {outcome: "didnothing"};
         }
         var energy = creep.pos.findClosestByRange(FIND_DROPPED_ENERGY);
         if(energy) {
-            var task = {type: "move_to", target_id: energy.id};
+            var task = {type: "pickup", target_id: energy.id};
             return {outcome: "newtask", task: task};
         }
         var gas_station = Game.getObjectById(task.gas_station_id);
@@ -120,7 +120,10 @@ task_functions = {
         }
         var spawn = Game.getObjectById(task.spawn_id);
         if(!spawn) {
-            spawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS);
+            var spawns = [];
+            for(var i in Game.spawns)
+                spawns.push(Game.spawns[i]);
+            spawn = creep.pos.findClosestByRange(spawns);
             if(spawn)
                 task.spawn_id = spawn.id
         }
@@ -284,6 +287,24 @@ task_functions = {
         if(rc == ERR_NOT_IN_RANGE) {
             creep.moveTo(spawn);
             return {outcome: "continue"};
+        } else {
+            return {outcome: "done"};
+        }
+    },
+    pickup : function(task, creep) {
+        if(creep.is_full()) {
+            return {outcome: "didnothing"};
+        }
+        var target = Game.getObjectById(task.target_id);
+        if(!target) {
+            return {outcome: "didnothing"};
+        }
+        var rc = creep.pickup(target);
+        if(rc == ERR_NOT_IN_RANGE) {
+            creep.moveTo(target);
+            return {outcome: "continue"};
+        } else if(rc == ERR_INVALID_TARGET) {
+            return {outcome: "didnothing"};
         } else {
             return {outcome: "done"};
         }
