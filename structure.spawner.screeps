@@ -85,6 +85,12 @@ function setup(task, spawner) {
     if(!spawner.memory.supported_creeps) {
         spawner.memory.supported_creeps = []
     }
+
+    // remove any dead creeps from our supported list.
+    _.remove(spawner.memory.supported_creeps, function(value, index, arr) {
+        return Game.creeps[value];
+    });
+
     if (typeof task.creep_id == 'undefined') {
         task.creep_id = 1
     }
