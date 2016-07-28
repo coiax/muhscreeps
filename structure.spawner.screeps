@@ -119,8 +119,7 @@ module.exports = {
             {task: "role.upgrader", amount: 3},
             {task: "role.builder", amount: 4},
             {task: "role.dumbscout", amount: 10},
-            {task: "role.claimer", amount: 1},
-            {task: "role.assault", amount: 5}
+            {task: "role.claimer", amount: 1}
         ];
 
         for(var i in required) {
