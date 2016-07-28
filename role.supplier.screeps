@@ -16,7 +16,9 @@ module.exports = {
                 moves++;
             for(var i = 0; i < carries; i++)
                 part_list.push(CARRY);
-            part_list.push(WORK);
+            if(carries < 3) {
+                part_list.push(WORK);
+            }
             for(var i = 0; i < moves; i++)
                 part_list.push(MOVE)
             if(part_list.length > 50) {
