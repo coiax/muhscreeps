@@ -18,7 +18,11 @@ task_functions = {
         }
         if(!selected) {
             creep.say("!sr?:(");
-            return {outcome: "newtask", task: {type: "resupply"}};
+            if(!task.no_resupply) {
+                return {outcome: "newtask", task: {type: "resupply"}};
+            } else {
+                return {outcome: "didnothing"};
+            }
         }
         if(selected.energy == 0) {
             task.selected_source_id = null;
@@ -93,7 +97,8 @@ task_functions = {
             }
         }
         if(!gas_station) {
-            return {outcome: "replace", task: {type: "harvest"}};
+            var task = {type: "harvest", timeout: 30, no_resupply: true}
+            return {outcome: "newtask", task: task}
         }
         var rc = creep.withdraw(gas_station, RESOURCE_ENERGY);
         if(rc == ERR_NOT_IN_RANGE) {
@@ -299,6 +304,9 @@ module.exports = {
                 console.log("Task (" + ttype + ") returned unrecognised outcome: " + result.outcome);
                 owner.pop_task();
             }
+            if((task == tq[0]) && task.timeout &&
+                task.times_run >= task.timeout)
+                owner.pop_task();
             break;
         }
     }
