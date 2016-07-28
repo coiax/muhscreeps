@@ -16,4 +16,14 @@ StructureTower.prototype.expected_power = function(atype, range) {
     var optimum_range = TOWER_OPTIMAL_RANGE;
     var falloff_range = TOWER_FALLOFF_RANGE;
     var falloff = TOWER_FALLOFF;
+    if(range <= optimum_range) {
+        return power;
+    } else if(range >= falloff_range) {
+        return power * (1 - falloff);
+    } else {
+        var width = TOWER_FALLOFF_RANGE - TOWER_OPTIMAL_RANGE;
+        var step = (power *  falloff) / width;
+        var steps = range - TOWER_OPTIMAL_RANGE;
+        return power - (steps * step);
+    }
 }
