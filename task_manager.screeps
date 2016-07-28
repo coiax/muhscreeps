@@ -79,11 +79,6 @@ task_functions = {
         if(creep.is_full()) {
             return {outcome: "didnothing"};
         }
-        var energy = creep.pos.findClosestByRange(FIND_DROPPED_ENERGY);
-        if(energy) {
-            var task = {type: "pickup", target_id: energy.id};
-            return {outcome: "newtask", task: task};
-        }
         var gas_station = Game.getObjectById(task.gas_station_id);
         if(!gas_station) {
             var stypes = [STRUCTURE_CONTAINER, STRUCTURE_STORAGE];
@@ -91,9 +86,16 @@ task_functions = {
                 filter: function(st) {
                     return st.is_type(stypes) && st.store[RESOURCE_ENERGY];
             }});
+            var energies = creep.room.find(FIND_DROPPED_ENERGY);
+            possible_stations = possible_stations.concat(energies);
             if(possible_stations.length) {
                 gas_station = creep.pos.findClosestByRange(possible_stations);
-                task.gas_station_id = gas_station.id;
+                if(gas_station.structureType) {
+                    task.gas_station_id = gas_station.id;
+                } else {
+                    var task = {type: "pickup", target_id: gas_station.id};
+                    return {outcome: "newtask", task: task};
+                }
             }
         }
         if(!gas_station) {
