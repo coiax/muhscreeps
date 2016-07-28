@@ -171,6 +171,8 @@ task_functions = {
         // towers should reevaluate targets after 25 times
         if(!mode || !target || (task.times_run && task.times_run > 25))
             return {outcome: "didnothing"};
+        if(tower.energy < TOWER_ENERGY_COST)
+            return {outcome: "didnothing"};
         var rc;
         switch(mode) {
             case "heal":
