@@ -10,7 +10,7 @@ function reservable_controller(room_name, username) {
             if(!ctr.reservation) {
                 return true;
             } else if((ctr.reservation.username == username) &&
-                (ctr.ticksToEnd < RESERVE_THRESHOLD)) {
+                (ctr.reservation.ticksToEnd < RESERVE_THRESHOLD)) {
                 return true;
             }
         }
