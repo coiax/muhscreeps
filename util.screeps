@@ -26,21 +26,18 @@ function cpulog(msg) {
 };
 
 function mean(arr) {
-    var sum = 0;
-    arr.forEach(function(num) {
-        sum += num;
-    });
-    return sum / arr.length;
+    return _.sum(arr) / arr.length;
 }
 
-function standard_deviation(arr) {
+function standard_deviation_and_mean(arr) {
     var avg = mean(arr);
     var sum = 0;
     arr.forEach(function(num) {
         sum += Math.pow(num - avg, 2);
     });
     sum /= arr.length;
-    return Math.pow(sum, 0.5);
+    var std = Math.pow(sum, 0.5);
+    return {avg: avg, std: std};
 }
 
 function room_walk(roomname, func, opts) {

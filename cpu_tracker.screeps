@@ -33,9 +33,16 @@ function record(obj, used) {
     if(!obj.values)
         obj.values = []
     add_value(obj.values, {time:time, used:used})
-    var used_arr = _.map(obj.values, _.property('used'))
     obj.last = used;
 };
+
+function get_values(obj) {
+    if(obj.values) {
+        return _.map(obj.values, _.property('used'));
+    } else {
+        return null;
+    }
+}
 
 var paths = {};
 
@@ -85,5 +92,14 @@ module.exports = {
         return record_arbitary("tasks", task_name, cpu_use);
     },
     calculate : function() {
+        for(var path in paths) {
+            var stat_obj = _.get(Memory.cpu, path);
+            if(!stat_obj)
+                continue;
+            var values = get_values(stat_obj);
+            var math_obj = util.standard_deviation_and_mean(values);
+            stat_obj.avg = math_obj.avg;
+            stat_obj.std = math_obj.std;
+        }
     }
 };
