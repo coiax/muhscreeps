@@ -328,11 +328,11 @@ module.exports = {
                 return;
             }
 
-            var start_time = Game.cpu.getUsed();
-            var result = func(task, owner);
-            var end_time = Game.cpu.getUsed();
+            var t1 = cpu_tracker.start("tasks", ttype);
 
-            cpu_tracker.record_task(ttype, end_time - start_time);
+            var result = func(task, owner);
+
+            cpu_tracker.stop(t1);
 
             if(!result) {
                 console.log("Task did not return result: " + ttype);

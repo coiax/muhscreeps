@@ -109,6 +109,7 @@ module.exports = {
             stat_obj.times_run = times_run;
             stat_obj.mavg = times_run * math_obj.avg;
         }
+        paths = {};
     },
     start : start,
     stop : stop
