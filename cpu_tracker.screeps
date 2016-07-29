@@ -2,15 +2,11 @@ var util = require('util');
 
 function setup() {
     if(!Memory.cpu)
-        Memory.cpu = {};
+        Memory.cpu = {enabled: false, values_kept: 1000};
+    if(typeof Memory.cpu.enabled == 'undefined')
+        Memory.cpu.enabled = false;
     if(!Memory.cpu.values_kept)
         Memory.cpu.values_kept = 1000;
-    if(!Memory.cpu.roles)
-        Memory.cpu.roles = {};
-    if(!Memory.cpu.tasks)
-        Memory.cpu.tasks = {};
-    if(!Memory.cpu.main)
-        Memory.cpu.main = {};
 };
 
 function add_value(values, obj) {
@@ -40,28 +36,25 @@ function record(obj, used) {
     var used_arr = _.map(obj.values, _.property('used'))
     obj.last = used;
 };
+function record_arbitary(arbitary, name, cpu_use) {
+    setup();
+    if(!Memory.cpu.enabled)
+        return;
+    if(!Memory.cpu[arbitary])
+        Memory.cpu[arbitary] = {};
+    if(!name) {
+        record(Memory.cpu[arbitary], cpu_use);
+    } else {
+        record(Memory.cpu[arbitary][name], cpu_use);
+    }
+};
 
 module.exports = {
+    record_arbitary : record_arbitary,
     record_main : function() {
-        if(!Memory.cpu || !Memory.cpu.enabled) {
-            return;
-        }
-        setup();
-        record(Memory.cpu.main, Game.cpu.getUsed());
+        return record_arbitary("main", null, Game.cpu.getUsed());
     },
     record_task : function(task_name, cpu_use) {
-        if(!Memory.cpu || !Memory.cpu.enabled) {
-            return;
-        }
-        setup();
-        if(!Memory.cpu.tasks[task_name]) {
-            Memory.cpu.tasks[task_name] = {};
-        }
-        record(Memory.cpu.tasks[task_name], cpu_use)
-    },
-    calculate : function() {
-        if(!Memory.cpu || !Memory.cpu.enabled) {
-            return;
-        }
+        return record_arbitary("tasks", task_name, cpu_use);
     }
 };
