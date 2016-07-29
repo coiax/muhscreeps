@@ -67,7 +67,7 @@ module.exports = {
         }
         if(target) {
             var task = {type: "tower_target", target_id: target.id,
-                mode: mode};
+                mode: mode, timeout: 25};
             return {"outcome":"newtask", task: task};
         } else {
             return {"outcome":"continue"};
