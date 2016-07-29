@@ -101,5 +101,7 @@ module.exports = {
             stat_obj.avg = math_obj.avg;
             stat_obj.std = math_obj.std;
         }
-    }
+    },
+    start : start,
+    stop : stop
 };

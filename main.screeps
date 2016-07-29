@@ -12,20 +12,24 @@ function cpu_debug(msg) {
 
 module.exports.loop = function () {
     cpu_debug("Start mainloop");
+
+    var t1 = cpu_tracker.start("internal", "memory_decode");
     if(Memory.just_exit) {
         return;
     }
-    if(!Memory.cpu) {
-        Memory.cpu = {};
-        Memory.cpu.enabled = false;
-    }
-    gc.gc();
+    cpu_tracker.stop(t1);
 
+    var t2 = cpu_tracker.start("internal", "gc");
+    gc.gc();
+    cpu_tracker.stop(t2);
+
+    var t3 = cpu_tracker.start("global", "scouting");
     for(var roomName in Game.rooms) {
         cpu_debug("Scouting " + roomName);
         var room = Game.rooms[roomName];
         room.scout_room();
     }
+    cpu_tracker.stop(t3);
 
     for(var sid in Game.structures) {
         var structure = Game.structures[sid];
@@ -83,6 +87,5 @@ module.exports.loop = function () {
     cpu_debug("Recording total CPU usage.");
     cpu_tracker.record_main();
     cpu_debug("Main loop complete.");
-    gc.gc();
     cpu_tracker.calculate();
 }
