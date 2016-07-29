@@ -49,7 +49,9 @@ function record_arbitary(arbitary, name, cpu_use) {
         paths.add(arbitary);
         record(Memory.cpu[arbitary], cpu_use);
     } else {
+        console.log("BEFORE" + JSON.stringify(paths));
         paths.add(arbitary + "." + name);
+        console.log("AFTER" + JSON.stringify(paths));
         if(!Memory.cpu[arbitary][name])
             Memory.cpu[arbitary][name] = {};
         record(Memory.cpu[arbitary][name], cpu_use);
