@@ -49,9 +49,7 @@ function record_arbitary(arbitary, name, cpu_use) {
         paths[arbitary] = true;
         record(Memory.cpu[arbitary], cpu_use);
     } else {
-        console.log("BEFORE" + JSON.stringify(paths));
         paths[arbitary + "." + name] = true;
-        console.log("AFTER" + JSON.stringify(paths));
         if(!Memory.cpu[arbitary][name])
             Memory.cpu[arbitary][name] = {};
         record(Memory.cpu[arbitary][name], cpu_use);
@@ -87,6 +85,5 @@ module.exports = {
         return record_arbitary("tasks", task_name, cpu_use);
     },
     calculate : function() {
-        console.log(JSON.stringify(paths.keys()));
     }
 };
