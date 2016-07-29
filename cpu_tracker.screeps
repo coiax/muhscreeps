@@ -53,10 +53,15 @@ function record_arbitary(arbitary, name, cpu_use) {
     if(!Memory.cpu[arbitary])
         Memory.cpu[arbitary] = {};
     if(!name) {
-        paths[arbitary] = true;
+        if(!paths[arbitary])
+            paths[arbitary] = 0;
+        paths[arbitary]++;
         record(Memory.cpu[arbitary], cpu_use);
     } else {
-        paths[arbitary + "." + name] = true;
+        var path = arbitary + "." + name;
+        if(!paths[path])
+            paths[path] = 0;
+        paths[path]++;
         if(!Memory.cpu[arbitary][name])
             Memory.cpu[arbitary][name] = {};
         record(Memory.cpu[arbitary][name], cpu_use);
@@ -93,6 +98,7 @@ module.exports = {
     },
     calculate : function() {
         for(var path in paths) {
+            var times_run = paths[path];
             var stat_obj = _.get(Memory.cpu, path);
             if(!stat_obj)
                 continue;
@@ -100,6 +106,8 @@ module.exports = {
             var math_obj = util.standard_deviation_and_mean(values);
             stat_obj.avg = math_obj.avg;
             stat_obj.std = math_obj.std;
+            stat_obj.times_run = times_run;
+            stat_obj.mavg = times_run * math_obj.avg;
         }
     },
     start : start,
