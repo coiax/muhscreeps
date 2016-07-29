@@ -93,7 +93,7 @@ module.exports = {
     is_damaged: is_damaged,
     cpulog: cpulog,
     mean: mean,
-    standard_deviation: standard_deviation,
+    standard_deviation_and_mean: standard_deviation_and_mean,
     memoryPosition: function(obj) {
         if(obj) {
             return new RoomPosition(obj.x, obj.y, obj.roomName);
