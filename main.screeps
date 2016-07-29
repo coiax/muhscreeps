@@ -84,4 +84,5 @@ module.exports.loop = function () {
     cpu_tracker.record_main();
     cpu_debug("Main loop complete.");
     gc.gc();
+    cpu_tracker.calculate();
 }

@@ -36,6 +36,9 @@ function record(obj, used) {
     var used_arr = _.map(obj.values, _.property('used'))
     obj.last = used;
 };
+
+var paths = new Set;
+
 function record_arbitary(arbitary, name, cpu_use) {
     setup();
     if(!Memory.cpu.enabled)
@@ -43,8 +46,10 @@ function record_arbitary(arbitary, name, cpu_use) {
     if(!Memory.cpu[arbitary])
         Memory.cpu[arbitary] = {};
     if(!name) {
+        paths.add(arbitary);
         record(Memory.cpu[arbitary], cpu_use);
     } else {
+        paths.add(arbitary + "." + name);
         if(!Memory.cpu[arbitary][name])
             Memory.cpu[arbitary][name] = {};
         record(Memory.cpu[arbitary][name], cpu_use);
@@ -78,5 +83,8 @@ module.exports = {
     },
     record_task : function(task_name, cpu_use) {
         return record_arbitary("tasks", task_name, cpu_use);
+    },
+    calculate : function() {
+        console.log(JSON.stringify(paths));
     }
 };
