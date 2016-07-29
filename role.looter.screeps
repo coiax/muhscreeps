@@ -4,7 +4,7 @@ module.exports = {
     generate_parts : function() {
         module.exports.parts = [[CARRY,MOVE]];
         var parts = module.exports.parts;
-        counter = 1;
+        var counter = 1;
         while(true) {
             var new_parts = [];
             for(var i = 0; i < (counter * 2); i++) {
