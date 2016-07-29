@@ -308,6 +308,23 @@ task_functions = {
         } else {
             return {outcome: "done"};
         }
+    },
+    travel_to_room : function(task, creep) {
+        var destination_room = task.destination_room;
+        var current_room = creep.room.roomName;
+        if(!destination_room || current_room == destination_room)
+            return {outcome: "didnothing"};
+        if(!task.route) {
+            rc = Game.map.findRoute(current_room, destination_room);
+            if(rc == ERR_NO_PATH) {
+                creep.say("ttr!pa");
+                return {outcome: "continue"};
+            }
+            task.route = rc;
+            task.route_index = 0;
+        }
+        var route = task.route;
+        var element = route[task.route_index];
     }
 }
 module.exports = {
