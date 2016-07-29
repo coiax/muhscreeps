@@ -1,0 +1,30 @@
+StructureSpawn.prototype.support_creep = function(creep) {
+    if(!this.memory.supported_creeps)
+        this.memory.supported_creeps = [];
+
+    this.memory.supported_creeps.push(creep.name);
+    creep.memory.support = this.name;
+}
+
+StructureSpawn.prototype.unsupport_creep = function(creep) {
+    if(!this.memory.supported_creeps)
+        this.memory.supported_creeps = [];
+    _.remove(this.memory.supported_creeps, function(other_name) {
+        return other_name == creep.name;
+    });
+    if(creep.memory.support == this.name) {
+        creep.memory.support = null;
+    }
+}
+
+
+StructureSpawn.prototype.check_creeps = function() {
+    if(!this.memory.supported_creeps)
+        this.memory.supported_creeps = [];
+
+    _.remove(this.memory.supported_creeps, function(creep_name, i, arr) {
+        var creep = Game.creeps[creep_name];
+        // remove if true;
+        return !creep;
+    });
+}
