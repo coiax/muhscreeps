@@ -37,7 +37,7 @@ function record(obj, used) {
     obj.last = used;
 };
 
-var paths = new Set;
+var paths = new Set();
 
 function record_arbitary(arbitary, name, cpu_use) {
     setup();
