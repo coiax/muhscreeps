@@ -40,7 +40,7 @@ module.exports = {
             var stype = stypes[i];
             target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {filter:
                 function(st) {
-                    return (st.is_type(stype) && util.needs_energy(st));
+                    return (util.needs_energy(st) && st.is_type(stype));
             }});
             if(target)
                 break;
