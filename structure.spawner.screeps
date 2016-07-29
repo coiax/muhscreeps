@@ -93,8 +93,8 @@ module.exports = {
     run : function(task, spawner) {
         setup(task, spawner);
         spawner.check_creeps();
-        counts = {};
-        required = [
+        var counts = {};
+        var required = [
             {task: "role.supplier", amount: 1},
             {task: "role.cow", amount: 1},
             {task: "role.upgrader", amount: 1},
