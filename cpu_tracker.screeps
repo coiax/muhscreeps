@@ -49,6 +49,26 @@ function record_arbitary(arbitary, name, cpu_use) {
     }
 };
 
+
+function start(arbitary, task_name) {
+    var timer_obj = {};
+    timer_obj.time_started = Game.cpu.getUsed();
+    timer_obj.arbitary = arbitary;
+    timer_obj.task_name = task_name;
+    return timer_obj;
+}
+
+function stop(timer_obj) {
+    var time_stopped = Game.cpu.getUsed();
+    if(timer_obj && (typeof timer_obj.time_started != 'undefined') &&
+        (typeof timer_obj.arbitary != 'undefined') &&
+        (typeof timer_obj.task_name != 'undefined')) {
+        //
+        var total_time = time_stopped - timer_obj.time_started;
+        record_arbitary(timer_obj.arbitary, timer_obj.task_name, total_time);
+    }
+}
+
 module.exports = {
     record_arbitary : record_arbitary,
     record_main : function() {
