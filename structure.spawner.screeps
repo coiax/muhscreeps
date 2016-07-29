@@ -75,22 +75,10 @@ function build_creep(spawn, task_obj, initial_task) {
         support: spawn.name
     }
     spawn.createCreep(selected_parts, creep_name, creep_memory);
-    var mem = spawn.memory;
-    if(!mem.supported_creeps)
-        mem.supported_creeps = [];
-    mem.supported_creeps.push(creep_name);
+    spawn.support_creep(Game.creeps[creep_name])
 }
 
 function setup(task, spawner) {
-    if(!spawner.memory.supported_creeps) {
-        spawner.memory.supported_creeps = []
-    }
-
-    // remove any dead creeps from our supported list.
-    _.remove(spawner.memory.supported_creeps, function(value, index, arr) {
-        return !Game.creeps[value];
-    });
-
     if (typeof task.creep_id == 'undefined') {
         task.creep_id = 1
     }
@@ -104,6 +92,7 @@ module.exports = {
     name : "structure.spawner",
     run : function(task, spawner) {
         setup(task, spawner);
+        spawner.check_creeps();
         counts = {};
         required = [
             {task: "role.supplier", amount: 1},
