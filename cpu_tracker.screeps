@@ -85,6 +85,6 @@ module.exports = {
         return record_arbitary("tasks", task_name, cpu_use);
     },
     calculate : function() {
-        console.log(JSON.stringify(paths));
+        console.log(JSON.stringify(paths.keys()));
     }
 };
