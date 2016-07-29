@@ -37,7 +37,7 @@ function record(obj, used) {
     obj.last = used;
 };
 
-var paths = new Set();
+var paths = {};
 
 function record_arbitary(arbitary, name, cpu_use) {
     setup();
@@ -46,11 +46,11 @@ function record_arbitary(arbitary, name, cpu_use) {
     if(!Memory.cpu[arbitary])
         Memory.cpu[arbitary] = {};
     if(!name) {
-        paths.add(arbitary);
+        paths[arbitary] = true;
         record(Memory.cpu[arbitary], cpu_use);
     } else {
         console.log("BEFORE" + JSON.stringify(paths));
-        paths.add(arbitary + "." + name);
+        paths[arbitary + "." + name] = true;
         console.log("AFTER" + JSON.stringify(paths));
         if(!Memory.cpu[arbitary][name])
             Memory.cpu[arbitary][name] = {};
