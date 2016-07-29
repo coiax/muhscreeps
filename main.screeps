@@ -11,7 +11,6 @@ function cpu_debug(msg) {
 }
 
 module.exports.loop = function () {
-    RawMemory.set("{}");
     cpu_debug("Start mainloop");
 
     var t1 = cpu_tracker.start("internal", "memory_decode");
