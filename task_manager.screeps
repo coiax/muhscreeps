@@ -325,6 +325,23 @@ var task_functions = {
         }
         var route = task.route;
         var element = route[task.route_index];
+    },
+    taskless : function(task, creep) {
+        // TODO should rendevous with nearest spawn and have them assign
+        var can_work = creep.body_part_count(WORK);
+        var can_carry = creep.body_part_count(CARRY);
+        var purpose;
+        if(!can_work && !can_carry) {
+            purpose = "role.dumbscout";
+        } else if(can_work && !can_carry) {
+            purpose = "role.cow";
+        } else if(!can_work && can_carry) {
+            purpose = "role.supplier";
+        } else {
+            purpose = _.sample(["role.supplier","role.cow","role.upgrader",
+                "role.builder"]);
+        }
+        return {outcome: "replace", task: {type: purpose}};
     }
 }
 module.exports = {

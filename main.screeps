@@ -77,11 +77,13 @@ module.exports.loop = function () {
                 creep.repair(damaged_structures[0]);
             }
         }
-        var tq = creep.memory.task_queue;
-        if((creep.ticksToLive < 100) && creep.memory.recharge &&
-            (!tq || (tq.length && (tq[0].type != "renew")))) {
+
+        if(creep.wants_renew())
             creep.add_task({type:"renew"});
-        }
+
+        if(!creep.has_tasks)
+            creep.add_task({type: "taskless"});
+
         task_manager.run_task_queue(creep, creep.memory.task_queue);
     }
     cpu_debug("Recording total CPU usage.");

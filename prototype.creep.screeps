@@ -30,6 +30,23 @@ Creep.prototype.has_task_in_queue = function(ttype) {
     return null;
 };
 
+Creep.prototype.has_tasks = function() {
+    if(this.memory.task_queue && this.memory.task_queue.length) {
+        return true;
+    } else {
+        return false;
+    }
+};
+
+Creep.prototype.wants_renew = function() {
+    if(this.ticksToLive < 100 && creep.memory.autorenew &&
+        !this.has_task_in_queue("renew")) {
+        return true;
+    } else {
+        return false;
+    }
+};
+
 Creep.prototype.renew_cost = function() {
     return floor(600 / this.body.length);
 };
