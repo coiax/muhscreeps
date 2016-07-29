@@ -39,7 +39,7 @@ Creep.prototype.has_tasks = function() {
 };
 
 Creep.prototype.wants_renew = function() {
-    if(this.ticksToLive < 100 && creep.memory.autorenew &&
+    if(this.ticksToLive < 100 && this.memory.autorenew &&
         !this.has_task_in_queue("renew")) {
         return true;
     } else {
