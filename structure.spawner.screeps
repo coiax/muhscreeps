@@ -2,7 +2,7 @@ var util = require('util');
 
 
 function generate_default_parts() {
-    counter = 1;
+    var counter = 1;
     while(true) {
         var parts = [];
         for (var i = 0; i < counter; i++) {
