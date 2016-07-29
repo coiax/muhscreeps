@@ -45,6 +45,8 @@ function record_arbitary(arbitary, name, cpu_use) {
     if(!name) {
         record(Memory.cpu[arbitary], cpu_use);
     } else {
+        if(!Memory.cpu[arbitary][name])
+            Memory.cpu[arbitary][name] = {};
         record(Memory.cpu[arbitary][name], cpu_use);
     }
 };
