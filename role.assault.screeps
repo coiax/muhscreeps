@@ -1,6 +1,6 @@
 module.exports = {
     name : "role.assault",
-    parts : [[
+    parts : [[TOUGH,MOVE,RANGED_ATTACK],[
 TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,
 TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,
 TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,
