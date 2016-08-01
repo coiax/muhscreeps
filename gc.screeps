@@ -10,7 +10,7 @@ module.exports = {
             var collection = obj.collection;
             var comparison = obj.comparison;
             if(!collection || !comparison)
-                continue;
+                return;
             for(var id in collection) {
                 if(!comparison[id] || !collection[id] ||
                     _.isEmpty(!collection[id])) {
