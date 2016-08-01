@@ -363,8 +363,13 @@ module.exports = {
             }
 
             var t1 = cpu_tracker.start("tasks", ttype);
-
-            var result = func(task, owner);
+            try {
+                var result = func(task, owner);
+            } catch(err) {
+                console.log("Task " + ttype + " error:" + err);
+                owner.pop_task();
+                continue;
+            }
 
             cpu_tracker.stop(t1);
 
