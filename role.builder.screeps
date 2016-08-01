@@ -22,6 +22,10 @@ var roleBuilder = {
         }
         var dismantle_flag = Game.flags["Dismantle"];
         if(dismantle_flag) {
+            if(!dismantle_flag.room) {
+                creep.moveTo(dismantle_flag)
+                return {outcome: "continue"};
+            }
             var items = dismantle_flag.pos.findInRange(FIND_STRUCTURES, 0);
             if(items && items.length) {
                 var item = items[0];
