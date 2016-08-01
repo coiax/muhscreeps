@@ -107,7 +107,6 @@ module.exports = {
             {task: "role.supplier", amount: 4},
             {task: "role.upgrader", amount: 3},
             {task: "role.builder", amount: 4},
-            {task: "role.assault", amount: 5},
             {task: "role.dumbscout", amount: 10},
             {task: "role.claimer", amount: 1}
         ];
