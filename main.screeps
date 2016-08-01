@@ -11,13 +11,17 @@ function cpu_debug(msg) {
 }
 
 module.exports.loop = function () {
-    cpu_debug("Start mainloop");
-
     var t1 = cpu_tracker.start("internal", "memory_decode");
+    if(!Memory)
+        RawMemory.set("{}");
+        return;
+    Memory;
+    cpu_tracker.stop(t1);
     if(Memory.just_exit) {
         return;
     }
-    cpu_tracker.stop(t1);
+
+    cpu_debug("Start mainloop");
 
     var t2 = cpu_tracker.start("internal", "gc");
     gc.gc();
