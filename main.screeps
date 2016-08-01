@@ -89,6 +89,11 @@ module.exports.loop = function () {
     }
     cpu_debug("Recording total CPU usage.");
     cpu_tracker.record_main();
+
+    var t4 = cpu_tracker.start("internal", "gc");
+    gc.gc();
+    cpu_tracker.stop(t4);
+
     cpu_debug("Main loop complete.");
     cpu_tracker.calculate();
 }
