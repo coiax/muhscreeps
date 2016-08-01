@@ -1,0 +1,65 @@
+function floyd_room(room, opts) {
+    var plain_cost = opts.plain_cost || 2;
+    var road_cost = opts.road_cost || 1;
+    var swamp_cost = opts.swamp_cost || 10;
+
+    var vertices = [];
+    for (var i = 0; i < 50; i++) {
+        for (var j = 0; j < 50; i++) {
+            vertices.push(room.getPositionAt(i,j));
+        }
+    }
+
+    // let dist be a |V| × |V| array of
+    // minimum distances initialized to ∞ (infinity)
+    var dist = {};
+    vertices.forEach(function(v1) {
+        vertices.forEach(function(v2) {
+            if(!dist[v1])
+                dist[v1] = {};
+            dist[v1][v2] = Infinity;
+        });
+    });
+    // for each vertex v
+    //    dist[v][v] ← 0
+    vertices.forEach(function(v) {
+        dist[v][v] = 0;
+    });
+    // for each edge (u,v)
+    //    dist[u][v] ← w(u,v)  // the weight of the edge (u,v)
+    vertices.forEach(function(u) {
+        var u_has_obstacle = u.has_obstacle();
+        u.ordinals().forEach(function(v) {
+            var weight;
+            if(u_has_obstacle || v.has_obstacle(true)) {
+                weight = Infinity;
+            } else if(v.has_road()) {
+                weight = road_cost;
+            } else if(v.is_swamp()) {
+                weight = swamp_cost;
+            } else {
+                weight = plain_cost;
+            }
+            dist[u][v] = weight;
+        });
+    });
+
+    // for k from 1 to |V|
+    //    for i from 1 to |V|
+    //       for j from 1 to |V|
+    //          if dist[i][j] > dist[i][k] + dist[k][j]
+    //              dist[i][j] ← dist[i][k] + dist[k][j]
+    //          end if
+    vertices.forEach(function(k) {
+        vertices.forEach(function(i) {
+            vertices.forEach(function(j) {
+                var dij = dist[i][j];
+                var dik = dist[i][k];
+                var dkj = dist[k][j];
+                if(dij > dik + dkj)
+                    dist[i][j] = dik + dkj;
+            });
+        });
+    });
+    return dist;
+}
