@@ -63,3 +63,7 @@ function floyd_room(room, opts) {
     });
     return dist;
 }
+
+module.exports = {
+    floyd_room: floyd_room
+}
