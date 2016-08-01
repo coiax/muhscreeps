@@ -22,6 +22,9 @@ MOVE
             }});
         }
         if(!targets.length) {
+            targets = creep.pos.findInRange(FIND_HOSTILE_STRUCTURES, 3);
+        }
+        if(!targets.length) {
             targets = creep.pos.findInRange(FIND_HOSTILE_CREEPS, 3);
         }
 
