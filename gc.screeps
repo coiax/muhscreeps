@@ -13,7 +13,7 @@ module.exports = {
                 return;
             for(var id in collection) {
                 if(!comparison[id] || !collection[id] ||
-                    _.isEmpty(!collection[id])) {
+                    _.isEmpty(collection[id])) {
                     //
                     delete collection[id];
                 }
