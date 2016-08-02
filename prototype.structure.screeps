@@ -72,4 +72,19 @@ Structure.prototype.is_type = function(stypes) {
         stypes = [stypes];
     }
     return _.includes(stypes, this.structureType);
-}
+};
+
+Structure.prototype.is_full = function() {
+    if(!this.isActive())
+        return null;
+    if(this.store) {
+        var total = _.sum(this.store);
+        return total == this.storeCapacity;
+    } else {
+        if(typeof this.energy == 'undefined')
+            return null;
+        if(typeof this.energyCapacity == 'undefined')
+            return null;
+        return this.energy == this.energyCapacity;
+    }
+};

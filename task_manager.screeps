@@ -144,34 +144,69 @@ var task_functions = {
         return {outcome: "continue"};
     },
     transfer_energy : function(task, creep) {
-        target = Game.getObjectById(task.target_id);
-        if(!target || (target.energy == target.energyCapacity) ||
-            (creep.carry.energy == 0)) {
+        // Deprecated.
+        var task = {type: "transfer_to", target_id: task.target_id};
+        return {outcome: "replace", task: task};
+    },
+    transfer_to : function(task, creep) {
+        // Low level task; creep to navigate to target or destination
+        // (once in destination room, look for a suitable structure, if
+        // none found, choose the floor), and then transfer as much as
+        // possible of the resource type
+        var target = Game.getObjectById(task.target_id);
+        var destination = util.memoryPosition(task.destination_pos);
+        var resource_type = task.resource_type || RESOURCE_ENERGY;
+        var amount = task.amount;
+
+        if(!target && !destination)
             return {outcome: "didnothing"};
+
+        if(typeof amount != 'undefined') {
+            amount = max(creep.carry[resource_type], amount);
+            task.amount = amount;
         }
-        var rc = creep.transfer(target, RESOURCE_ENERGY);
+
+        if(!target) {
+            if(destination.roomName == creep.room.name) {
+                var look = destination.look(LOOK_STRUCTURES);
+                for(var i in look) {
+                    var st = look[i];
+                    var rc = creep.transfer(st, resource_type, amount);
+                    if(rc == ERR_INVALID_TARGET) {
+                        continue;
+                    } else {
+                        target = st;
+                        task.target_id = target.id;
+                        break;
+                    }
+                }
+                if(!target)
+                    return {outcome: "didnothing"};
+            } else {
+                creep.moveTo(destination);
+                return {outcome: "continue"};
+            }
+        }
+        task.destination_pos = target.pos;
+        var rc = creep.transfer(target, resource_type, amount);
         switch(rc) {
+            case ERR_NOT_OWNER:
+            case ERR_BUSY:
+            case ERR_NOT_ENOUGH_RESOURCES:
+            case ERR_INVALID_ARGS:
+                throw "transfer_to: transfer rc " + rc;
+            case ERR_INVALID_TARGET:
+            case ERR_FULL:
+                return {outcome: "didnothing"};
+                break;
             case ERR_NOT_IN_RANGE:
                 creep.moveTo(target);
                 return {outcome: "continue"};
-            case ERR_FULL:
-                // note the lack of break, falling through to didnothing
-                // is the intent.
-                if(task.dump_excess_on_target) {
-                    if(creep.pos != target.pos) {
-                        creep.moveTo(target);
-                        return {outcome: "continue"};
-                    } else {
-                        creep.drop(RESOURCE_ENERGY);
-                        return {outcome: "done"};
-                    }
-                }
-            case ERR_INVALID_TARGET:
-                return {outcome: "didnothing"};
             case OK:
                 return {outcome: "done"};
+            default:
+                throw "Unrecognised rc " + rc;
         }
-        return {outcome: "continue"};
     },
     tower_target : function(task, tower) {
         target = Game.getObjectById(task.target_id);
@@ -212,15 +247,8 @@ var task_functions = {
             return {outcome: "didnothing"};
         }
         if(creep.carry.energy == creep.carryCapacity) {
-            var stores = creep.pos.findStructures(STRUCTURE_CONTAINER);
-            var nearest = creep.pos.findClosestByPath(stores);
-            if(nearest) {
-                var task = {type: "transfer_energy", target_id: nearest.id,
-                    dump_excess_on_target: true}
-                return {outcome: "newtask", task: task}
-            } else {
-                creep.drop(RESOURCE_ENERGY);
-            }
+            var task = {type: "deposit"}
+            return {outcome: "newtask", task: task}
         }
         var rc = creep.dismantle(target);
         switch(rc) {
@@ -342,6 +370,21 @@ var task_functions = {
                 "role.builder"]);
         }
         return {outcome: "replace", task: {type: purpose}};
+    },
+    deposit : function(task, creep) {
+        // A high level task; the creep is carrying resources, and
+        // wants to deposit them in the nearest friendly storage structure.
+        // For now, we'll put them in the Storage of the creep's Spawn.
+        if(_.sum(creep.carry) == 0)
+            return {outcome: "didnothing"};
+        var our_spawn = Game.spawns[creep.support];
+        if(our_spawn) {
+            var our_storage = our_spawn.room.storage;
+            if(our_storage && (our_storage.is_full() == false)) {
+                var task = {type: "transfer_to", target_id: our_storage.id};
+                return {type: "newtask", task: task};
+            }
+        }
     }
 }
 module.exports = {
