@@ -379,7 +379,7 @@ var task_functions = {
         // For now, we'll put them in the Storage of the creep's Spawn.
         if(creep.is_empty())
             return {outcome: "didnothing"};
-        var our_spawn = Game.spawns[creep.support];
+        var our_spawn = Game.spawns[creep.memory.support];
         if(our_spawn) {
             var our_storage = our_spawn.room.storage;
             if(our_storage && (our_storage.is_full() == false)) {
