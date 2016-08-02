@@ -356,6 +356,25 @@ var task_functions = {
         creep.say("TODO");
         return {outcome: "continue"};
     },
+    move_to_exit : function(task, creep) {
+        // Low level task for moving to another
+        // room, via a provided exit in the creep's current room.
+        // Should work with portals.
+        // Use of move_to won't work because of how exits immediately
+        // transport you to another room.
+        var destination = util.memoryPosition(task.destination_pos);
+        var destination_room = task.destination_room;
+        var current_room = creep.room.name;
+        if(destination_room == current_room || creep.pos == destination)
+            return {outcome: "didnothing"}; // we finished successfully.
+
+        if(!destination || !destination_room ||
+            destination.roomName != current_room)
+            //
+            return {outcome: "didnothing"}; // an error occured.
+        creep.moveTo(destination);
+        return {outcome: "continue"};
+    },
     taskless : function(task, creep) {
         // TODO should rendevous with nearest spawn and have them assign
         var can_work = creep.body_part_count(WORK);
