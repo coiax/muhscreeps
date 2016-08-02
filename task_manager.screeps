@@ -384,14 +384,16 @@ var task_functions = {
             var our_storage = our_spawn.room.storage;
             if(our_storage && (our_storage.is_full() == false)) {
                 var task = {type: "transfer_to", target_id: our_storage.id};
-                return {type: "newtask", task: task};
+                return {outcome: "newtask", task: task};
             }
             if(our_spawn.room.name != creep.room.name) {
                 var task = {type: "travel_to_room",
                     destination_room: our_spawn.room.name};
-                return {type: "newtask", task: task};
+                return {outcome: "newtask", task: task};
             }
         }
+        creep.say("No spawn?");
+        return {outcome: "continue"};
     }
 }
 module.exports = {
