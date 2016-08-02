@@ -3,9 +3,9 @@ var util = require('util');
 
 var task_functions = {
     harvest : function(task, creep) {
-        if(creep.carryCapacity == creep.carry.energy) {
+        if(creep.is_full())
             return {outcome: "didnothing"};
-        }
+
         var selected = Game.getObjectById(task.selected_source_id);
         if(!selected) {
             selected = creep.pos.findClosestByRange(FIND_SOURCES, {
@@ -158,7 +158,7 @@ var task_functions = {
         var resource_type = task.resource_type || RESOURCE_ENERGY;
         var amount = task.amount;
 
-        if(!target && !destination)
+        if((!target && !destination) || !creep.carry[resource_type])
             return {outcome: "didnothing"};
 
         if(typeof amount != 'undefined') {
@@ -243,10 +243,10 @@ var task_functions = {
     },
     dismantle : function(task, creep) {
         var target = Game.getObjectById(task.target_id);
-        if(!target) {
+        if(!target)
             return {outcome: "didnothing"};
-        }
-        if(creep.carry.energy == creep.carryCapacity) {
+
+        if(creep.is_full()) {
             var task = {type: "deposit"}
             return {outcome: "newtask", task: task}
         }
@@ -353,6 +353,8 @@ var task_functions = {
         }
         var route = task.route;
         var element = route[task.route_index];
+        creep.say("TODO");
+        return {outcome: "continue"};
     },
     taskless : function(task, creep) {
         // TODO should rendevous with nearest spawn and have them assign
@@ -375,13 +377,18 @@ var task_functions = {
         // A high level task; the creep is carrying resources, and
         // wants to deposit them in the nearest friendly storage structure.
         // For now, we'll put them in the Storage of the creep's Spawn.
-        if(_.sum(creep.carry) == 0)
+        if(creep.is_empty())
             return {outcome: "didnothing"};
         var our_spawn = Game.spawns[creep.support];
         if(our_spawn) {
             var our_storage = our_spawn.room.storage;
             if(our_storage && (our_storage.is_full() == false)) {
                 var task = {type: "transfer_to", target_id: our_storage.id};
+                return {type: "newtask", task: task};
+            }
+            if(our_spawn.room.name != creep.room.name) {
+                var task = {type: "travel_to_room",
+                    destination_room: our_spawn.room.name};
                 return {type: "newtask", task: task};
             }
         }

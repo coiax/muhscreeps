@@ -82,6 +82,11 @@ Creep.prototype.is_full = function() {
     return total == this.carryCapacity;
 };
 
+Creep.prototype.is_empty = function() {
+    var total = _.sum(this.carry);
+    return total == 0;
+};
+
 Creep.prototype.find_support = function() {
     var closest_spawn = this.pos.findClosestByPath(Game.spawns);
     if(closest_spawn) {
