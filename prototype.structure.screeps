@@ -39,12 +39,14 @@ Structure.prototype.pop_task = function() {
 };
 
 Structure.prototype.log = function(level, subsystem, message) {
-    if(!this.memory.log) {
-        this.memory.log = [];
+    var memory = this.getMemory();
+    if(!memory.log) {
+        memory.log = [];
     }
+    var log = memory.log;
     var log_entry = {level: level, message: message, tick: Game.time,
         subsystem: subsystem};
-    this.memory.log.push(log_entry);
+    log.push(log_entry);
 }
 
 Structure.prototype.warning = function(subsystem, warning_msg) {
