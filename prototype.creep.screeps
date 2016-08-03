@@ -58,32 +58,11 @@ Creep.prototype.is_empty = function() {
 };
 
 Creep.prototype.get_support = function() {
-    return Game.spawns[this.memory.support];
-}
-
-Creep.prototype.find_support = function() {
-    var spawns = [];
-    for(var i in Game.spawns) {
-        spawns.push(Game.spawns[i]);
+    for(var spawn_name in Game.spawns) {
+        var spawn = Game.spawns[spawn_name];
+        if(_.includes(spawn.memory.supported_creeps, this.name)) {
+            return spawn;
+        }
     }
-    var closest_spawn = this.pos.findClosestByPath(spawns);
-    if(closest_spawn) {
-        this.deregister_support();
-        closest_spawn.support_creep(this);
-    }
+    return null;
 };
-
-Creep.prototype.deregister_support = function() {
-    var spawn = this.get_support();
-    if(spawn)
-        spawn.unsupport_creep(this);
-}
-
-Creep.prototype.set_support = function(spawn) {
-    if(this.memory.support == spawn.name) {
-        return null;
-    } else {
-        this.deregister_support();
-        spawn.support_creep(this);
-    }
-}

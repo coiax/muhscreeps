@@ -2,37 +2,14 @@ StructureSpawn.prototype.get_memory = function() {
     return this.memory;
 }
 
-StructureSpawn.prototype.support_creep = function(creep) {
-    if(!this.memory.supported_creeps)
-        this.memory.supported_creeps = [];
-
-    this.memory.supported_creeps.push(creep.name);
-    creep.memory.support = this.name;
-}
-
-StructureSpawn.prototype.unsupport_creep = function(creep) {
-    if(!this.memory.supported_creeps)
-        this.memory.supported_creeps = [];
-    _.remove(this.memory.supported_creeps, function(other_name) {
-        return other_name == creep.name;
-    });
-    if(creep.memory.support == this.name) {
-        creep.memory.support = undefined;
-    }
-}
-
-
 StructureSpawn.prototype.check_creeps = function() {
     if(!this.memory.supported_creeps)
-        this.memory.supported_creeps = [];
+        return;
 
     _.remove(this.memory.supported_creeps, function(creep_name, i, arr) {
-        var creep = Game.creeps[creep_name];
-        if(!creep) {
-            return true;
-        } else {
-            creep.set_support(this);
-            return false;
-        }
+        return !Game.creeps[creep_name];
     });
+
+    if(this.memory.supported_creeps.length == 0)
+        this.memory.supported_creeps = undefined;
 }
