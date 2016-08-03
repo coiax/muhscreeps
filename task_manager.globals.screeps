@@ -2,7 +2,7 @@
 
 
 module.exports = {};
-var outcome = {};
+var outcomes = {};
 module.exports.outcomes = outcomes;
 
 // Possible actions:
