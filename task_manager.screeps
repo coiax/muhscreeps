@@ -465,7 +465,9 @@ module.exports = {
         task_functions[name] = func;
     },
     run_task_queue: function(owner, tq) {
-        while(tq && tq.length) {
+        var sanity = 100;
+        while(tq && tq.length && sanity > 0) {
+            sanity--;
             var task = tq[0];
             if(typeof task.times_run == 'undefined') {
                 task.times_run = 0
