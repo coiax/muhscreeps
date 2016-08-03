@@ -458,6 +458,7 @@ var task_functions = {
 }
 module.exports = {
     globals: globals,
+    outcomes: outcomes,
     task_functions: task_functions,
     register: function(name, func) {
         task_functions[name] = func;
