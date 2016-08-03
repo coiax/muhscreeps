@@ -1,3 +1,6 @@
+var task_manager = require('task_manager');
+var outcomes = task_manager.globals.outcomes;
+
 module.exports = {
     name : "role.looter",
     parts : null,
@@ -48,7 +51,7 @@ module.exports = {
                 creep.say("nostru");
                 return {outcome: "continue"};
             }
-            var task = {type: "transfer_energy", target_id: structures[0].id};
+            var task = {type: "transfer_to", target_id: structures[0].id};
             return {outcome: "newtask", task: task};
         }
     }

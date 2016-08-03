@@ -1,4 +1,5 @@
 var util = require('util');
+var outcomes = require('task_manager.globals').outcomes;
 var RESERVE_THRESHOLD = 4000;
 
 function reservable_controller(room_name, username) {
@@ -36,20 +37,22 @@ module.exports = {
             });
             if(!rooms.length) {
                 creep.say("noclaim");
-                return {outcome: "continue"};
+                var outcome = outcomes.InProgress();
+                outcome.error = "No rooms found.";
+                return outcome;
             }
             var room = _.sample(rooms);
             creep.say(room);
             var mem = Memory.rooms[room];
             task.destination_pos = mem.intel.controller.pos;
-            return {outcome: "rerun"};
+            return outcomes.Rerun();
         } else if(!controller && destination) {
             if(destination.roomName == current_room) {
                 task.controller_id = creep.room.controller.id;
-                return {outcome: "rerun"};
+                return outcomes.Rerun();
             } else {
                 creep.moveTo(destination);
-                return {outcome: "continue"};
+                return outcomes.InProgress();
             }
         } else if(controller) {
             task.destination = null;
@@ -61,15 +64,15 @@ module.exports = {
             }
             if(rc == ERR_NOT_IN_RANGE) {
                 creep.moveTo(controller);
-                return {outcome: "continue"};
+                return outcomes.InProgress();
             } else if(rc == ERR_INVALID_TARGET) {
                 task.controller = null;
-                return {outcome: "rerun"};
+                return outcomes.Rerun();
             } else if(rc == ERR_GCL_NOT_ENOUGH) {
                 task.full_claim = false;
-                return {outcome: "rerun"};
+                return outcomes.Rerun();
             } else {
-                return {outcome: "continue"};
+                return outcomes.InProgress();
             }
         }
     }

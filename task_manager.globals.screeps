@@ -1,0 +1,100 @@
+// Task "outcomes", instructions to the task queue
+
+
+module.exports = {};
+var outcome = {};
+module.exports.outcomes = outcomes;
+
+// Possible actions:
+
+function Base() {
+    // Pop task from stack
+    this.pop = false;
+    // Increase times run
+    this.increment = false;
+    // Push new task to stack
+    this.push = null; // If non-null, contains new task to push.
+    // An error occured and should be logged.
+    this.error = null; // If non-null, contains error message.
+    // Store this warning in the creep's warning log.
+    this.warning = null;
+    // Stop loop execution
+    this.stop = false;
+};
+
+outcomes.Base = Base;
+
+function AlreadyComplete() {
+    Base.call(this);
+    this.pop = true;
+};
+AlreadyComplete.prototype = Object.create(Base.prototype);
+AlreadyComplete.prototype.constructor = AlreadyComplete;
+outcomes.AlreadyComplete = AlreadyComplete;
+
+
+function InProgress() {
+    Base.call(this);
+    this.increment = 1;
+    this.stop = true;
+};
+InProgress.prototype = Object.create(Base.prototype);
+InProgress.prototype.constructor = InProgress;
+outcomes.InProgress = InProgress;
+
+
+function Complete() {
+    Base.call(this);
+    this.pop = true;
+    this.stop = true;
+};
+Complete.prototype = Object.create(Base.prototype);
+Complete.prototype.constructor = Complete;
+outcomes.Complete = Complete;
+
+function Failure(warning_message) {
+    Base.call(this);
+    this.pop = true;
+    this.warning = warning_message;
+};
+Failure.prototype = Object.create(Base.prototype);
+Failure.prototype.constructor = Failure;
+outcomes.Failure = Failure;
+
+function PushTask(task) {
+    Base.call(this);
+    this.increment = 1;
+    this.push = task;
+};
+PushTask.prototype = Object.create(Base.prototype);
+PushTask.prototype.constructor = PushTask;
+outcomes.PushTask = PushTask;
+
+
+function ReplaceTask(task) {
+    Base.call(this);
+    this.pop = true;
+    this.push = task;
+};
+ReplaceTask.prototype = Object.create(Base.prototype);
+ReplaceTask.prototype.constructor = ReplaceTask;
+outcomes.ReplaceTask = ReplaceTask;
+
+
+function TaskError(error_message) {
+    Base.call(this);
+    this.pop = true;
+    this.error = error_message;
+};
+TaskError.prototype = Object.create(Base.prototype);
+TaskError.prototype.constructor = TaskError;
+outcomes.TaskError = TaskError;
+
+
+function Rerun() {
+    Base.call(this);
+    this.increment = 1;
+};
+Rerun.prototype = Object.create(Base.prototype);
+Rerun.prototype.constructor = Rerun;
+outcomes.Rerun = Rerun;

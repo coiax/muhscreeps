@@ -1,3 +1,6 @@
+var task_manager = require('task_manager');
+var outcomes = task_manager.globals.outcomes;
+
 var roleGuard = {
     name: "role.guard",
     /** @param {Creep} creep **/
@@ -17,7 +20,7 @@ var roleGuard = {
                 creep.moveTo(target);
             }
         }
-        return {outcome: "continue"};
+        return outcomes.InProgress();
     },
     parts: [
         [RANGED_ATTACK,MOVE],

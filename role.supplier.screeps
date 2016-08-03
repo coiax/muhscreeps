@@ -1,5 +1,6 @@
 var util = require('util');
 var task_manager = require('task_manager');
+var outcomes = task_manager.globals.outcomes;
 
 module.exports = {
     name: "role.supplier",
@@ -31,8 +32,8 @@ module.exports = {
 
     run: function(task, creep) {
         if(creep.carry.energy == 0) {
-            creep.add_task({type: "resupply"});
-            return {"outcome": "continue"};
+            var new_task = {type: "resupply"};
+            return outcomes.PushTask(new_task);
         }
         var stypes = [[STRUCTURE_EXTENSION, STRUCTURE_SPAWN], STRUCTURE_TOWER, STRUCTURE_STORAGE];
         var target;
@@ -46,13 +47,14 @@ module.exports = {
                 break;
         }
         if(target) {
-            creep.add_task({type: "transfer_energy", target_id: target.id});
+            var new_task = {type: "transfer_to", target_id: target.id};
+            return outcomes.PushTask(new_task);
         } else {
             // wander randomly.
             creep.say("sidle");
             creep.move(Math.floor((Math.random() * 8) + 1));
+            return outcomes.InProgress();
         }
-        return {"outcome": "continue"};
     }
 };
 task_manager.register(module.exports.name, module.exports.run);

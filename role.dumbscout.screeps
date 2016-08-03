@@ -1,4 +1,6 @@
 var util = require('util');
+var task_manager = require('task_manager');
+var outcomes = task_manager.globals.outcomes;
 
 module.exports = {
     name: "role.dumbscout",
@@ -14,7 +16,7 @@ module.exports = {
             } else {
                 task.old_room = room_name;
                 creep.moveTo(exit_pos);
-                return {outcome: "continue"};
+                return outcomes.InProgress();
             }
         } else {
             creep.say("Ding!");
@@ -44,12 +46,12 @@ module.exports = {
             if(exit_position) {
                 task.destination_room = chosen_room;
                 task.exit_pos = exit_position;
-                return {outcome: "rerun"};
+                return outcomes.Rerun();
             } else {
                 // we are somehow marooned.
                 //creep.suicide();
                 creep.say("bluh");
-                return {outcome: "continue"};
+                return outcomes.InProgress();
             }
         }
     }

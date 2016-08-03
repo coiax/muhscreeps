@@ -7,20 +7,39 @@ Creep.prototype.add_task = function(obj) {
     this.memory.task_queue.unshift(obj);
 };
 
+Creep.prototype.log = function(level, subsystem, message) {
+    if(!this.memory.log) {
+        this.memory.log = [];
+    }
+    var log_entry = {level: level, message: message, tick: Game.time,
+        subsystem: subsystem};
+    this.say(subsystem + ":" + message);
+    this.memory.log.push(log_entry);
+}
+
+Creep.prototype.warning = function(subsystem, warning_msg) {
+    this.log("warning", subsystem, warning_msg);
+};
+
+Creep.prototype.error = function(subsystem, error_msg) {
+    this.log("error", subsystem, error_msg);
+};
+
 Creep.prototype.pop_task = function() {
     if(this.memory.task_queue) {
         this.memory.task_queue.shift();
         if(this.memory.task_queue.length == 0) {
-            delete this.memory.task_queue;
+            this.memory.task_queue = undefined;
         }
     }
 };
 
 Creep.prototype.has_task_in_queue = function(ttype) {
-    var tq = [];
-    if(this.memory.task_queue) {
-        tq = this.memory.task_queue;
-    }
+    var tq = this.memory.task_queue;
+
+    if(!tq)
+        return null;
+
     for(var i in tq) {
         var task = tq[i];
         if(ttype == task.type) {
@@ -59,10 +78,10 @@ Creep.prototype.body_cost = function() {
     return util.body_cost(body_list);
 };
 
-Creep.prototype.body_part_count = function(btype) {
+Creep.prototype.body_part_count = function(btype, ignore_injured) {
     var sum = 0;
     this.body.forEach(function(obj) {
-        if(obj.type == btype)
+        if((obj.type == btype) && (!ignored_injured || obj.hits == 100))
             sum++;
     });
     return sum;

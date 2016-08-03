@@ -1,4 +1,5 @@
 var util = require('util');
+var task_manager = require('task_manager');
 
 module.exports = {
     name: "role.distantminer",

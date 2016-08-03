@@ -1,3 +1,5 @@
+var outcomes = require('task_manager.globals').outcomes;
+
 module.exports = {
     name : "role.assault",
     parts : [[TOUGH,MOVE,RANGED_ATTACK],[
@@ -45,11 +47,11 @@ MOVE
             } else {
                 creep.moveTo(flag);
             }
-            return {outcome: "continue"};
+            return outcomes.InProgress();
         } else {
             var flag = Game.flags["Target"];
             creep.moveTo(flag);
-            return {outcome: "continue"};
+            return outcomes.InProgress();
         }
     }
 }

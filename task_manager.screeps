@@ -1,10 +1,13 @@
 var cpu_tracker = require('cpu_tracker');
 var util = require('util');
 
+var globals = require('task_manager.globals');
+var outcomes = globals.outcomes;
+
 var task_functions = {
     harvest : function(task, creep) {
         if(creep.is_full())
-            return {outcome: "didnothing"};
+            return outcomes.AlreadyComplete();
 
         var selected = Game.getObjectById(task.selected_source_id);
         if(!selected) {
@@ -17,67 +20,90 @@ var task_functions = {
             }
         }
         if(!selected) {
-            creep.say("!sr?:(");
             if(!task.no_resupply) {
-                return {outcome: "newtask", task: {type: "resupply"}};
+                return outcomes.PushTask({type: "resupply"});
             } else {
-                return {outcome: "didnothing"};
+                return outcomes.Failure("No sources found.");
             }
         }
-        if(selected.energy == 0) {
-            task.selected_source_id = null;
-            return {outcome: "rerun"};
-        }
-        var rv = creep.harvest(selected);
-        if(rv == ERR_NOT_IN_RANGE) {
-            if(selected.is_harvestable(creep)) {
-                creep.moveTo(selected);
-                return {outcome: "continue"};
-            } else {
+        var rc = creep.harvest(selected);
+        switch(rc) {
+            case ERR_NOT_OWNER:
+            case ERR_BUSY:
+            case ERR_NOT_FOUND:
+            case ERR_INVALID_TARGET:
+            case ERR_NO_BODYPART:
+                return outcomes.TaskError(rc);
+
+            case ERR_NOT_IN_RANGE:
+                if(selected.is_harvestable(creep)) {
+                    creep.moveTo(selected);
+                    return outcomes.InProgress();
+                } else {
+                    task.selected_source_id = null;
+                    return outcomes.Rerun();
+                }
+            case OK:
+                return outcomes.InProgress();
+            case ERR_NOT_ENOUGH_RESOURCES:
                 task.selected_source_id = null;
-                return {outcome: "rerun"};
-            }
-        }
-        if(creep.carryCapacity == creep.carry.energy) {
-            return {outcome: "done"};
-        } else {
-            return {outcome: "continue"};
+                return outcomes.Rerun();
         }
     },
     construct : function(task, creep) {
         var resupply = task.resupply;
         var target = Game.getObjectById(task.target_id);
+
+        if(!creep.body_part_count(WORK, true))
+            return outcomes.Failure("No WORK parts.");
+        if(!creep.body_part_count(CARRY, true))
+            return outcomes.Failure("No CARRY parts.");
+
         if(!target) {
-            creep.say("cs ?!?");
-            return {outcome: "didnothing"};
+            if(task.mode == "build") {
+                return outcomes.AlreadyComplete();
+            } else {
+                return outcomes.Failure("Target not found.");
+            }
         }
         if(creep.carry.energy == 0) {
             if(resupply) {
-                return {outcome: "newtask", task: {type: resupply}};
+                return outcomes.PushTask({type: resupply});
             } else {
-                return {outcome: "didnothing"};
+                return outcomes.Failure("No energy, resupply disabled.");
             }
         }
-        var rv;
+        var rc;
         if(typeof target.progress == 'undefined') {
+            task.mode = "repair";
             if(target.hits == target.hitsMax) {
-                return {outcome: "didnothing"};
+                return outcomes.AlreadyComplete();
             }
-            rv = creep.repair(target);
+            rc = creep.repair(target);
         } else {
             // autorepair can intefere with our construction
+            task.mode = "build";
             creep.cancelOrder("repair");
-            rv = creep.build(target);
+            rc = creep.build(target);
         }
-        if(rv == ERR_NOT_IN_RANGE) {
-            creep.moveTo(target);
+        switch(rc) {
+            case ERR_NOT_OWNER:
+            case ERR_BUSY:
+            case ERR_NOT_ENOUGH_RESOURCES:
+            case ERR_INVALID_TARGET:
+            case ERR_NO_BODYPART:
+            case ERR_RCL_NOT_ENOUGH:
+                return outcomes.TaskError(rc);
+            case ERR_NOT_IN_RANGE:
+                creep.moveTo(target);
+            case OK:
+                return outcomes.InProgress();
         }
-        return {outcome: "continue"};
     },
     resupply : function(task, creep) {
         var remaining_capacity = creep.carryCapacity - _.sum(creep.carry);
         if(creep.is_full()) {
-            return {outcome: "didnothing"};
+            return outcomes.AlreadyComplete();
         }
         var gas_station = Game.getObjectById(task.gas_station_id);
         if(!gas_station) {
@@ -94,31 +120,31 @@ var task_functions = {
                     task.gas_station_id = gas_station.id;
                 } else {
                     var task = {type: "pickup", target_id: gas_station.id};
-                    return {outcome: "newtask", task: task};
+                    return outcomes.PushTask(task);
                 }
             }
         }
         if(!gas_station) {
             var task = {type: "harvest", timeout: 30, no_resupply: true}
-            return {outcome: "newtask", task: task}
+            return outcomes.PushTask(task);
         }
         var rc = creep.withdraw(gas_station, RESOURCE_ENERGY);
         if(rc == ERR_NOT_IN_RANGE) {
             creep.moveTo(gas_station);
-            return {outcome: "continue"};
+            return outcomes.InProgress();
         } else if(rc == ERR_NOT_ENOUGH_RESOURCES) {
             task.gas_station_id = null
-            return {outcome: "continue"};
+            return outcomes.Rerun();
         } else if(rc != OK) {
             creep.say("rs!" + rc);
-            return {outcome: "continue"};
+            return outcomes.InProgress();
         } else {
-            return {outcome: "done"};
+            return outcomes.Complete();
         }
     },
     renew : function(task, creep) {
         if(creep.ticksToLive >= 1400) {
-            return {outcome: "done"};
+            return outcomes.AlreadyComplete();
         }
         var spawn = Game.getObjectById(task.spawn_id);
         if(!spawn) {
@@ -129,24 +155,26 @@ var task_functions = {
             if(spawn)
                 task.spawn_id = spawn.id
         }
-        if(!spawn) {
-            creep.say("SPN?!?");
-            return {outcome: "done"};
-        }
+        if(!spawn)
+            return outcome.Failure("No nearby spawn found.");
+
         var rc = spawn.renewCreep(creep)
         creep.transfer(spawn, RESOURCE_ENERGY);
-        if(rc == ERR_NOT_IN_RANGE) {
-            creep.moveTo(spawn)
-            return {outcome: "continue"};
-        } else if((rc == ERR_FULL) || (rc == ERR_NOT_ENOUGH_ENERGY)) {
-            return {outcome: "done"};
+        switch(rc) {
+            case ERR_INVALID_TARGET:
+            case ERR_NOT_OWNER:
+                return outcome.TaskError(rc);
+            case OK:
+            case ERR_BUSY:
+                return outcome.InProgress();
+            case ERR_NOT_ENOUGH_ENERGY:
+                return outcome.Failure("Spawn has not enough energy.");
+            case ERR_FULL:
+                return outcome.AlreadyComplete();
+            case ERR_NOT_IN_RANGE:
+                creep.moveTo(spawn)
+                return outcome.InProgress();
         }
-        return {outcome: "continue"};
-    },
-    transfer_energy : function(task, creep) {
-        // Deprecated.
-        var task = {type: "transfer_to", target_id: task.target_id};
-        return {outcome: "replace", task: task};
     },
     transfer_to : function(task, creep) {
         // Low level task; creep to navigate to target or destination
@@ -158,8 +186,11 @@ var task_functions = {
         var resource_type = task.resource_type || RESOURCE_ENERGY;
         var amount = task.amount;
 
-        if((!target && !destination) || !creep.carry[resource_type])
-            return {outcome: "didnothing"};
+        if(!target && !destination)
+            return outcomes.TaskError("No target or destination.");
+
+        if(!creep.carry[resource_type])
+            return outcomes.TaskError("Creep not carrying " + resource_type);
 
         if(typeof amount != 'undefined') {
             amount = max(creep.carry[resource_type], amount);
@@ -181,10 +212,11 @@ var task_functions = {
                     }
                 }
                 if(!target)
-                    return {outcome: "didnothing"};
+                    return outcomes.TaskError(
+                        "No target found at destination.");
             } else {
                 creep.moveTo(destination);
-                return {outcome: "continue"};
+                return outcomes.InProgress();
             }
         }
         task.destination_pos = target.pos;
@@ -194,71 +226,77 @@ var task_functions = {
             case ERR_BUSY:
             case ERR_NOT_ENOUGH_RESOURCES:
             case ERR_INVALID_ARGS:
-                throw "transfer_to: transfer rc " + rc;
             case ERR_INVALID_TARGET:
+                return outcomes.TaskError(rc);
             case ERR_FULL:
-                return {outcome: "didnothing"};
-                break;
+                return outcomes.AlreadyComplete();
             case ERR_NOT_IN_RANGE:
                 creep.moveTo(target);
-                return {outcome: "continue"};
+                return outcomes.InProgress();
             case OK:
-                return {outcome: "done"};
-            default:
-                throw "Unrecognised rc " + rc;
+                return outcomes.Complete();
         }
     },
     tower_target : function(task, tower) {
         target = Game.getObjectById(task.target_id);
         mode = task.mode;
         // The task timing out is done by the task manager.
-        if(!mode || !target || tower.energy < TOWER_ENERGY_COST)
-            return {outcome: "didnothing"};
+        if(!target)
+            return outcomes.Failure("No target.");
+
+        if(!mode)
+            return outcomes.TaskError("No mode.");
+
+        if(tower.energy < TOWER_ENERGY_COST)
+            return outcomes.InProgress();
+
         var rc;
         switch(mode) {
             case "heal":
                 if(target.hits == target.hitsMax) {
-                    return {outcome: "didnothing"};
+                    return outcomes.AlreadyComplete();
                 }
                 rc = tower.heal(target);
                 break;
             case "repair":
                 if(target.hits == target.hitsMax) {
-                    return {outcome: "didnothing"};
+                    return outcomes.AlreadyComplete();
                 }
                 rc = tower.repair(target);
                 break;
             case "attack":
                 rc = tower.attack(target);
                 break;
+            default:
+                return outcomes.TaskError("Bad mode " + mode);
         }
         switch(rc) {
             case ERR_INVALID_TARGET:
             case ERR_RCL_NOT_ENOUGH:
-                return {outcome: "didnothing"};
-            case OK:
             case ERR_NOT_ENOUGH_RESOURCES:
-                return {outcome: "continue"};
+                return outcomes.TaskError(rc);
+            case OK:
+                return outcomes.InProgress();
         }
     },
     dismantle : function(task, creep) {
         var target = Game.getObjectById(task.target_id);
         if(!target)
-            return {outcome: "didnothing"};
+            return outcomes.Failure("No target found.");
 
         if(creep.is_full()) {
             var task = {type: "deposit"}
-            return {outcome: "newtask", task: task}
+            return outcomes.PushTask(task);
         }
         var rc = creep.dismantle(target);
         switch(rc) {
             case ERR_NOT_IN_RANGE:
                 creep.moveTo(target);
-                return {outcome: "continue"};
+                return outcomes.InProgress();
             case OK:
-                return {outcome: "done"};
+                return outcomes.Complete();
             default:
-                return {outcome: "didnothing"};
+                return outcomes.TaskError(rc);
         }
     },
     leave_location : function(task, creep) {
@@ -266,9 +304,9 @@ var task_functions = {
         if(creep.pos.isEqualTo(pos)) {
             creep.say("Aaaaaa!");
             creep.move(Math.floor((Math.random() * 8) + 1));
-            return {outcome: "done"};
+            return outcomes.InProgress();
         } else {
-            return {outcome: "didnothing"};
+            return outcomes.AlreadyComplete();
         }
     },
     move_to: function(task, creep) {
@@ -280,21 +318,21 @@ var task_functions = {
             destination = util.memoryPosition(task.destination_pos);
         }
         if(!destination) {
-            return {outcome: "didnothing"};
+            return outcomes.TaskError("No destination found.");
         }
         if(creep.pos.isEqualTo(destination)) {
-            return {outcome: "didnothing"};
+            return outcomes.AlreadyComplete();
         }
         var rc = creep.moveTo(destination);
         if(rc == ERR_NO_PATH) {
-            return {outcome: "didnothing"};
+            return outcomes.Failure("No path found.");
         } else {
-            return {outcome: "continue"};
+            return outcomes.InProgress();
         }
     },
     suicide: function(task, creep) {
         creep.suicide();
-        return {outcome: "done"};
+        return outcomes.Complete();
     },
     recycle: function(task, creep) {
         var spawn = Game.getObjectById(task.spawn_id);
@@ -309,44 +347,48 @@ var task_functions = {
         }
         if(!spawn) {
             creep.suicide();
-            return {outcome: "done"};
+            return outcomes.Complete();
         }
         var rc = spawn.recycleCreep(creep);
         if(rc == ERR_NOT_IN_RANGE) {
             creep.moveTo(spawn);
-            return {outcome: "continue"};
+            return outcomes.InProgress();
         } else {
-            return {outcome: "done"};
+            return outcomes.Complete();
         }
     },
     pickup : function(task, creep) {
         if(creep.is_full()) {
-            return {outcome: "didnothing"};
+            return outcomes.AlreadyComplete();
         }
         var target = Game.getObjectById(task.target_id);
         if(!target) {
-            return {outcome: "didnothing"};
+            return outcomes.Failure("No target found.");
         }
         var rc = creep.pickup(target);
+        // TODO turn into a proper switch
         if(rc == ERR_NOT_IN_RANGE) {
             creep.moveTo(target);
-            return {outcome: "continue"};
+            return outcomes.InProgress();
         } else if(rc == ERR_INVALID_TARGET) {
-            return {outcome: "didnothing"};
+            return outcomes.Failure(rc);
         } else {
-            return {outcome: "done"};
+            return outcomes.Complete();
         }
     },
     travel_to_room : function(task, creep) {
         var destination_room = task.destination_room;
         var current_room = creep.room.roomName;
-        if(!destination_room || current_room == destination_room)
-            return {outcome: "didnothing"};
+        if(!destination_room)
+            return outcomes.TaskError("No room given.")
+
+        if(current_room == destination_room)
+            return outcomes.AlreadyComplete();
+            
         if(!task.route) {
             rc = Game.map.findRoute(current_room, destination_room);
             if(rc == ERR_NO_PATH) {
-                creep.say("ttr!pa");
-                return {outcome: "continue"};
+                return outcomes.Failure("No path to destination.");
             }
             task.route = rc;
             task.route_index = 0;
@@ -366,14 +408,14 @@ var task_functions = {
         var destination_room = task.destination_room;
         var current_room = creep.room.name;
         if(destination_room == current_room || creep.pos == destination)
-            return {outcome: "didnothing"}; // we finished successfully.
+            return outcomes.AlreadyComplete();
 
         if(!destination || !destination_room ||
             destination.roomName != current_room)
             //
-            return {outcome: "didnothing"}; // an error occured.
+            return outcomes.TaskError("Invalid destination/room");
         creep.moveTo(destination);
-        return {outcome: "continue"};
+        return outcomes.InProgress();
     },
     taskless : function(task, creep) {
         // TODO should rendevous with nearest spawn and have them assign
@@ -390,32 +432,32 @@ var task_functions = {
             purpose = _.sample(["role.supplier","role.cow","role.upgrader",
                 "role.builder"]);
         }
-        return {outcome: "replace", task: {type: purpose}};
+        return outcomes.ReplaceTask({type: purpose});
     },
     deposit : function(task, creep) {
         // A high level task; the creep is carrying resources, and
         // wants to deposit them in the nearest friendly storage structure.
         // For now, we'll put them in the Storage of the creep's Spawn.
         if(creep.is_empty())
-            return {outcome: "didnothing"};
+            return outcomes.AlreadyComplete();
         var our_spawn = Game.spawns[creep.memory.support];
         if(our_spawn) {
             var our_storage = our_spawn.room.storage;
             if(our_storage && (our_storage.is_full() == false)) {
                 var task = {type: "transfer_to", target_id: our_storage.id};
-                return {outcome: "newtask", task: task};
+                return outcomes.PushTask(task);
             }
             if(our_spawn.room.name != creep.room.name) {
                 var task = {type: "travel_to_room",
                     destination_room: our_spawn.room.name};
-                return {outcome: "newtask", task: task};
+                return outcomes.PushTask(task);
             }
         }
-        creep.say("No spawn?");
-        return {outcome: "continue"};
+        return outcomes.TaskError("Could not find spawn.");
     }
 }
 module.exports = {
+    globals: globals,
     task_functions: task_functions,
     register: function(name, func) {
         task_functions[name] = func;
@@ -427,50 +469,56 @@ module.exports = {
                 task.times_run = 0
             }
             var ttype = task.type;
-            var func = task_functions[ttype];
-            if(!func) {
-                console.log("Task not found: " + ttype);
-                return;
-            }
 
+            var outcome;
             var t1 = cpu_tracker.start("tasks", ttype);
-            try {
-                var result = func(task, owner);
-            } catch(err) {
-                console.log("Task " + ttype + " error:" + err);
-                owner.pop_task();
-                continue;
-            }
 
+            var func = task_functions[ttype];
+            if(func) {
+                try {
+                    outcome = func(task, owner);
+                } catch(err) {
+                    outcome = outcomes.TaskError("Exception: " + err);
+                }
+            } else {
+                outcome = outcomes.TaskError("No handler for task type.");
+            }
             cpu_tracker.stop(t1);
 
-            if(!result) {
-                console.log("Task did not return result: " + ttype);
+            if(outcome.outcome)
+                outcome = outcomes.TaskError("Outcome is old format.");
+
+            if(!outcome) {
+                outcome = outcomes.TaskError("No outcome returned.");
+            };
+
+            if(task.times_run >= task.timeout)
+                outcome.pop = true;
+
+            if(outcome.pop)
                 owner.pop_task();
-            } else if(result.outcome == "done") {
-                owner.pop_task();
-            } else if(result.outcome == "continue") {
-                task.times_run++;
-            } else if(result.outcome == "rerun") {
-                task.times_run++;
-                continue;
-            } else if(result.outcome == "newtask") {
-                task.times_run++;
-                owner.add_task(result.task)
-            } else if(result.outcome == "replace") {
-                owner.pop_task();
-                owner.add_task(result.task);
-            } else if(result.outcome == "didnothing") {
-                owner.pop_task();
-                continue;
-            } else {
-                console.log("Task (" + ttype + ") returned unrecognised outcome: " + result.outcome);
-                owner.pop_task();
+
+            if(outcome.increment)
+                task.times_run += outcome.increment;
+
+            if(outcome.push)
+                owner.add_task(outcome.push);
+
+            if(outcome.warning)
+                owner.warning("task", outcome.warning);
+
+            if(outcome.error) {
+                // Make a detailed console message.
+                var msg = "Task(" + ttype + "): " + outcome.error;
+                console.log(msg);
+                owner.error("task", msg);
             }
-            if((task == tq[0]) && task.timeout &&
-                task.times_run >= task.timeout)
-                owner.pop_task();
-            break;
+
+            if(outcome.stop) {
+                break;
+            } else {
+                continue;
+            }
         }
     }
 }
