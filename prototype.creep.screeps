@@ -62,7 +62,11 @@ Creep.prototype.get_support = function() {
 }
 
 Creep.prototype.find_support = function() {
-    var closest_spawn = this.pos.findClosestByPath(Object.values(Game.spawns));
+    var spawns = [];
+    for(var i in Game.spawns) {
+        spawns.push(Game.spawns[i]);
+    }
+    var closest_spawn = this.pos.findClosestByPath(spawns);
     if(closest_spawn) {
         this.deregister_support();
         closest_spawn.support_creep(this);
