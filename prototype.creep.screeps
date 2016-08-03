@@ -74,7 +74,8 @@ Creep.prototype.find_support = function() {
 };
 
 Creep.prototype.deregister_support = function() {
-    if(this.get_support())
+    var spawn = this.get_support();
+    if(spawn)
         spawn.unsupport_creep(this);
 }
 
