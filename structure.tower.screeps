@@ -1,5 +1,6 @@
 var util = require('util');
 var task_manager = require('task_manager');
+var outcomes = task_manager.global.outcomes;
 
 function efficient_tower_repair(tower, st) {
     var dmg_taken = st.hitsMax - st.hits;
@@ -66,11 +67,11 @@ module.exports = {
             }
         }
         if(target) {
-            var task = {type: "tower_target", target_id: target.id,
+            var new_task = {type: "tower_target", target_id: target.id,
                 mode: mode, timeout: 25};
-            return {"outcome":"newtask", task: task};
+            return new outcomes.PushTask(new_task);
         } else {
-            return {"outcome":"continue"};
+            return new outcomes.InProgress();
         }
     }
 }
