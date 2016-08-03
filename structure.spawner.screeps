@@ -1,6 +1,6 @@
 var util = require('util');
 var task_manager = require('task_manager');
-var outcomes = task_manager.global.outcomes;
+var outcomes = task_manager.globals.outcomes;
 
 
 function generate_default_parts() {
