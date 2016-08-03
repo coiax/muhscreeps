@@ -37,7 +37,7 @@ module.exports.loop = function () {
         if(!structure.isActive()) {
             continue;
         }
-        var memory = structure.getMemory();
+        var memory = structure.get_memory();
         var stype = structure.structureType;
         cpu_debug("Running tasks for " + sid + "(" + stype + ")");
         var tq = memory.task_queue;
