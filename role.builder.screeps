@@ -17,9 +17,6 @@ var roleBuilder = {
     name: "role.builder",
     /** @param {Creep} creep **/
     run: function(task, creep) {
-        if(creep.carry.energy == 0) {
-            return new outcomes.PushTask({type: "resupply"});
-        }
         var dismantle_flag = Game.flags["Dismantle"];
         if(dismantle_flag) {
             if(!dismantle_flag.room) {
@@ -34,6 +31,9 @@ var roleBuilder = {
             } else {
                 dismantle_flag.remove();
             }
+        }
+        if(creep.carry.energy == 0) {
+            return new outcomes.PushTask({type: "resupply"});
         }
 
         var con_site = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
