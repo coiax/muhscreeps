@@ -1,61 +1,12 @@
 var util = require('util');
 
-Creep.prototype.add_task = function(obj) {
-    if(!this.memory.task_queue) {
-        this.memory.task_queue = [];
-    }
-    this.memory.task_queue.unshift(obj);
-};
 
-Creep.prototype.log = function(level, subsystem, message) {
-    if(!this.memory.log) {
-        this.memory.log = [];
-    }
-    var log_entry = {level: level, message: message, tick: Game.time,
-        subsystem: subsystem};
-    this.say(subsystem + ":" + message);
-    this.memory.log.push(log_entry);
+_.extend(Creep.prototype, require('mixin.log'));
+_.extend(Creep.prototype, require('mixin.task_stack'));
+
+Creep.prototype.get_memory = function() {
+    return this.memory;
 }
-
-Creep.prototype.warning = function(subsystem, warning_msg) {
-    this.log("warning", subsystem, warning_msg);
-};
-
-Creep.prototype.error = function(subsystem, error_msg) {
-    this.log("error", subsystem, error_msg);
-};
-
-Creep.prototype.pop_task = function() {
-    if(this.memory.task_queue) {
-        this.memory.task_queue.shift();
-        if(this.memory.task_queue.length == 0) {
-            this.memory.task_queue = undefined;
-        }
-    }
-};
-
-Creep.prototype.has_task_in_queue = function(ttype) {
-    var tq = this.memory.task_queue;
-
-    if(!tq)
-        return null;
-
-    for(var i in tq) {
-        var task = tq[i];
-        if(ttype == task.type) {
-            return task;
-        }
-    }
-    return null;
-};
-
-Creep.prototype.has_tasks = function() {
-    if(this.memory.task_queue && this.memory.task_queue.length) {
-        return true;
-    } else {
-        return false;
-    }
-};
 
 Creep.prototype.wants_renew = function() {
     if(this.ticksToLive < 100 && this.memory.autorenew &&
@@ -119,5 +70,3 @@ Creep.prototype.deregister_support = function() {
     if(spawn)
         spawn.unsupport_creep(this);
 }
-
-module.exports = {};

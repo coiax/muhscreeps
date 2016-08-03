@@ -1,0 +1,42 @@
+module.exports.add_task = function(obj) {
+    var memory = this.get_memory();
+    if(!memory.task_queue) {
+        memory.task_queue = [];
+    }
+    memory.task_queue.unshift(obj);
+};
+
+module.exports.pop_task = function() {
+    var memory = this.get_memory();
+    if(memory.task_queue) {
+        memory.task_queue.shift();
+        if(memory.task_queue.length == 0) {
+            memory.task_queue = undefined;
+        }
+    }
+};
+
+module.exports.has_task_in_queue = function(ttype) {
+    var memory = this.get_memory();
+    var tq = memory.task_queue;
+
+    if(!tq)
+        return null;
+
+    for(var i in tq) {
+        var task = tq[i];
+        if(ttype == task.type) {
+            return task;
+        }
+    }
+    return null;
+};
+
+module.exports.has_tasks = function() {
+    var memory = this.get_memory();
+    if(memory.task_queue && memory.task_queue.length) {
+        return true;
+    } else {
+        return false;
+    }
+};

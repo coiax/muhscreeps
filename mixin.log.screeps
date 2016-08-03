@@ -1,0 +1,22 @@
+var util = require('util');
+
+module.exports.log = function(level, subsystem, message) {
+    var memory = this.get_memory();
+    if(!memory.log)
+        memory.log = [];
+
+    var log_entry = {level: level, message: message, tick: Game.time,
+        subsystem: subsystem};
+    if(typeof this.say != 'undefined')
+        this.say(subsystem + ":" + message);
+    memory.log.push(log_entry);
+    util.keep_n_values(memory.log, 20); 
+}
+
+module.exports.warning = function(subsystem, warning_msg) {
+    this.log("warning", subsystem, warning_msg);
+};
+
+module.exports.error = function(subsystem, error_msg) {
+    this.log("error", subsystem, error_msg);
+};

@@ -11,9 +11,7 @@ function setup() {
 
 function add_value(values, obj) {
     values.push(obj)
-
-    if(values.length > Memory.cpu.values_kept)
-        values.splice(0, values.length - Memory.cpu.values_kept);
+    util.keep_n_values(values, Memory.cpu.values_kept);
 }
 
 function calculate_average(values) {

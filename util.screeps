@@ -110,5 +110,9 @@ module.exports = {
             }
         }
         return taskers;
+    },
+    keep_n_values: function(L, N) {
+        if(L && (L.length > N))
+            L.splice(0, L.length - N);
     }
 }

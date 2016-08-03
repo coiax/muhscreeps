@@ -1,11 +1,7 @@
-Structure.prototype.getMemory = function() {
-    if(this.structureType == STRUCTURE_SPAWN) {
-        if(!Memory.spawns)
-            Memory.spawns = {};
-        if(!Memory.spawns[this.name])
-            Memory.spawns[this.name] = {};
-        return Memory.spawns[this.name];
-    }
+_.extend(Structure.prototype, require('mixin.log'));
+_.extend(Structure.prototype, require('mixin.task_stack'));
+
+Structure.prototype.get_memory = function() {
     if(!Memory.structures) {
         Memory.structures = {};
     }
@@ -17,45 +13,6 @@ Structure.prototype.getMemory = function() {
         return Memory.structures[this.id];
     }
 }
-
-// TODO a lot of this is the same as Creep.prototype, should be possible
-// to make some sort of mixin class, right?
-Structure.prototype.add_task = function(task) {
-    var memory = this.getMemory();
-    if(!memory.task_queue) {
-        memory.task_queue = [];
-    }
-    memory.task_queue.unshift(task);
-}
-
-Structure.prototype.pop_task = function() {
-    var memory = this.getMemory();
-    if(memory.task_queue) {
-        memory.task_queue.shift();
-        if(memory.task_queue.length == 0) {
-            delete memory.task_queue;
-        }
-    }
-};
-
-Structure.prototype.log = function(level, subsystem, message) {
-    var memory = this.getMemory();
-    if(!memory.log) {
-        memory.log = [];
-    }
-    var log = memory.log;
-    var log_entry = {level: level, message: message, tick: Game.time,
-        subsystem: subsystem};
-    log.push(log_entry);
-}
-
-Structure.prototype.warning = function(subsystem, warning_msg) {
-    this.log("warning", subsystem, warning_msg);
-};
-
-Structure.prototype.error = function(subsystem, error_msg) {
-    this.log("error", subsystem, error_msg);
-};
 
 Structure.prototype.maintain_cost = function() {
     var decay = 0;
