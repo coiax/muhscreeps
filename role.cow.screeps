@@ -43,7 +43,7 @@ var roleCow = {
         }
         if(!source) {
             creep.say("Moo...");
-            return outcomes.InProgress();
+            return new outcomes.InProgress();
         }
 
         var pasture = util.memoryPosition(task.pasture_loc);
@@ -62,7 +62,7 @@ var roleCow = {
             creep.say("...moo");
             task.pasture_loc = null;
             task.source_id = null;
-            return outcomes.InProgress();
+            return new outcomes.InProgress();
         }
 
         if(!pasture.isEqualTo(creep.pos)) {
@@ -83,10 +83,10 @@ var roleCow = {
                     });
                 }
                 if(!task.pasture_loc)
-                    return outcomes.InProgress();
+                    return new outcomes.InProgress();
             }
             creep.moveTo(pasture);
-            return outcomes.InProgress();
+            return new outcomes.InProgress();
         }
 
         var container = Game.getObjectById(task.output_container_id);
@@ -117,15 +117,15 @@ var roleCow = {
                 var site_pos = creep.pos.step(opposite_dir);
                 var rc = site_pos.createConstructionSite(STRUCTURE_CONTAINER);
                 // It will be found next work tick.
-                return outcomes.InProgress();
+                return new outcomes.InProgress();
             }
             var new_task = {type: "construct",
                 target_id: site.id, resupply:"harvest"};
-            return outcomes.PushTask(new_task);
+            return new outcomes.PushTask(new_task);
         }
         if(container && (container.pos.getRangeTo(creep) > 1)) {
             task.output_container_id = null;
-            return outcomes.InProgress();
+            return new outcomes.InProgress();
         }
         // Then spend the rest of our lifespan harvesting and moving that
         // into the container, repairing the container first if needed.
@@ -144,7 +144,7 @@ var roleCow = {
         } else {
             creep.transfer(container, RESOURCE_ENERGY);
         }
-        return outcomes.InProgress();
+        return new outcomes.InProgress();
     }
 };
 task_manager.register(roleCow.name, roleCow.run);

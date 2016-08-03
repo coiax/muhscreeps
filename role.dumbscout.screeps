@@ -16,7 +16,7 @@ module.exports = {
             } else {
                 task.old_room = room_name;
                 creep.moveTo(exit_pos);
-                return outcomes.InProgress();
+                return new outcomes.InProgress();
             }
         } else {
             creep.say("Ding!");
@@ -46,12 +46,12 @@ module.exports = {
             if(exit_position) {
                 task.destination_room = chosen_room;
                 task.exit_pos = exit_position;
-                return outcomes.Rerun();
+                return new outcomes.Rerun();
             } else {
                 // we are somehow marooned.
                 //creep.suicide();
                 creep.say("bluh");
-                return outcomes.InProgress();
+                return new outcomes.InProgress();
             }
         }
     }

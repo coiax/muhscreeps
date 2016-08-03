@@ -33,7 +33,7 @@ module.exports = {
     run: function(task, creep) {
         if(creep.carry.energy == 0) {
             var new_task = {type: "resupply"};
-            return outcomes.PushTask(new_task);
+            return new outcomes.PushTask(new_task);
         }
         var stypes = [[STRUCTURE_EXTENSION, STRUCTURE_SPAWN], STRUCTURE_TOWER, STRUCTURE_STORAGE];
         var target;
@@ -48,12 +48,12 @@ module.exports = {
         }
         if(target) {
             var new_task = {type: "transfer_to", target_id: target.id};
-            return outcomes.PushTask(new_task);
+            return new outcomes.PushTask(new_task);
         } else {
             // wander randomly.
             creep.say("sidle");
             creep.move(Math.floor((Math.random() * 8) + 1));
-            return outcomes.InProgress();
+            return new outcomes.InProgress();
         }
     }
 };

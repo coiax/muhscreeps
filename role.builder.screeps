@@ -18,19 +18,19 @@ var roleBuilder = {
     /** @param {Creep} creep **/
     run: function(task, creep) {
         if(creep.carry.energy == 0) {
-            return outcomes.PushTask({type: "resupply"});
+            return new outcomes.PushTask({type: "resupply"});
         }
         var dismantle_flag = Game.flags["Dismantle"];
         if(dismantle_flag) {
             if(!dismantle_flag.room) {
                 creep.moveTo(dismantle_flag)
-                return outcomes.InProgress();
+                return new outcomes.InProgress();
             }
             var items = dismantle_flag.pos.findInRange(FIND_STRUCTURES, 0);
             if(items && items.length) {
                 var item = items[0];
                 var new_task = {type: "dismantle", target_id: item.id};
-                return outcomes.PushTask(new_task);
+                return new outcomes.PushTask(new_task);
             } else {
                 dismantle_flag.remove();
             }
@@ -58,10 +58,10 @@ var roleBuilder = {
         }
         if(target) {
             var new_task = {type: "construct", target_id: target.id};
-            return outcomes.PushTask(new_task);
+            return new outcomes.PushTask(new_task);
         } else {
             creep.say("no work");
-            return outcomes.InProgress();
+            return new outcomes.InProgress();
         }
     }
 };

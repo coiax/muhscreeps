@@ -37,7 +37,7 @@ module.exports = {
             });
             if(!rooms.length) {
                 creep.say("noclaim");
-                var outcome = outcomes.InProgress();
+                var outcome = new outcomes.InProgress();
                 outcome.error = "No rooms found.";
                 return outcome;
             }
@@ -45,14 +45,14 @@ module.exports = {
             creep.say(room);
             var mem = Memory.rooms[room];
             task.destination_pos = mem.intel.controller.pos;
-            return outcomes.Rerun();
+            return new outcomes.Rerun();
         } else if(!controller && destination) {
             if(destination.roomName == current_room) {
                 task.controller_id = creep.room.controller.id;
-                return outcomes.Rerun();
+                return new outcomes.Rerun();
             } else {
                 creep.moveTo(destination);
-                return outcomes.InProgress();
+                return new outcomes.InProgress();
             }
         } else if(controller) {
             task.destination = null;
@@ -64,15 +64,15 @@ module.exports = {
             }
             if(rc == ERR_NOT_IN_RANGE) {
                 creep.moveTo(controller);
-                return outcomes.InProgress();
+                return new outcomes.InProgress();
             } else if(rc == ERR_INVALID_TARGET) {
                 task.controller = null;
-                return outcomes.Rerun();
+                return new outcomes.Rerun();
             } else if(rc == ERR_GCL_NOT_ENOUGH) {
                 task.full_claim = false;
-                return outcomes.Rerun();
+                return new outcomes.Rerun();
             } else {
-                return outcomes.InProgress();
+                return new outcomes.InProgress();
             }
         }
     }

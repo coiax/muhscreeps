@@ -47,11 +47,11 @@ MOVE
             } else {
                 creep.moveTo(flag);
             }
-            return outcomes.InProgress();
+            return new outcomes.InProgress();
         } else {
             var flag = Game.flags["Target"];
             creep.moveTo(flag);
-            return outcomes.InProgress();
+            return new outcomes.InProgress();
         }
     }
 }
