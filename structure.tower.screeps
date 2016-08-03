@@ -15,7 +15,7 @@ module.exports = {
     name: "structure.tower",
     run : function(task, tower) {
         if(tower.energy < TOWER_ENERGY_COST) {
-            return {outcome: "continue"};
+            return outcomes.InProgress();
         }
         var target;
         var mode;
