@@ -482,7 +482,7 @@ module.exports = {
                 try {
                     outcome = func(task, owner);
                 } catch(err) {
-                    console.log(new Error().stack);
+                    console.log(err.stack);
                     outcome = new outcomes.TaskError("Exception: " + err);
                 }
             } else {
