@@ -437,25 +437,24 @@ var task_functions = {
     deposit : function(task, creep) {
         // A high level task; the creep is carrying resources, and
         // wants to deposit them in the nearest friendly storage structure.
-        // For now, we'll put them in the Storage of the creep's Spawn.
         if(creep.is_empty())
             return new outcomes.AlreadyComplete();
-        if(!creep.get_support())
-            creep.find_support();
-        var our_spawn = creep.get_support();
-        if(our_spawn) {
-            var our_storage = our_spawn.room.storage;
-            if(our_storage && (our_storage.is_full() == false)) {
-                var task = {type: "transfer_to", target_id: our_storage.id};
-                return new outcomes.PushTask(task);
-            }
-            if(our_spawn.room.name != creep.room.name) {
-                var task = {type: "travel_to_room",
-                    destination_room: our_spawn.room.name};
-                return new outcomes.PushTask(task);
-            }
+
+        var storages = [];
+        for(var id in Game.structures) {
+            var structure = Game.structures[id];
+            if(structure.is_type(STRUCTURE_STORAGE) && !structure.is_full())
+                storages.push(structure);
         }
-        return new outcomes.TaskError("Could not find spawn.");
+
+        var target = creep.pos.findClosestByPath(storages);
+
+        if(target) {
+            var new_task = {type: "transfer_to", target_id: target.id};
+            return new outcomes.PushTask(new_task);
+        }
+
+        return new outcomes.Failure("Could not find storage.");
     }
 }
 module.exports = {
