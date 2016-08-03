@@ -11,6 +11,7 @@ function cpu_debug(msg) {
 }
 
 module.exports.loop = function () {
+    PathFinder.use(true);
     var t1 = cpu_tracker.start("internal", "memory_decode");
     Memory;
     cpu_tracker.stop(t1);
