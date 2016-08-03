@@ -57,6 +57,10 @@ Creep.prototype.is_empty = function() {
     return total == 0;
 };
 
+Creep.prototype.get_support = function() {
+    return Game.spawns[this.memory.support];
+}
+
 Creep.prototype.find_support = function() {
     var closest_spawn = this.pos.findClosestByPath(Game.spawns);
     if(closest_spawn) {
@@ -66,8 +70,7 @@ Creep.prototype.find_support = function() {
 };
 
 Creep.prototype.deregister_support = function() {
-    var spawn = Game.spawns[this.memory.support];
-    if(spawn)
+    if(this.get_support())
         spawn.unsupport_creep(this);
 }
 
@@ -76,6 +79,6 @@ Creep.prototype.set_support = function(spawn) {
         return null;
     } else {
         this.deregister_support();
-        this.memory.support = spawn.name;
+        spawn.support_creep(this);
     }
 }

@@ -17,7 +17,7 @@ StructureSpawn.prototype.unsupport_creep = function(creep) {
         return other_name == creep.name;
     });
     if(creep.memory.support == this.name) {
-        creep.memory.support = null;
+        creep.memory.support = undefined;
     }
 }
 
