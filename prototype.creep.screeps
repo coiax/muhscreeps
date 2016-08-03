@@ -70,3 +70,12 @@ Creep.prototype.deregister_support = function() {
     if(spawn)
         spawn.unsupport_creep(this);
 }
+
+Creep.prototype.set_support = function(spawn) {
+    if(this.memory.support == spawn.name) {
+        return null;
+    } else {
+        this.deregister_support();
+        this.memory.support = spawn.name;
+    }
+}

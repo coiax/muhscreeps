@@ -1,3 +1,7 @@
+StructureSpawn.prototype.get_memory = function() {
+    return this.memory;
+}
+
 StructureSpawn.prototype.support_creep = function(creep) {
     if(!this.memory.supported_creeps)
         this.memory.supported_creeps = [];
@@ -24,7 +28,11 @@ StructureSpawn.prototype.check_creeps = function() {
 
     _.remove(this.memory.supported_creeps, function(creep_name, i, arr) {
         var creep = Game.creeps[creep_name];
-        // remove if true;
-        return !creep;
+        if(!creep) {
+            return true;
+        } else {
+            creep.set_support(this);
+            return false;
+        }
     });
 }
