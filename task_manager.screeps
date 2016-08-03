@@ -485,7 +485,7 @@ module.exports = {
             }
             cpu_tracker.stop(t1);
 
-            if(outcome.outcome)
+            if(outcome && outcome.outcome)
                 outcome = new outcomes.TaskError("Outcome is old format.");
 
             if(!outcome) {
