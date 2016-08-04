@@ -101,15 +101,10 @@ module.exports = {
             return null;
         }
     },
-    get_creeps_with_task: function(ttype) {
-        var taskers = [];
-        for(var name in Game.creeps) {
-            var creep = Game.creeps[name];
-            if(creep.has_task_in_queue(ttype)) {
-                taskers.push(creep);
-            }
-        }
-        return taskers;
+    get_creeps_with_task: function(creeps, ttype) {
+        return _.filter(creeps, function(creep) {
+            return creep.has_task_in_queue(ttype);
+        });
     },
     keep_n_values: function(L, N) {
         if(L && (L.length > N))

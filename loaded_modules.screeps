@@ -7,16 +7,17 @@ require('prototype.roomposition');
 require('prototype.structuretower');
 require('prototype.structurespawn');
 
+require('role.assault');
 require('role.builder');
 require('role.cow');
+require('role.claimer');
 require('role.distantminer');
+require('role.dumbscout');
 require('role.guard');
 require('role.supplier');
 require('role.upgrader');
-require('role.claimer');
-require('role.dumbscout');
 require('role.looter');
-require('role.assault');
+require('role.sentry');
 
 require('structure.tower');
 require('structure.spawner');
