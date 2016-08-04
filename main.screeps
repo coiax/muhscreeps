@@ -5,17 +5,27 @@ var task_manager = require('task_manager');
 var util = require('util');
 
 function cpu_debug(msg) {
-    if(Memory.cpu_debug) {
+    if(Memory.config.cpu_debug) {
         console.log(Game.cpu.getUsed() + ": " + msg);
     }
 }
 
 module.exports.loop = function () {
-    PathFinder.use(true);
     var t1 = cpu_tracker.start("internal", "memory_decode");
-    Memory;
+    if(!Memory.config)
+        Memory.config = {};
     cpu_tracker.stop(t1);
-    if(Memory.just_exit) {
+
+    if(typeof Memory.config.use_pathfinder == 'undefined')
+        Memory.config.use_pathfinder = false;
+    if(typeof Memory.config.cpu_debug == 'undefined')
+        Memory.config.cpu_debug = false;
+    if(typeof Memory.config.just_exit == 'undefined')
+        Memory.config.just_exit = false;
+
+    PathFinder.use(Memory.config.use_pathfinder);
+
+    if(Memory.config.just_exit) {
         return;
     }
 
