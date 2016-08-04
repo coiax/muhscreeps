@@ -11,6 +11,11 @@ function cpu_debug(msg) {
 }
 
 module.exports.loop = function () {
+    var bucket = Game.cpu.bucket;
+    if(bucket < 100) {
+        console.log("Bucket is at " + bucket + ". Halting execution.");
+        return;
+    }
     var t1 = cpu_tracker.start("internal", "memory_decode");
     if(!Memory.config)
         Memory.config = {};
