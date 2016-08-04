@@ -56,8 +56,8 @@ module.exports.loop = function () {
         var memory = structure.get_memory();
         var stype = structure.structureType;
         cpu_debug("Running tasks for " + sid + "(" + stype + ")");
-        var tq = memory.task_queue;
-        if(!tq || !tq.length) {
+        var has_tasks = structure.has_tasks;
+        if(!has_tasks()) {
             switch(stype) {
                 case STRUCTURE_TOWER:
                     structure.add_task({type: "structure.tower"});
@@ -67,8 +67,8 @@ module.exports.loop = function () {
                     break;
             }
         }
-        if(memory.task_queue && memory.task_queue.length)
-            task_manager.run_task_queue(structure, tq);
+        if(has_tasks())
+            task_manager.run_task_queue(structure, memory.task_queue);
     }
     for(var name in Game.creeps) {
         var creep = Game.creeps[name];
@@ -86,7 +86,7 @@ module.exports.loop = function () {
             var damaged_structures = creep.pos.findInRange(FIND_STRUCTURES,
                 3, {filter: function(st) {
                     return (util.is_damaged) &&
-                        ((st == STRUCTURE_ROAD) && (st == STRUCTURE_CONTAINER))
+                        st.is_type([STRUCTURE_ROAD, STRUCTURE_CONTAINER]);
                 }});
             damaged_structures = _.sortBy(damaged_structures,
                 _.property("hits"));
