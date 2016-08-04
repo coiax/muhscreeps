@@ -33,7 +33,6 @@ module.exports.has_task_in_queue = function(ttype) {
 };
 
 module.exports.has_tasks = function() {
-    console.log(this);
     var memory = this.get_memory();
     if(memory.task_queue && memory.task_queue.length) {
         return true;
