@@ -43,13 +43,21 @@ module.exports.loop = function () {
     }
     cpu_tracker.stop(t3);
 
+    var skip_structures_types = {
+        STRUCTURE_EXTENSION: true,
+        STRUCTURE_STORAGE: true,
+        STRUCTURE_EXTRACTOR: true
+    };
+
     for(var sid in Game.structures) {
         var structure = Game.structures[sid];
-        if(!structure.isActive()) {
-            continue;
-        }
-        var memory = structure.get_memory();
         var stype = structure.structureType;
+        if(skip_structures_types[stype])
+            continue;
+        if(!structure.isActive())
+            continue;
+
+        var memory = structure.get_memory();
         cpu_debug("Running tasks for " + sid + "(" + stype + ")");
         if(!structure.has_tasks()) {
             switch(stype) {
