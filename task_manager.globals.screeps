@@ -84,6 +84,7 @@ outcomes.ReplaceTask = ReplaceTask;
 function TaskError(error_message) {
     Base.call(this);
     this.pop = true;
+    this.stop = true;
     this.error = error_message;
 };
 TaskError.prototype = Object.create(Base.prototype);
