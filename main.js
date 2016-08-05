@@ -10,43 +10,51 @@ module.exports.loop = function() {
       a = cpu_tracker.start("internal", "gc");
       gc.gc();
       cpu_tracker.stop(a);
-      var a = cpu_tracker.start("global", "scouting"), d;
-      for(d in Game.rooms) {
-        cpu_debug("Scouting " + d), Game.rooms[d].scout_room()
+      var a = cpu_tracker.start("global", "scouting"), c;
+      for(c in Game.rooms) {
+        cpu_debug("Scouting " + c), Game.rooms[c].scout_room()
       }
       cpu_tracker.stop(a);
-      d = {STRUCTURE_EXTENSION:!0, STRUCTURE_STORAGE:!0, STRUCTURE_EXTRACTOR:!0};
-      for(var c in Game.structures) {
-        var a = Game.structures[c], f = a.structureType;
-        if(!d[f] && a.isActive()) {
-          var g = a.get_memory();
-          cpu_debug("Running tasks for " + c + "(" + f + ")");
-          if(!a.has_tasks()) {
-            switch(f) {
+      for(var d in Game.structures) {
+        c = Game.structures[d];
+        var a = c.structureType, e = !1;
+        switch(a) {
+          case STRUCTURE_EXTENSION:
+          ;
+          case STRUCTURE_STORAGE:
+          ;
+          case STRUCTURE_EXTRACTOR:
+            e = !0
+        }
+        if(!e && c.isActive()) {
+          e = c.get_memory();
+          cpu_debug("Running tasks for " + d + "(" + a + ")");
+          if(!c.has_tasks()) {
+            switch(a) {
               case STRUCTURE_TOWER:
-                a.add_task({type:"structure.tower"});
+                c.add_task({type:"structure.tower"});
                 break;
               case STRUCTURE_SPAWN:
-                a.add_task({type:"structure.spawner"})
+                c.add_task({type:"structure.spawner"})
             }
           }
-          a.has_tasks() && task_manager.run_task_queue(a, g.task_queue)
+          c.has_tasks() && task_manager.run_task_queue(c, e.task_queue)
         }
       }
-      for(var e in Game.creeps) {
-        var b = Game.creeps[e];
-        cpu_debug("Running tasks for " + e);
+      for(var f in Game.creeps) {
+        var b = Game.creeps[f];
+        cpu_debug("Running tasks for " + f);
         b.spawning || (b.room.find(FIND_DROPPED_ENERGY).forEach(function(a) {
           b.pickup(a)
-        }), b.carry.energy && !b.memory.no_driveby_repair && (c = b.pos.findInRange(FIND_STRUCTURES, 3, {filter:function(a) {
+        }), b.carry.energy && !b.memory.no_driveby_repair && (d = b.pos.findInRange(FIND_STRUCTURES, 3, {filter:function(a) {
           return util.is_damaged && a.is_type([STRUCTURE_ROAD, STRUCTURE_CONTAINER])
-        }}), c = _.sortBy(c, _.property("hits")), c.length && b.repair(c[0])), b.wants_renew() && b.add_task({type:"renew"}), b.has_tasks() || b.add_task({type:"taskless"}), task_manager.run_task_queue(b, b.memory.task_queue))
+        }}), d = _.sortBy(d, _.property("hits")), d.length && b.repair(d[0])), b.wants_renew() && b.add_task({type:"renew"}), b.has_tasks() || b.add_task({type:"taskless"}), task_manager.run_task_queue(b, b.memory.task_queue))
       }
       cpu_debug("Recording total CPU usage.");
       cpu_tracker.record_main();
-      e = cpu_tracker.start("internal", "gc");
+      f = cpu_tracker.start("internal", "gc");
       gc.gc();
-      cpu_tracker.stop(e);
+      cpu_tracker.stop(f);
       cpu_debug("Main loop complete.");
       cpu_tracker.calculate()
     }

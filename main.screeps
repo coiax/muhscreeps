@@ -52,7 +52,14 @@ module.exports.loop = function () {
     for(var sid in Game.structures) {
         var structure = Game.structures[sid];
         var stype = structure.structureType;
-        if(skip_structures_types[stype])
+        var skip = false;
+        switch(stype) {
+            case STRUCTURE_EXTENSION:
+            case STRUCTURE_STORAGE:
+            case STRUCTURE_EXTRACTOR:
+                skip = true;
+        };
+        if(skip)
             continue;
         if(!structure.isActive())
             continue;
