@@ -34,7 +34,8 @@ for dirpath, dirnames, filenames in os.walk('.'):
         else:
             check_msg = ""
         print(fmt.format(check_msg, full_name, js_name))
-        args = ["closure-compiler", "--js", full_name]
+        args = ["closure-compiler", "--formatting", "PRETTY_PRINT",
+                "--js", full_name]
         if check_only:
             pass
         else:
