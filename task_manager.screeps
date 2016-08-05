@@ -448,7 +448,7 @@ var task_functions = {
                 storages.push(structure);
         }
 
-        var target = creep.pos.findClosestByPath(storages);
+        var target = creep.pos.findClosestByRange(storages);
 
         if(target) {
             var new_task = {type: "transfer_to", target_id: target.id};
