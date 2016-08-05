@@ -476,7 +476,6 @@ module.exports = {
 
             var outcome;
             var t1 = cpu_tracker.start("tasks", ttype);
-            cpu_debug("Running task " + ttype + " for " + owner);
 
             var func = task_functions[ttype];
             if(func) {
@@ -526,5 +525,7 @@ module.exports = {
                 continue;
             }
         }
+        if(sanity == 0)
+            cpu_debug("Task queue sanity timed out for " + owner);
     }
 }
