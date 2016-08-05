@@ -1,5 +1,6 @@
 var cpu_tracker = require('cpu_tracker');
 var util = require('util');
+var cpu_debug = util.cpu_debug;
 
 var globals = require('task_manager.globals');
 var outcomes = globals.outcomes;
@@ -475,6 +476,7 @@ module.exports = {
 
             var outcome;
             var t1 = cpu_tracker.start("tasks", ttype);
+            cpu_debug("Running task " + ttype + " for " + owner);
 
             var func = task_functions[ttype];
             if(func) {

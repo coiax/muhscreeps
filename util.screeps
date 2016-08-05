@@ -109,5 +109,9 @@ module.exports = {
     keep_n_values: function(L, N) {
         if(L && (L.length > N))
             L.splice(0, L.length - N);
+    },
+    cpu_debug: function cpu_debug(msg) {
+        if(Memory.config.cpu_debug)
+            console.log(Game.cpu.getUsed() + ": " + msg);
     }
 }

@@ -3,12 +3,7 @@ var gc = require('gc');
 var cpu_tracker = require('cpu_tracker');
 var task_manager = require('task_manager');
 var util = require('util');
-
-function cpu_debug(msg) {
-    if(Memory.config.cpu_debug) {
-        console.log(Game.cpu.getUsed() + ": " + msg);
-    }
-}
+var cpu_debug = util.cpu_debug;
 
 module.exports.loop = function () {
     var bucket = Game.cpu.bucket;
