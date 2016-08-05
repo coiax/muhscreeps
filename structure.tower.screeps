@@ -37,7 +37,7 @@ module.exports = {
                 function(st) {
                     if(st.structureType == STRUCTURE_RAMPART)
                         return false;
-                    return efficient_tower_repair(tower, st);
+                    return st.is_damaged();
                 }});
             mode = "repair";
         }
@@ -54,8 +54,8 @@ module.exports = {
                 var stypes = order[i]; {
                     var damaged = tower.room.find(FIND_STRUCTURES, {filter:
                         function(st) {
-                            return (_.includes(stypes, st.structureType) &&
-                                efficient_tower_repair(tower, st));
+                            return _.includes(stypes, st.structureType) &&
+                                st.is_damaged();
                     }});
                     damaged = _.sortBy(damaged, _.property("hits"));
                     if(damaged.length) {

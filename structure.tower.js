@@ -15,14 +15,14 @@ module.exports = {name:"structure.tower", run:function(d, b) {
   a || (a = b.pos.findClosestByRange(FIND_HOSTILE_CREEPS), c = "attack");
   a || (a = b.pos.findDamagedFriendlyCreeps(), a = b.pos.findClosestByRange(a), c = "heal");
   a || (a = b.pos.findClosestByRange(FIND_MY_STRUCTURES, {filter:function(a) {
-    return a.structureType == STRUCTURE_RAMPART ? !1 : efficient_tower_repair(b, a)
+    return a.structureType == STRUCTURE_RAMPART ? !1 : a.is_damaged()
   }}), c = "repair");
   if(!a) {
     var f = [STRUCTURE_CONTAINER, STRUCTURE_ROAD];
     d.wall_repair && f.push([STRUCTURE_WALL, STRUCTURE_RAMPART]);
     for(var g in f) {
       var h = f[g], e = b.room.find(FIND_STRUCTURES, {filter:function(a) {
-        return _.includes(h, a.structureType) && efficient_tower_repair(b, a)
+        return _.includes(h, a.structureType) && a.is_damaged()
       }}), e = _.sortBy(e, _.property("hits"));
       if(e.length) {
         a = e[0];

@@ -1,6 +1,7 @@
 var util = require("util");
 _.extend(Creep.prototype, require("mixin.log"));
 _.extend(Creep.prototype, require("mixin.task_stack"));
+_.extend(Structure.prototype, require("mixin.common"));
 Creep.prototype.get_memory = function() {
   return this.memory
 };
