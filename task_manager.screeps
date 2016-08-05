@@ -455,7 +455,7 @@ var task_functions = {
             return new outcomes.PushTask(new_task);
         }
 
-        return new outcomes.Failure("Could not find storage.");
+        return new outcomes.TaskError("Could not find storage.");
     }
 }
 module.exports = {
