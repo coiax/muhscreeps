@@ -41,7 +41,7 @@ module.exports = {
                 _.pull(dirs, chosen_dir);
                 // the number is a FIND_* constant.
                 var numeric_dir = parseInt(chosen_dir);
-                exit_position = creep.pos.findClosestByRange(numeric_dir);
+                exit_position = creep.pos.findClosestByPath(numeric_dir);
             }
             if(exit_position) {
                 task.destination_room = chosen_room;

@@ -16,7 +16,7 @@ module.exports = {name:"role.dumbscout", parts:[[MOVE]], run:function(a, c) {
       b.push(e)
     }
     for(var g, f;b.length && !f;) {
-      e = _.sample(b), g = d[e], g == a.old_room && 1 != b.length || (_.pull(b, e), f = parseInt(e), f = c.pos.findClosestByRange(f))
+      e = _.sample(b), g = d[e], g == a.old_room && 1 != b.length || (_.pull(b, e), f = parseInt(e), f = c.pos.findClosestByPath(f))
     }
     if(f) {
       return a.destination_room = g, a.exit_pos = f, new outcomes.Rerun
