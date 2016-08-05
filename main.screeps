@@ -12,7 +12,7 @@ function cpu_debug(msg) {
 
 module.exports.loop = function () {
     var bucket = Game.cpu.bucket;
-    if(bucket < 100) {
+    if(bucket < 500) {
         console.log("Bucket is at " + bucket + ". Halting execution.");
         return;
     }
