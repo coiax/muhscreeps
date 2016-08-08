@@ -68,23 +68,23 @@ Creep.prototype.get_support = function() {
 };
 
 Creep.prototype.add_flag = function(flag_name) {
-    if(!Creep.memory.flags)
-        Creep.memory.flags = [];
-    if(_.includes(Creep.memory.flags, flag_name))
-        Creep.memory.flags.push(flag_name)
+    if(!this.memory.flags)
+        this.memory.flags = [];
+    if(_.includes(this.memory.flags, flag_name))
+        this.memory.flags.push(flag_name)
 };
 
 Creep.prototype.clear_flag = function(flag_name) {
-    if(!Creep.memory.flags)
+    if(!this.memory.flags)
         return;
-    _.pull(Creep.memory, flag_name)
-    if(Creep.memory.flags.length == 0)
-        Creep.memory.flags = undefined;
+    _.pull(this.memory, flag_name)
+    if(this.memory.flags.length == 0)
+        this.memory.flags = undefined;
 };
 
 Creep.prototype.has_flag = function(flag_name) {
-    if(Creep.memory.flags) {
-        return _.includes(Creep.memory.flags, flag_name)
+    if(this.memory.flags) {
+        return _.includes(this.memory.flags, flag_name)
     } else {
         return false;
     }

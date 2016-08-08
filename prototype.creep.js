@@ -44,13 +44,13 @@ Creep.prototype.get_support = function() {
   return null
 };
 Creep.prototype.add_flag = function(a) {
-  Creep.memory.flags || (Creep.memory.flags = []);
-  _.includes(Creep.memory.flags, a) && Creep.memory.flags.push(a)
+  this.memory.flags || (this.memory.flags = []);
+  _.includes(this.memory.flags, a) && this.memory.flags.push(a)
 };
 Creep.prototype.clear_flag = function(a) {
-  Creep.memory.flags && (_.pull(Creep.memory, a), 0 == Creep.memory.flags.length && (Creep.memory.flags = void 0))
+  this.memory.flags && (_.pull(this.memory, a), 0 == this.memory.flags.length && (this.memory.flags = void 0))
 };
 Creep.prototype.has_flag = function(a) {
-  return Creep.memory.flags ? _.includes(Creep.memory.flags, a) : !1
+  return this.memory.flags ? _.includes(this.memory.flags, a) : !1
 };
 
