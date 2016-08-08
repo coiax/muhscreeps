@@ -23,11 +23,9 @@ var roleBuilder = {
             if(!dismantle_flag.memory.assigned_creeps) {
                 dismantle_flag.memory.assigned_creeps = []
             }
-            for(var i in dismantle_flag.memory.assigned_creeps) {
-                var name = dismantle_flag.memory.assigned_creeps[i];
-                if(!Game.creeps[name])
-                    dismantle_flag.memory.assigned_creeps[name] = undefined;
-            }
+            _.remove(dismantle_flag.memory.assigned_creeps, function(elem) {
+                return !Game.creeps[elem];
+            });
             var assigned_num = dismantle_flag.memory.assigned_creeps.length;
         }
         if(typeof assigned_num != 'undefined' && assigned_num < 2) {
