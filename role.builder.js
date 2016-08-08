@@ -14,7 +14,7 @@ var roleBuilder = {name:"role.builder", run:function(f, b) {
   if(a) {
     a.memory.assigned_creeps || (a.memory.assigned_creeps = []);
     for(var e in a.memory.assigned_creeps) {
-      Game.creeps[e] || (a.memory.assigned_creeps[e] = void 0)
+      c = a.memory.assigned_creeps[e], Game.creeps[c] || (a.memory.assigned_creeps[c] = void 0)
     }
     c = a.memory.assigned_creeps.length
   }
@@ -23,8 +23,8 @@ var roleBuilder = {name:"role.builder", run:function(f, b) {
     if(!a.room) {
       return b.moveTo(a), new outcomes.InProgress
     }
-    if((c = a.pos.findInRange(FIND_STRUCTURES, 0)) && c.length) {
-      var d = {type:"dismantle", target_id:c[0].id};
+    if((e = a.pos.findInRange(FIND_STRUCTURES, 0)) && e.length) {
+      var d = {type:"dismantle", target_id:e[0].id};
       return new outcomes.PushTask(d)
     }
     a.remove()
@@ -33,13 +33,13 @@ var roleBuilder = {name:"role.builder", run:function(f, b) {
     return new outcomes.PushTask({type:"resupply"})
   }
   a = b.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
-  c = sort_structures(b.room.find(FIND_MY_STRUCTURES, {filter:function(a) {
+  e = sort_structures(b.room.find(FIND_MY_STRUCTURES, {filter:function(a) {
     return a.structureType != STRUCTURE_RAMPART && a.hits < a.hitsMax
   }}));
-  e = sort_structures(b.room.find(FIND_STRUCTURES, {filter:function(a) {
+  c = sort_structures(b.room.find(FIND_STRUCTURES, {filter:function(a) {
     return a.hits < a.hitsMax
   }}));
-  a ? d = a : c.length ? d = c[0] : e.length && (d = e[0]);
+  a ? d = a : e.length ? d = e[0] : c.length && (d = c[0]);
   if(d) {
     return d = {type:"construct", target_id:d.id}, new outcomes.PushTask(d)
   }

@@ -23,7 +23,8 @@ var roleBuilder = {
             if(!dismantle_flag.memory.assigned_creeps) {
                 dismantle_flag.memory.assigned_creeps = []
             }
-            for(var name in dismantle_flag.memory.assigned_creeps) {
+            for(var i in dismantle_flag.memory.assigned_creeps) {
+                var name = dismantle_flag.memory.assigned_creeps[i];
                 if(!Game.creeps[name])
                     dismantle_flag.memory.assigned_creeps[name] = undefined;
             }
