@@ -70,7 +70,7 @@ Creep.prototype.get_support = function() {
 Creep.prototype.add_flag = function(flag_name) {
     if(!this.memory.flags)
         this.memory.flags = [];
-    if(_.includes(this.memory.flags, flag_name))
+    if(!_.includes(this.memory.flags, flag_name))
         this.memory.flags.push(flag_name)
 };
 

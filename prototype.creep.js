@@ -45,7 +45,7 @@ Creep.prototype.get_support = function() {
 };
 Creep.prototype.add_flag = function(a) {
   this.memory.flags || (this.memory.flags = []);
-  _.includes(this.memory.flags, a) && this.memory.flags.push(a)
+  _.includes(this.memory.flags, a) || this.memory.flags.push(a)
 };
 Creep.prototype.clear_flag = function(a) {
   this.memory.flags && (_.pull(this.memory, a), 0 == this.memory.flags.length && (this.memory.flags = void 0))
