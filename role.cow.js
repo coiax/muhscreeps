@@ -1,4 +1,5 @@
 var util = require("util"), task_manager = require("task_manager"), outcomes = task_manager.globals.outcomes, roleCow = {name:"role.cow", parts:[[WORK, CARRY, MOVE], [WORK, WORK, CARRY, MOVE], [WORK, WORK, WORK, CARRY, MOVE, MOVE], [WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE], [WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE], [WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE]], run:function(d, b) {
+  b.add_flag("no_autorepair");
   var c = Game.getObjectById(d.source_id);
   if(!c) {
     b.say("Mooo!");

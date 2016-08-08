@@ -13,6 +13,7 @@ var roleCow = {
         [WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE]
     ],
     run: function(task, creep) {
+        creep.add_flag("no_autorepair");
         var source = Game.getObjectById(task.source_id);
         if(!source) {
             creep.say("Mooo!");
