@@ -25,7 +25,7 @@ for dirpath, dirnames, filenames in os.walk('.'):
             pass
         else:
             if full_stats.st_mtime <= js_stats.st_mtime:
-                print("{} is up to date".format(full_name))
+                #print("{} is up to date".format(full_name))
                 continue
 
         fmt = "Closure Compiler{} ({} -> {})"

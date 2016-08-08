@@ -9,7 +9,7 @@ Creep.prototype.get_memory = function() {
 }
 
 Creep.prototype.wants_renew = function() {
-    if(this.ticksToLive < 100 && this.memory.autorenew &&
+    if(this.ticksToLive < 100 && this.has_flag("renew") &&
         !this.has_task_in_queue("renew")) {
         return true;
     } else {
@@ -65,4 +65,27 @@ Creep.prototype.get_support = function() {
         }
     }
     return null;
+};
+
+Creep.prototype.add_flag = function(flag_name) {
+    if(!Creep.memory.flags)
+        Creep.memory.flags = [];
+    if(_.includes(Creep.memory.flags, flag_name))
+        Creep.memory.flags.push(flag_name)
+};
+
+Creep.prototype.clear_flag = function(flag_name) {
+    if(!Creep.memory.flags)
+        return;
+    _.pull(Creep.memory, flag_name)
+    if(Creep.memory.flags.length == 0)
+        Creep.memory.flags = undefined;
+};
+
+Creep.prototype.has_flag = function(flag_name) {
+    if(Creep.memory.flags) {
+        return _.includes(Creep.memory.flags, flag_name)
+    } else {
+        return false;
+    }
 };

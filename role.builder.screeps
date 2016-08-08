@@ -18,7 +18,19 @@ var roleBuilder = {
     /** @param {Creep} creep **/
     run: function(task, creep) {
         var dismantle_flag = Game.flags["Dismantle"];
+        var assigned_num;
         if(dismantle_flag) {
+            if(!dismantle_flag.memory.assigned_creeps) {
+                dismantle_flag.memory.assigned_creeps = []
+            }
+            for(var name in dismantle_flag.memory.assigned_creeps) {
+                if(!Game.creeps[name])
+                    dismantle_flag.memory.assigned_creeps[name] = undefined;
+            }
+            var assigned_num = dismantle_flag.memory.assigned_creeps.length;
+        }
+        if(typeof assigned_num != 'undefined' && assigned_num < 2) {
+            dismantle_flag.memory.assigned_creeps.push(creep.name);
             if(!dismantle_flag.room) {
                 creep.moveTo(dismantle_flag)
                 return new outcomes.InProgress();

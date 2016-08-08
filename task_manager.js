@@ -146,9 +146,9 @@ var cpu_tracker = require("cpu_tracker"), util = require("util"), cpu_debug = ut
     if(d.roomName == b.room.name) {
       var d = d.look(LOOK_STRUCTURES), k;
       for(k in d) {
-        var h = d[k], g = b.transfer(h, f, e);
-        if(g != ERR_INVALID_TARGET) {
-          a = h;
+        var g = d[k], h = b.transfer(g, f, e);
+        if(h != ERR_INVALID_TARGET) {
+          a = g;
           c.target_id = a.id;
           break
         }
@@ -162,7 +162,98 @@ var cpu_tracker = require("cpu_tracker"), util = require("util"), cpu_debug = ut
     return new outcomes.InProgress
   }
   c.destination_pos = a.pos;
-  g = b.transfer(a, f, e);
+  h = b.transfer(a, f, e);
+  switch(h) {
+    case ERR_NOT_OWNER:
+    ;
+    case ERR_BUSY:
+    ;
+    case ERR_NOT_ENOUGH_RESOURCES:
+    ;
+    case ERR_INVALID_ARGS:
+    ;
+    case ERR_INVALID_TARGET:
+      return new outcomes.TaskError(h);
+    case ERR_FULL:
+      return new outcomes.AlreadyComplete;
+    case ERR_NOT_IN_RANGE:
+      return b.moveTo(a), new outcomes.InProgress;
+    case OK:
+      return new outcomes.Complete
+  }
+}, tower_target:function(c, b) {
+  target = Game.getObjectById(c.target_id);
+  mode = c.mode;
+  if(!target) {
+    return new outcomes.Failure("No target.")
+  }
+  if(!mode) {
+    return new outcomes.TaskError("No mode.")
+  }
+  if(b.energy < TOWER_ENERGY_COST) {
+    return new outcomes.InProgress
+  }
+  var a;
+  switch(mode) {
+    case "heal":
+      if(target.hits == target.hitsMax) {
+        return new outcomes.AlreadyComplete
+      }
+      a = b.heal(target);
+      break;
+    case "repair":
+      if(target.hits == target.hitsMax) {
+        return new outcomes.AlreadyComplete
+      }
+      a = b.repair(target);
+      break;
+    case "attack":
+      a = b.attack(target);
+      break;
+    default:
+      return new outcomes.TaskError("Bad mode " + mode)
+  }
+  switch(a) {
+    case ERR_INVALID_TARGET:
+    ;
+    case ERR_RCL_NOT_ENOUGH:
+    ;
+    case ERR_NOT_ENOUGH_RESOURCES:
+      return new outcomes.TaskError(a);
+    case OK:
+      return new outcomes.InProgress
+  }
+}, dismantle:function(c, b) {
+  b.add_flag("no_autopickup");
+  var a = Game.getObj, d = c.amount;
+  if(!a && !destination) {
+    return new outcomes.TaskError("No target or destination.")
+  }
+  if(!b.carry[resource_type]) {
+    return new outcomes.TaskError("Creep not carrying " + resource_type)
+  }
+  "undefined" != typeof d && (d = max(b.carry[resource_type], d), c.amount = d);
+  if(!a) {
+    if(destination.roomName == b.room.name) {
+      var f = destination.look(LOOK_STRUCTURES), e;
+      for(e in f) {
+        var k = f[e], g = b.transfer(k, resource_type, d);
+        if(g != ERR_INVALID_TARGET) {
+          a = k;
+          c.target_id = a.id;
+          break
+        }
+      }
+      if(!a) {
+        var h = "No target found at destination."
+      }
+      return new outcomes.TaskError(h)
+    }
+    b.moveTo(destination);
+    return new outcomes.InProgress
+  }
+  c.destination_pos = a.pos;
+  g = b.transfer(a, resource_type, d);
   switch(g) {
     case ERR_NOT_OWNER:
     ;
@@ -224,6 +315,7 @@ var cpu_tracker = require("cpu_tracker"), util = require("util"), cpu_debug = ut
       return new outcomes.InProgress
   }
 }, dismantle:function(c, b) {
+  b.add_flag("no_autopickup");
   var a = Game.getObjectById(c.target_id);
   if(!a) {
     return new outcomes.Failure("No target found.")
@@ -303,15 +395,24 @@ var cpu_tracker = require("cpu_tracker"), util = require("util"), cpu_debug = ut
   var a = b.body_part_count(WORK), d = b.body_part_count(CARRY), a = !a && !d ? "role.dumbscout" : a && !d ? "role.cow" : !a && d ? "role.supplier" : _.sample(["role.supplier", "role.cow", "role.upgrader", "role.builder"]);
   return new outcomes.ReplaceTask({type:a})
 }, deposit:function(c, b) {
+  var a = c.resource_type || RESOURCE_ENERGY;
   if(b.is_empty()) {
     return new outcomes.AlreadyComplete
   }
-  var a = [], d;
-  for(d in Game.structures) {
-    var f = Game.structures[d];
-    f.is_type(STRUCTURE_STORAGE) && !f.is_full() && a.push(f)
+  var d = c.target_room;
+  if(!d) {
+    (d = b.get_support()) || (d = _.sample(Game.spawns));
+    if(!d) {
+      return new outcomes.TaskError("No spawns exist.")
+    }
+    d = d.room.name;
+    c.target_room = d
   }
-  return(a = b.pos.findClosestByRange(a)) ? new outcomes.PushTask({type:"transfer_to", target_id:a.id}) : new outcomes.TaskError("Could not find storage.")
+  if(d = b.pos.findClosestByRange(storages)) {
+    return new outcomes.PushTask({type:"transfer_to", target_id:d.id, resource_type:a})
+  }
+  b.drop(a);
+  return new outcomes.TaskError("Could not find storage.")
 }};
 module.exports = {globals:require("task_manager.globals"), task_functions:task_functions, register:function(c, b) {
   task_functions[c] = b
@@ -320,12 +421,12 @@ module.exports = {globals:require("task_manager.globals"), task_functions:task_f
     a--;
     var d = b[0];
     "undefined" == typeof d.times_run && (d.times_run = 0);
-    var f = d.type, e, k = cpu_tracker.start("tasks", f), h = task_functions[f];
-    if(h) {
+    var f = d.type, e, k = cpu_tracker.start("tasks", f), g = task_functions[f];
+    if(g) {
       try {
-        e = h(d, c)
-      }catch(g) {
-        console.log(g.stack), e = new outcomes.TaskError("Exception: " + g)
+        e = g(d, c)
+      }catch(h) {
+        console.log(h.stack), e = new outcomes.TaskError("Exception: " + h)
       }
     }else {
       e = new outcomes.TaskError("No handler for task type.")

@@ -131,11 +131,7 @@ var roleCow = {
         // into the container, repairing the container first if needed.
         // The priority system SHOULD just make this all happen.
         var rc = creep.harvest(source);
-        if(rc == OK) {
-            creep.memory.no_driveby_repair = true;
-        } else if(rc == ERR_NOT_ENOUGH_RESOURCES) {
-            creep.memory.no_driveby_repair = false;
-        }
+
         // if for some reason the container isn't repaired by others
         // and it drops to half health, then fix it up, but the cow should
         // focus on just harvesting as much as possible

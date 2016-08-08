@@ -44,9 +44,9 @@ module.exports.loop = function() {
       for(var f in Game.creeps) {
         var b = Game.creeps[f];
         cpu_debug("Running tasks for " + f);
-        b.spawning || (b.room.find(FIND_DROPPED_ENERGY).forEach(function(a) {
+        b.spawning || (b.has_flag("no_autopickup") || b.room.find(FIND_DROPPED_ENERGY).forEach(function(a) {
           b.pickup(a)
-        }), b.carry.energy && !b.memory.no_driveby_repair && (d = b.pos.findInRange(FIND_STRUCTURES, 3, {filter:function(a) {
+        }), b.carry.energy && !b.has_flag("no_autorepair") && (d = b.pos.findInRange(FIND_STRUCTURES, 3, {filter:function(a) {
           return util.is_damaged && a.is_type([STRUCTURE_ROAD, STRUCTURE_CONTAINER])
         }}), d = _.sortBy(d, _.property("hits")), d.length && b.repair(d[0])), b.wants_renew() && b.add_task({type:"renew"}), b.has_tasks() || b.add_task({type:"taskless"}), task_manager.run_task_queue(b, b.memory.task_queue))
       }

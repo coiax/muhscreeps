@@ -1,40 +1,49 @@
 var task_manager = require("task_manager"), outcomes = require("task_manager.globals").outcomes;
-function sort_construction_sites(e) {
-  return _.orderBy(e, function(a) {
-    return a.progressTotal - a.progress
+function sort_construction_sites(f) {
+  return _.orderBy(f, function(b) {
+    return b.progressTotal - b.progress
   }, "desc")
 }
-function sort_structures(e) {
-  return _.sortBy(e, function(a) {
-    return a.hits
+function sort_structures(f) {
+  return _.sortBy(f, function(b) {
+    return b.hits
   })
 }
-var roleBuilder = {name:"role.builder", run:function(e, a) {
-  var b = Game.flags.Dismantle;
-  if(b) {
-    if(!b.room) {
-      return a.moveTo(b), new outcomes.InProgress
+var roleBuilder = {name:"role.builder", run:function(f, b) {
+  var a = Game.flags.Dismantle, c;
+  if(a) {
+    a.memory.assigned_creeps || (a.memory.assigned_creeps = []);
+    for(var e in a.memory.assigned_creeps) {
+      Game.creeps[e] || (a.memory.assigned_creeps[e] = void 0)
     }
-    var d = b.pos.findInRange(FIND_STRUCTURES, 0);
-    if(d && d.length) {
-      var c = {type:"dismantle", target_id:d[0].id};
-      return new outcomes.PushTask(c)
-    }
-    b.remove()
+    c = a.memory.assigned_creeps.length
   }
-  if(0 == a.carry.energy) {
+  if("undefined" != typeof c && 2 > c) {
+    a.memory.assigned_creeps.push(b.name);
+    if(!a.room) {
+      return b.moveTo(a), new outcomes.InProgress
+    }
+    if((c = a.pos.findInRange(FIND_STRUCTURES, 0)) && c.length) {
+      var d = {type:"dismantle", target_id:c[0].id};
+      return new outcomes.PushTask(d)
+    }
+    a.remove()
+  }
+  if(0 == b.carry.energy) {
     return new outcomes.PushTask({type:"resupply"})
   }
-  var b = a.pos.findClosestByRange(FIND_CONSTRUCTION_SITES), d = sort_structures(a.room.find(FIND_MY_STRUCTURES, {filter:function(a) {
+  a = b.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
+  c = sort_structures(b.room.find(FIND_MY_STRUCTURES, {filter:function(a) {
     return a.structureType != STRUCTURE_RAMPART && a.hits < a.hitsMax
-  }})), f = sort_structures(a.room.find(FIND_STRUCTURES, {filter:function(a) {
+  }}));
+  e = sort_structures(b.room.find(FIND_STRUCTURES, {filter:function(a) {
     return a.hits < a.hitsMax
   }}));
-  b ? c = b : d.length ? c = d[0] : f.length && (c = f[0]);
-  if(c) {
-    return c = {type:"construct", target_id:c.id}, new outcomes.PushTask(c)
+  a ? d = a : c.length ? d = c[0] : e.length && (d = e[0]);
+  if(d) {
+    return d = {type:"construct", target_id:d.id}, new outcomes.PushTask(d)
   }
-  a.say("no work");
+  b.say("no work");
   return new outcomes.InProgress
 }};
 module.exports = roleBuilder;

@@ -6,7 +6,7 @@ Creep.prototype.get_memory = function() {
   return this.memory
 };
 Creep.prototype.wants_renew = function() {
-  return 100 > this.ticksToLive && this.memory.autorenew && !this.has_task_in_queue("renew") ? !0 : !1
+  return 100 > this.ticksToLive && this.has_flag("renew") && !this.has_task_in_queue("renew") ? !0 : !1
 };
 Creep.prototype.renew_cost = function() {
   return floor(600 / this.body.length)
@@ -42,5 +42,15 @@ Creep.prototype.get_support = function() {
     }
   }
   return null
+};
+Creep.prototype.add_flag = function(a) {
+  Creep.memory.flags || (Creep.memory.flags = []);
+  _.includes(Creep.memory.flags, a) && Creep.memory.flags.push(a)
+};
+Creep.prototype.clear_flag = function(a) {
+  Creep.memory.flags && (_.pull(Creep.memory, a), 0 == Creep.memory.flags.length && (Creep.memory.flags = void 0))
+};
+Creep.prototype.has_flag = function(a) {
+  return Creep.memory.flags ? _.includes(Creep.memory.flags, a) : !1
 };
 

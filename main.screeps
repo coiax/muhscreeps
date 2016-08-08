@@ -85,13 +85,15 @@ module.exports.loop = function () {
         if(creep.spawning) {
             continue;
         }
-        var dropped_energies = creep.room.find(FIND_DROPPED_ENERGY);
-        dropped_energies.forEach(function(energy) {
-            // might fail, just pickup anything if you can.
-            creep.pickup(energy);
-        });
+        if(!creep.has_flag("no_autopickup")) {
+            var dropped_energies = creep.room.find(FIND_DROPPED_ENERGY);
+            dropped_energies.forEach(function(energy) {
+                // might fail, just pickup anything if you can.
+                creep.pickup(energy);
+            });
+        }
         // casual driveby repair.
-        if(creep.carry.energy && !creep.memory.no_driveby_repair) {
+        if(creep.carry.energy && !creep.has_flag("no_autorepair")) {
             var damaged_structures = creep.pos.findInRange(FIND_STRUCTURES,
                 3, {filter: function(st) {
                     return (util.is_damaged) &&

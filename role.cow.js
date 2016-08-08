@@ -47,15 +47,14 @@ var util = require("util"), task_manager = require("task_manager"), outcomes = t
     if(a.length) {
       c = a[0]
     }else {
-      return c = c.pos.getDirectionTo(b), c = b.pos.step(c).createConstructionSite(STRUCTURE_CONTAINER), new outcomes.InProgress
+      return c = c.pos.getDirectionTo(b), b.pos.step(c).createConstructionSite(STRUCTURE_CONTAINER), new outcomes.InProgress
     }
     return new outcomes.PushTask({type:"construct", target_id:c.id, resupply:"harvest"})
   }
   if(a && 1 < a.pos.getRangeTo(b)) {
     return d.output_container_id = null, new outcomes.InProgress
   }
-  c = b.harvest(c);
-  c == OK ? b.memory.no_driveby_repair = !0 : c == ERR_NOT_ENOUGH_RESOURCES && (b.memory.no_driveby_repair = !1);
+  b.harvest(c);
   a.hits < a.hitsMax ? b.repair(a) : b.transfer(a, RESOURCE_ENERGY);
   return new outcomes.InProgress
 }};
