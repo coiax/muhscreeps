@@ -364,7 +364,7 @@ var cpu_tracker = require("cpu_tracker"), util = require("util"), cpu_debug = ut
   var d = b.pickup(a);
   return d == ERR_NOT_IN_RANGE ? (b.moveTo(a), new outcomes.InProgress) : d == ERR_INVALID_TARGET ? new outcomes.Failure(d) : new outcomes.Complete
 }, travel_to_room:function(c, b) {
-  var a = c.destination_room, d = b.room.roomName;
+  var a = c.destination_room, d = b.room.name;
   if(!a) {
     return new outcomes.TaskError("No room given.")
   }

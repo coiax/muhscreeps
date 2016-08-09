@@ -484,7 +484,7 @@ var task_functions = {
     },
     travel_to_room : function(task, creep) {
         var destination_room = task.destination_room;
-        var current_room = creep.room.roomName;
+        var current_room = creep.room.name;
         if(!destination_room)
             return new outcomes.TaskError("No room given.")
 
