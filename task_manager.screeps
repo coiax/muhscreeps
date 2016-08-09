@@ -24,7 +24,13 @@ var task_functions = {
             if(!task.no_resupply) {
                 return new outcomes.PushTask({type: "resupply"});
             } else {
-                return new outcomes.Failure("No sources found.");
+                var wait_time = Math.floor((Math.random() * 20) + 10);
+                var new_outcome = {
+                    pop: true,
+                    warning: "No sources found.",
+                    push: {type: "idle", timeout: wait_time}
+                };
+                return new_outcome;
             }
         }
         var rc = creep.harvest(selected);
@@ -559,6 +565,7 @@ var task_functions = {
         return new outcomes.ReplaceTask({type: purpose});
     },
     idle: function(task, creep) {
+        creep.say("Zzz");
         return new outcomes.InProgress();
     },
     deposit : function(task, creep) {

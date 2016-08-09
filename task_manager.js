@@ -9,7 +9,7 @@ var cpu_tracker = require("cpu_tracker"), util = require("util"), cpu_debug = ut
     c.selected_source_id = a.id
   }
   if(!a) {
-    return c.no_resupply ? new outcomes.Failure("No sources found.") : new outcomes.PushTask({type:"resupply"})
+    return c.no_resupply ? {pop:!0, warning:"No sources found.", push:{type:"idle", timeout:Math.floor(20 * Math.random() + 10)}} : new outcomes.PushTask({type:"resupply"})
   }
   var d = b.harvest(a);
   switch(d) {
@@ -397,6 +397,7 @@ var cpu_tracker = require("cpu_tracker"), util = require("util"), cpu_debug = ut
   var a = b.body_part_count(WORK), d = b.body_part_count(CARRY), a = b.body_part_count(CLAIM) ? "role.claimer" : !a && !d ? "role.dumbscout" : a && !d ? "role.cow" : !a && d ? "role.supplier" : _.sample(["role.supplier", "role.cow", "role.upgrader", "role.builder"]);
   return new outcomes.ReplaceTask({type:a})
 }, idle:function(c, b) {
+  b.say("Zzz");
   return new outcomes.InProgress
 }, deposit:function(c, b) {
   var a = c.resource_type || RESOURCE_ENERGY;
