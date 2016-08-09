@@ -53,4 +53,8 @@ Creep.prototype.clear_flag = function(a) {
 Creep.prototype.has_flag = function(a) {
   return this.memory.flags ? _.includes(this.memory.flags, a) : !1
 };
+Creep.prototype.debug_mode = function() {
+  this.add_flag("no_autotask");
+  this.memory.task_queue = void 0
+};
 

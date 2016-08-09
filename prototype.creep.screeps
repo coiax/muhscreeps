@@ -89,3 +89,8 @@ Creep.prototype.has_flag = function(flag_name) {
         return false;
     }
 };
+
+Creep.prototype.debug_mode = function() {
+    this.add_flag("no_autotask");
+    this.memory.task_queue = undefined;
+};
