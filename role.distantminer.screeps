@@ -1,53 +1,33 @@
 var util = require('util');
 var task_manager = require('task_manager');
+var outcomes = task_manager.globals.outcomes;
 
-module.exports = {
-    name: "role.distantminer",
-    run: function(task, creep) {
-        if(typeof task.mode == 'undefined') {
-            task.mode = "locate";
-        }
-        return module.exports[task.mode](task, creep);
-    },
-    locate: function(task, creep) {
-        var home_spawn = Game.spawns[creep.support];
-        if(!home_spawn) {
-            creep.find_support();
-            return {outcome: "rerun"}
-        }
-        // Find nearest source in unowned territory.
-        var home_room = home_spawn.room.roomName;
+module.exports.name = "role.distantminer";
+module.exports.run = function(task, creep) {
+    var current_room = creep.room.name;
 
-        var rooms = util.room_walk(home_room, function(depth, rn) {
-            if(rn == home_room)
-                return false;
-
-            var room = Game.rooms[rn];
-            if(room) {
-                var sources = room.find(FIND_SOURCES, {filter:
-                    function(src) {
-                        return src.is_harvestable(creep);
-                }});
-                return sources.length;
-            } else {
-                var intel = Memory.rooms[rn].intel;
-                if(!intel)
-                    return false;
-                if(intel.sources.length)
-                    return true;
-            }
-        });
-        if(rooms.length) {
-            task.target_room = rooms[0];
-            task.mode = "travel_to";
-            return {outcome: "rerun"};
+    var rooms = util.room_walk(current_room, function(depth, rn) {
+        var room = Game.rooms[rn];
+        if(room) {
+            var sources = room.find(FIND_SOURCES, {filter:
+                function(src) {
+                    return src.is_harvestable(creep);
+            }});
+            return sources.length;
         } else {
-            return {outcome: "continue"};
+            var intel = Memory.rooms[rn].intel;
+            if(!intel)
+                return false;
+            if(intel.sources && intel.sources.length)
+                return true;
         }
-    },
-    travel_to : function(task, creep) {
-        if(creep.room.roomName != task.target_room) {
-        }
+    });
+    if(rooms.length) {
+        task.target_room = rooms[0];
+        task.mode = "travel_to";
+        return {outcome: "rerun"};
+    } else {
+        return new outcomes.Failure("No suitable mining sites found.");
     }
 }
 
