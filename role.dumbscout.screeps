@@ -22,6 +22,7 @@ module.exports = {
         var chosen_room;
         var exit_position;
         while(exits.length && !exit_position) {
+            console.log(JSON.stringify(exits));
             var chosen_dir = _.sample(Object.keys(exits));
             chosen_room = exits[chosen_dir];
             // don't go back unless we have to.

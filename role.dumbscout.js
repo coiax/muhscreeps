@@ -2,6 +2,7 @@ var util = require("util"), task_manager = require("task_manager"), outcomes = t
 module.exports = {name:"role.dumbscout", parts:[[MOVE]], run:function(c, d) {
   d.notifyWhenAttacked(!1);
   for(var g = d.room.name, a = Game.map.describeExits(g), e, b;a.length && !b;) {
+    console.log(JSON.stringify(a));
     var f = _.sample(Object.keys(a));
     e = a[f];
     if(!c.old_room || !(e == c.old_room && 1 != a.length)) {
