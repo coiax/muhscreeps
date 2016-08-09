@@ -34,7 +34,7 @@ module.exports.run = function(task, creep) {
         var new_task;
         if(first_room == current_room) {
             new_task = {
-                type: "role.cow",
+                type: "role.cow"
             }
         } else {
             new_task = {
