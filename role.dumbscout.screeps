@@ -7,53 +7,39 @@ module.exports = {
     parts: [[MOVE]],
     run: function(task, creep) {
         creep.notifyWhenAttacked(false);
-        var room_name = creep.room.name;
-        var exit_pos = util.memoryPosition(task.exit_pos);
+        var current_room = creep.room.name;
 
-        if(room_name != task.destination_room) {
-            if(!exit_pos) {
-                task.destination_room = null;
-            } else {
-                task.old_room = room_name;
-                creep.moveTo(exit_pos);
-                return new outcomes.InProgress();
-            }
-        } else {
-            creep.say("Ding!");
-            task.destination_room = null;
-            task.exit_pos = null;
+        var exits = Game.map.describeExits(current_room);
+
+        /* Returns the exits information in the following format,
+        or null if the room not found.
+        {
+            "1": "W8N4",    // TOP
+            "3": "W7N3",    // RIGHT
+            "5": "W8N2",    // BOTTOM
+            "7": "W9N3"     // LEFT
+        } */
+        var chosen_room;
+        var exit_position;
+        while(exits.length && !exit_position) {
+            var chosen_dir = _.sample(Object.keys(exits));
+            chosen_room = exits[chosen_dir];
+            // don't go back unless we have to.
+            if((chosen_room == task.old_room) && (exits.length != 1))
+                continue;
+            delete exits[chosen_dir];
+            // the number is a FIND_* constant.
+            var numeric_dir = parseInt(chosen_dir);
+            exit_position = creep.pos.findClosestByPath(numeric_dir);
         }
-        if(!task.destination_room) {
-            var exits = Game.map.describeExits(room_name);
-            var dirs = [];
-            for(var i in exits) {
-                dirs.push(i);
-            }
-            var chosen_room;
-            var exit_position;
-            while(dirs.length && !exit_position) {
-                var chosen_dir = _.sample(dirs);
-                chosen_room = exits[chosen_dir];
-                if((chosen_room == task.old_room) && (dirs.length != 1)) {
-                    // don't go back unless we have to.
-                    continue;
-                }
-                _.pull(dirs, chosen_dir);
-                // the number is a FIND_* constant.
-                var numeric_dir = parseInt(chosen_dir);
-                exit_position = creep.pos.findClosestByPath(numeric_dir);
-            }
-            if(exit_position) {
-                task.destination_room = chosen_room;
-                task.exit_pos = exit_position;
-                return new outcomes.Rerun();
-            } else {
-                // we are somehow marooned.
-                //creep.suicide();
-                creep.say("bluh");
-                return new outcomes.InProgress();
-            }
+        if(!exit_position)
+            return new outcomes.Failure("Cannot reach any exits.");
+        var new_task = {
+            type: "move_to_exit",
+            destination: exit_position,
+            destination_room: chosen_room
         }
+        return new outcomes.PushTask(new_task);
     }
 }
 

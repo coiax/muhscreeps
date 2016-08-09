@@ -558,6 +558,9 @@ var task_functions = {
         }
         return new outcomes.ReplaceTask({type: purpose});
     },
+    idle: function(task, creep) {
+        return new outcomes.InProgress();
+    },
     deposit : function(task, creep) {
         // A high level task; the creep is carrying resources, and
         // wants to deposit them in a room.
