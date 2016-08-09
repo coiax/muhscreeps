@@ -16,8 +16,8 @@ module.exports = {name:"role.claimer", parts:[[MOVE, CLAIM, CLAIM], [MOVE, MOVE,
   "undefined" == typeof b.full_claim && (b.full_claim = !1);
   var a = Game.getObjectById(b.controller_id), d = util.memoryPosition(b.destination_pos), e = c.room.name;
   if(!a && !d) {
-    var f = c.owner.username, a = util.room_walk(e, function(a, b) {
-      return reservable_controller(b, f)
+    var f = c.owner.username, a = util.room_walk(e, function(a) {
+      return reservable_controller(a, f)
     });
     if(!a.length) {
       return c.say("noclaim"), a = new outcomes.InProgress, a.error = "No rooms found.", a

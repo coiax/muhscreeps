@@ -23,8 +23,8 @@ module.exports.run = function(b, c) {
   }
   var a = c.room.roomName, d = c.owner.username;
   if(!b.sentry_roomname) {
-    var e = util.room_walk(c.room.name, function(a, b) {
-      return!room_has_sentry(b, d)
+    var e = util.room_walk(c.room.name, function(a) {
+      return!room_has_sentry(a, d)
     });
     if(!e.length) {
       return new outcomes.Failure("No sentryless rooms found.")

@@ -32,7 +32,7 @@ module.exports = {
         if(!controller && !destination) {
             var owner_name = creep.owner.username;
             var rooms;
-            rooms = util.room_walk(current_room, function(depth, other_room) {
+            rooms = util.room_walk(current_room, function(other_room) {
                 return reservable_controller(other_room, owner_name);
             });
             if(!rooms.length) {

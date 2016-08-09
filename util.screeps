@@ -55,7 +55,7 @@ function room_walk(roomname, func, opts) {
             if(visited_rooms[rn])
                 return;
             visited_rooms[rn] = true;
-            if(func(depth, rn)) {
+            if(func(rn, depth)) {
                 matching_rooms.push(rn);
             } else {
                 exits = Game.map.describeExits(rn);
@@ -113,5 +113,10 @@ module.exports = {
     cpu_debug: function cpu_debug(msg) {
         if(Memory.config.cpu_debug)
             console.log(Game.cpu.getUsed() + ": " + msg);
+    },
+    room_intel: function room_intel(roomname) {
+        if(Memory.rooms[roomname])
+            return Memory.rooms[roomname].intel;
+        return null;
     }
 }

@@ -2,31 +2,46 @@ var util = require('util');
 var task_manager = require('task_manager');
 var outcomes = task_manager.globals.outcomes;
 
+function is_suitable_room(rn) {
+    var room = Game.rooms[rn];
+    var intel = util.room_intel(rn);
+    if(!intel)
+        return false;
+    // Ignore owned rooms.
+    if(intel.controller && intel.controller.level)
+        return false;
+    if(room) {
+        var sources = room.find(FIND_SOURCES, {filter:
+            function(src) {
+                return src.is_harvestable(creep);
+        }});
+        return sources.length;
+    } else if(intel.sources && intel.sources.length) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 module.exports.name = "role.distantminer";
 module.exports.run = function(task, creep) {
     var current_room = creep.room.name;
 
-    var rooms = util.room_walk(current_room, function(depth, rn) {
-        var room = Game.rooms[rn];
-        if(room) {
-            var sources = room.find(FIND_SOURCES, {filter:
-                function(src) {
-                    return src.is_harvestable(creep);
-            }});
-            return sources.length;
-        } else {
-            var intel = Memory.rooms[rn].intel;
-            if(!intel)
-                return false;
-            if(intel.sources && intel.sources.length)
-                return true;
-        }
-    });
+    var rooms = util.room_walk(current_room, is_suitable_room);
+
     if(rooms.length) {
-        var new_task = {
-            type: "travel_to_room",
-            destination_room: _.sample(rooms)
-        };
+        var first_room = rooms[0];
+        var new_task;
+        if(first_room == current_room) {
+            new_task = {
+                type: "role.cow",
+            }
+        } else {
+            new_task = {
+                type: "travel_to_room",
+                destination_room: _.sample(rooms)
+            };
+        }
         return new outcomes.PushTask(new_task);
     } else {
         return new outcomes.Failure("No suitable mining sites found.");

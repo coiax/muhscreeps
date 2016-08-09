@@ -32,7 +32,7 @@ module.exports.run = function(task, creep) {
     var current_room = creep.room.roomName;
     var owner_name = creep.owner.username;
     if(!task.sentry_roomname) {
-        var sentryless_rooms = util.room_walk(creep.room.name, function(d, rn) {
+        var sentryless_rooms = util.room_walk(creep.room.name, function(rn) {
             return !room_has_sentry(rn, owner_name);
         });
         if(!sentryless_rooms.length)

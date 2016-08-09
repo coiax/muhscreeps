@@ -26,7 +26,7 @@ function room_walk(a, b, c) {
   for(var f = [], g = [];0 == f.length && d < c;) {
     a.forEach(function(a) {
       if(!e[a]) {
-        if(e[a] = !0, b(d, a)) {
+        if(e[a] = !0, b(a, d)) {
           f.push(a)
         }else {
           exits = Game.map.describeExits(a);
@@ -59,5 +59,7 @@ module.exports = {room_walk:room_walk, opposite_dir:function(a) {
   a && a.length > b && a.splice(0, a.length - b)
 }, cpu_debug:function(a) {
   Memory.config.cpu_debug && console.log(Game.cpu.getUsed() + ": " + a)
+}, room_intel:function(a) {
+  return Memory.rooms[a] ? Memory.rooms[a].intel : null
 }};
 
