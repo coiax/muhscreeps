@@ -392,7 +392,7 @@ var cpu_tracker = require("cpu_tracker"), util = require("util"), cpu_debug = ut
     return new outcomes.TaskError("Invalid destination/room")
   }
   b.moveTo(a);
-  return outcomes.InProgress()
+  return new outcomes.InProgress
 }, taskless:function(c, b) {
   var a = b.body_part_count(WORK), d = b.body_part_count(CARRY), a = b.body_part_count(CLAIM) ? "role.claimer" : !a && !d ? "role.dumbscout" : a && !d ? "role.cow" : !a && d ? "role.supplier" : _.sample(["role.supplier", "role.cow", "role.upgrader", "role.builder"]);
   return new outcomes.ReplaceTask({type:a})
