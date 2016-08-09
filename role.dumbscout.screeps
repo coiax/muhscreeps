@@ -25,7 +25,8 @@ module.exports = {
             var chosen_dir = _.sample(Object.keys(exits));
             chosen_room = exits[chosen_dir];
             // don't go back unless we have to.
-            if((chosen_room == task.old_room) && (exits.length != 1))
+            if(task.old_room && chosen_room == task.old_room &&
+                (exits.length != 1))
                 continue;
             delete exits[chosen_dir];
             // the number is a FIND_* constant.
@@ -39,6 +40,7 @@ module.exports = {
             destination: exit_position,
             destination_room: chosen_room
         }
+        task.old_room = current_room;
         return new outcomes.PushTask(new_task);
     }
 }
