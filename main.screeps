@@ -109,7 +109,7 @@ module.exports.loop = function () {
         if(creep.wants_renew())
             creep.add_task({type:"renew"});
 
-        if(!creep.has_tasks())
+        if(!creep.has_tasks() && !creep.has_flag("no_autotask"))
             creep.add_task({type: "taskless"});
 
         task_manager.run_task_queue(creep, creep.memory.task_queue);
