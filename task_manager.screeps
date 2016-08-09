@@ -525,7 +525,7 @@ var task_functions = {
         // Should work with portals.
         // Use of move_to won't work because of how exits immediately
         // transport you to another room.
-        var destination = util.memoryPosition(task.destination_pos);
+        var destination = util.memoryPosition(task.destination);
         var destination_room = task.destination_room;
         var current_room = creep.room.name;
         if(destination_room == current_room || creep.pos == destination)

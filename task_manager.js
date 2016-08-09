@@ -384,7 +384,7 @@ var cpu_tracker = require("cpu_tracker"), util = require("util"), cpu_debug = ut
   a = d.room;
   return(d = b.pos.findClosestByPath(d.exit)) ? new outcomes.PushTask({type:"move_to_exit", destination:d, destination_room:a}) : new outcomes.Failure("No path to exit.")
 }, move_to_exit:function(c, b) {
-  var a = util.memoryPosition(c.destination_pos), d = c.destination_room, f = b.room.name;
+  var a = util.memoryPosition(c.destination), d = c.destination_room, f = b.room.name;
   if(d == f || b.pos == a) {
     return new outcomes.AlreadyComplete
   }
