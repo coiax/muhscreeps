@@ -1,14 +1,14 @@
 var util = require("util"), task_manager = require("task_manager"), outcomes = task_manager.globals.outcomes;
 module.exports.name = "role.distantminer";
-module.exports.run = function(c, d) {
-  var b = util.room_walk(d.room.name, function(c, b) {
-    var a = Game.rooms[b];
+module.exports.run = function(e, c) {
+  var b = util.room_walk(c.room.name, function(b, d) {
+    var a = Game.rooms[d];
     if(a) {
       return a.find(FIND_SOURCES, {filter:function(a) {
-        return a.is_harvestable(d)
+        return a.is_harvestable(c)
       }}).length
     }
-    a = Memory.rooms[b].intel;
+    a = Memory.rooms[d].intel;
     if(!a) {
       return!1
     }
@@ -16,7 +16,7 @@ module.exports.run = function(c, d) {
       return!0
     }
   });
-  return b.length ? (c.target_room = b[0], c.mode = "travel_to", {outcome:"rerun"}) : new outcomes.Failure("No suitable mining sites found.")
+  return b.length ? (b = {type:"travel_to_room", destination_room:_.sample(b)}, new outcomes.PushTask(b)) : new outcomes.Failure("No suitable mining sites found.")
 };
 require("task_manager").register(module.exports.name, module.exports.run);
 

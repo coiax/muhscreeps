@@ -23,9 +23,11 @@ module.exports.run = function(task, creep) {
         }
     });
     if(rooms.length) {
-        task.target_room = rooms[0];
-        task.mode = "travel_to";
-        return {outcome: "rerun"};
+        var new_task = {
+            type: "travel_to_room",
+            destination_room: _.sample(rooms)
+        };
+        return new outcomes.PushTask(new_task);
     } else {
         return new outcomes.Failure("No suitable mining sites found.");
     }

@@ -12,6 +12,24 @@ var roleCow = {
         [WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE],
         [WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE]
     ],
+    /*
+    The "cow" role.
+
+    1) Find the source in the current room with the least cow power.
+    2) Pick a location adjacent to that source
+    3) Move to that location
+    4) If there isn't a container, construct one, harvesting as needed
+    5) Constantly harvest and deposit in the container, repairing as needed.
+    */
+    /* Some notes:
+        - An unowned source generates 1500 energy / 300 ticks, which is
+            5/energy tick, equivalent to 2.5 WORK body parts.
+        - Owned sources, are 10 e/t, == 5 WORK
+        - Source Keeper sources are 15 e/t == 7.5 WORK body parts.
+        A work rate lower than the source generation loses a % of the
+        energy per tick; much more than overprovisioning does.
+
+    */
     run: function(task, creep) {
         creep.add_flag("no_autorepair");
         var source = Game.getObjectById(task.source_id);
@@ -105,6 +123,9 @@ var roleCow = {
 
         // If not present, then place the construction site and then
         // build it
+        // TODO the container should be placed where all adjacent spots
+        // to the source can access it, if not possible, where as many as
+        // possible can.
         if(!container) {
             var sites = creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 1,
                 filter = function(site) {
@@ -130,12 +151,10 @@ var roleCow = {
         }
         // Then spend the rest of our lifespan harvesting and moving that
         // into the container, repairing the container first if needed.
-        // The priority system SHOULD just make this all happen.
         var rc = creep.harvest(source);
 
-        // if for some reason the container isn't repaired by others
-        // and it drops to half health, then fix it up, but the cow should
-        // focus on just harvesting as much as possible
+        // A repair order will trump the harvest order if it's possible
+        // to repair (ie. energy is stored, WORK parts are present)
         if(container.hits < container.hitsMax) {
             creep.repair(container);
         } else {

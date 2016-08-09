@@ -493,10 +493,31 @@ var task_functions = {
             task.route = rc;
             task.route_index = 0;
         }
-        var route = task.route;
-        var element = route[task.route_index];
-        creep.say("TODO");
-        return {outcome: "continue"};
+        /* The return value from findRoute is the following format:
+            [
+                {"exit": dir1, "room": "room1"},
+                {"exit": dir2, "room": "room2"},
+                ...
+                {"exit": dirN, "room": destination_room}
+            ]
+        */
+        var step = task.route[task.route_index];
+        task.route_index += 1;
+
+        var exit_dir = step["exit"];
+        var next_room = step["room"];
+
+        var closest_exit = creep.pos.findClosestByPath(exit_dir);
+        if(closest_exit) {
+            var new_task = {
+                type: "move_to_exit",
+                destination: closest_exit,
+                destination_room: next_room
+            };
+            return new outcomes.PushTask(new_task);
+        } else {
+            return new outcomes.Failure("No path to exit.");
+        }
     },
     move_to_exit : function(task, creep) {
         // Low level task for moving to another
@@ -521,8 +542,11 @@ var task_functions = {
         // TODO should rendevous with nearest spawn and have them assign
         var can_work = creep.body_part_count(WORK);
         var can_carry = creep.body_part_count(CARRY);
+        var can_claim = creep.body_part_count(CLAIM);
         var purpose;
-        if(!can_work && !can_carry) {
+        if(can_claim) {
+            purpose = "role.claimer";
+        } else if(!can_work && !can_carry) {
             purpose = "role.dumbscout";
         } else if(can_work && !can_carry) {
             purpose = "role.cow";

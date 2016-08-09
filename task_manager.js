@@ -379,8 +379,10 @@ var cpu_tracker = require("cpu_tracker"), util = require("util"), cpu_debug = ut
     c.route = rc;
     c.route_index = 0
   }
-  b.say("TODO");
-  return{outcome:"continue"}
+  d = c.route[c.route_index];
+  c.route_index += 1;
+  a = d.room;
+  return(d = b.pos.findClosestByPath(d.exit)) ? new outcomes.PushTask({type:"move_to_exit", destination:d, destination_room:a}) : new outcomes.Failure("No path to exit.")
 }, move_to_exit:function(c, b) {
   var a = util.memoryPosition(c.destination_pos), d = c.destination_room, f = b.room.name;
   if(d == f || b.pos == a) {
@@ -392,7 +394,7 @@ var cpu_tracker = require("cpu_tracker"), util = require("util"), cpu_debug = ut
   b.moveTo(a);
   return outcomes.InProgress()
 }, taskless:function(c, b) {
-  var a = b.body_part_count(WORK), d = b.body_part_count(CARRY), a = !a && !d ? "role.dumbscout" : a && !d ? "role.cow" : !a && d ? "role.supplier" : _.sample(["role.supplier", "role.cow", "role.upgrader", "role.builder"]);
+  var a = b.body_part_count(WORK), d = b.body_part_count(CARRY), a = b.body_part_count(CLAIM) ? "role.claimer" : !a && !d ? "role.dumbscout" : a && !d ? "role.cow" : !a && d ? "role.supplier" : _.sample(["role.supplier", "role.cow", "role.upgrader", "role.builder"]);
   return new outcomes.ReplaceTask({type:a})
 }, deposit:function(c, b) {
   var a = c.resource_type || RESOURCE_ENERGY;
