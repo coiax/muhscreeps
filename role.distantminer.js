@@ -3,7 +3,7 @@ function is_suitable_room(a) {
   var b = Game.rooms[a];
   a = util.room_intel(a);
   return!a || a.controller && a.controller.level ? !1 : b ? b.find(FIND_SOURCES, {filter:function(a) {
-    return a.is_harvestable(creep)
+    return a.is_harvestable()
   }}).length : a.sources && a.sources.length ? !0 : !1
 }
 module.exports.name = "role.distantminer";
