@@ -30,6 +30,7 @@ module.exports.run = function(task, creep) {
     var rooms = util.room_walk(current_room, is_suitable_room);
 
     if(rooms.length) {
+        console.log(JSON.stringify(rooms));
         var first_room = rooms[0];
         var new_task;
         if(first_room == current_room) {
