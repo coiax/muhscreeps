@@ -7,7 +7,7 @@ var roleGuard = {
     run: function(task, creep) {
         var target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
         if(!target) {
-            var flag = Game.flags["Campfire"];
+            var flag = Game.flags.Campfire;
             if(flag && (creep.pos.getRangeTo(flag) > 3)) {
                 creep.moveTo(flag);
             }

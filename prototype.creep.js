@@ -9,7 +9,7 @@ Creep.prototype.wants_renew = function() {
   return 100 > this.ticksToLive && this.has_flag("renew") && !this.has_task_in_queue("renew") ? !0 : !1
 };
 Creep.prototype.renew_cost = function() {
-  return floor(600 / this.body.length)
+  return Math.floor(600 / this.body.length)
 };
 Creep.prototype.body_cost = function() {
   var a = [];
@@ -21,7 +21,7 @@ Creep.prototype.body_cost = function() {
 Creep.prototype.body_part_count = function(a, b) {
   var c = 0;
   this.body.forEach(function(d) {
-    d.type == a && (!b || 100 == d.hits) && c++
+    d.type === a && (!b || 100 === d.hits) && c++
   });
   return c
 };
@@ -29,10 +29,10 @@ Creep.prototype.maintain_cost = function() {
   return _.includes(this.body, CLAIM) ? 0 : this.body_cost() / CREEP_LIFE_TIME
 };
 Creep.prototype.is_full = function() {
-  return _.sum(this.carry) == this.carryCapacity
+  return _.sum(this.carry) === this.carryCapacity
 };
 Creep.prototype.is_empty = function() {
-  return 0 == _.sum(this.carry)
+  return 0 === _.sum(this.carry)
 };
 Creep.prototype.get_support = function() {
   for(var a in Game.spawns) {
@@ -48,7 +48,7 @@ Creep.prototype.add_flag = function(a) {
   _.includes(this.memory.flags, a) || this.memory.flags.push(a)
 };
 Creep.prototype.clear_flag = function(a) {
-  this.memory.flags && (_.pull(this.memory, a), 0 == this.memory.flags.length && (this.memory.flags = void 0))
+  this.memory.flags && (_.pull(this.memory, a), 0 === this.memory.flags.length && (this.memory.flags = void 0))
 };
 Creep.prototype.has_flag = function(a) {
   return this.memory.flags ? _.includes(this.memory.flags, a) : !1

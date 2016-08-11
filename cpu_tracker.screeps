@@ -3,36 +3,24 @@ var util = require('util');
 function setup() {
     if(!Memory.cpu)
         Memory.cpu = {enabled: false, values_kept: 1000};
-    if(typeof Memory.cpu.enabled == 'undefined')
+    if(typeof Memory.cpu.enabled === 'undefined')
         Memory.cpu.enabled = false;
     if(!Memory.cpu.values_kept)
         Memory.cpu.values_kept = 1000;
-};
-
-function add_value(values, obj) {
-    values.push(obj)
-    util.keep_n_values(values, Memory.cpu.values_kept);
 }
 
-function calculate_average(values) {
-    var sum = 0;
-    if(!values) {
-        return 0
-    } else {
-        values.forEach(function(obj) {
-            sum += obj.used
-        });
-        return sum / values.length;
-    }
+function add_value(values, obj) {
+    values.push(obj);
+    util.keep_n_values(values, Memory.cpu.values_kept);
 }
 
 function record(obj, used) {
     var time = Game.time;
     if(!obj.values)
-        obj.values = []
-    add_value(obj.values, {time:time, used:used})
+        obj.values = [];
+    add_value(obj.values, {time:time, used:used});
     obj.last = used;
-};
+}
 
 function get_values(obj) {
     if(obj.values) {
@@ -64,7 +52,7 @@ function record_arbitary(arbitary, name, cpu_use) {
             Memory.cpu[arbitary][name] = {};
         record(Memory.cpu[arbitary][name], cpu_use);
     }
-};
+}
 
 
 function start(arbitary, task_name) {
@@ -77,9 +65,9 @@ function start(arbitary, task_name) {
 
 function stop(timer_obj) {
     var time_stopped = Game.cpu.getUsed();
-    if(timer_obj && (typeof timer_obj.time_started != 'undefined') &&
-        (typeof timer_obj.arbitary != 'undefined') &&
-        (typeof timer_obj.task_name != 'undefined')) {
+    if(timer_obj && (typeof timer_obj.time_started !== 'undefined') &&
+        (typeof timer_obj.arbitary !== 'undefined') &&
+        (typeof timer_obj.task_name !== 'undefined')) {
         //
         var total_time = time_stopped - timer_obj.time_started;
         record_arbitary(timer_obj.arbitary, timer_obj.task_name, total_time);

@@ -16,11 +16,11 @@ module.exports.loop = function () {
         Memory.config = {};
     cpu_tracker.stop(t1);
 
-    if(typeof Memory.config.use_pathfinder == 'undefined')
+    if(typeof Memory.config.use_pathfinder === 'undefined')
         Memory.config.use_pathfinder = false;
-    if(typeof Memory.config.cpu_debug == 'undefined')
+    if(typeof Memory.config.cpu_debug === 'undefined')
         Memory.config.cpu_debug = false;
-    if(typeof Memory.config.just_exit == 'undefined')
+    if(typeof Memory.config.just_exit === 'undefined')
         Memory.config.just_exit = false;
 
     PathFinder.use(Memory.config.use_pathfinder);
@@ -43,24 +43,9 @@ module.exports.loop = function () {
     }
     cpu_tracker.stop(t3);
 
-    var skip_structures_types = {
-        STRUCTURE_EXTENSION: true,
-        STRUCTURE_STORAGE: true,
-        STRUCTURE_EXTRACTOR: true
-    };
-
     for(var sid in Game.structures) {
         var structure = Game.structures[sid];
         var stype = structure.structureType;
-        var skip = false;
-        switch(stype) {
-            case STRUCTURE_EXTENSION:
-            case STRUCTURE_STORAGE:
-            case STRUCTURE_EXTRACTOR:
-                skip = true;
-        };
-        if(skip)
-            continue;
         if(!structure.isActive())
             continue;
 
@@ -87,18 +72,15 @@ module.exports.loop = function () {
         }
         if(!creep.has_flag("no_autopickup")) {
             var dropped_energies = creep.room.find(FIND_DROPPED_ENERGY);
-            dropped_energies.forEach(function(energy) {
-                // might fail, just pickup anything if you can.
+            for(var i = 0; i < dropped_energies.length; i++) {
+                var energy = dropped_energies[i];
                 creep.pickup(energy);
-            });
+            }
         }
         // casual driveby repair.
         if(creep.carry.energy && !creep.has_flag("no_autorepair")) {
             var damaged_structures = creep.pos.findInRange(FIND_STRUCTURES,
-                3, {filter: function(st) {
-                    return (util.is_damaged) &&
-                        st.is_type([STRUCTURE_ROAD, STRUCTURE_CONTAINER]);
-                }});
+                3, {filter: _.method("is_autorepairable")});
             damaged_structures = _.sortBy(damaged_structures,
                 _.property("hits"));
             if(damaged_structures.length) {
@@ -123,4 +105,4 @@ module.exports.loop = function () {
 
     cpu_debug("Main loop complete.");
     cpu_tracker.calculate();
-}
+};

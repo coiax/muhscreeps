@@ -26,4 +26,4 @@ StructureTower.prototype.expected_power = function(atype, range) {
         var steps = range - TOWER_OPTIMAL_RANGE;
         return power - (steps * step);
     }
-}
+};

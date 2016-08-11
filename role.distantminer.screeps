@@ -34,10 +34,10 @@ module.exports.run = function(task, creep) {
     if(rooms.length) {
         var first_room = rooms[0];
         var new_task;
-        if(first_room == current_room) {
+        if(first_room === current_room) {
             new_task = {
                 type: "role.cow"
-            }
+            };
         } else {
             new_task = {
                 type: "travel_to_room",
@@ -48,6 +48,6 @@ module.exports.run = function(task, creep) {
     } else {
         return new outcomes.Failure("No suitable mining sites found.");
     }
-}
+};
 
 require('task_manager').register(module.exports.name, module.exports.run);

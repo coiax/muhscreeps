@@ -9,7 +9,7 @@ function is_suitable_room(a) {
 module.exports.name = "role.distantminer";
 module.exports.run = function(a, b) {
   var c = b.room.name, d = util.room_walk(c, is_suitable_room);
-  return d.length ? (c = d[0] == c ? {type:"role.cow"} : {type:"travel_to_room", destination_room:_.sample(d)}, new outcomes.PushTask(c)) : new outcomes.Failure("No suitable mining sites found.")
+  return d.length ? (c = d[0] === c ? {type:"role.cow"} : {type:"travel_to_room", destination_room:_.sample(d)}, new outcomes.PushTask(c)) : new outcomes.Failure("No suitable mining sites found.")
 };
 require("task_manager").register(module.exports.name, module.exports.run);
 

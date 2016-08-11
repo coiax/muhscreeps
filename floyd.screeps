@@ -66,4 +66,4 @@ function floyd_room(room, opts) {
 
 module.exports = {
     floyd_room: floyd_room
-}
+};

@@ -1,7 +1,5 @@
-var util = require('util');
-
 Room.prototype.scout_room = function() {
-    this.memory.intel = {}
+    this.memory.intel = {};
     var intel = this.memory.intel;
     intel.time_scouted = Game.time;
     intel.sources = {};
@@ -43,8 +41,8 @@ Room.prototype.scout_room = function() {
         var username = cr.owner.username;
         if(!intel.creeps[username])
             intel.creeps[username] = {bodyparts: {}, count: 0};
-        intel.creeps[username]["count"]++;
-        var bintel = intel.creeps[username]["bodyparts"];
+        intel.creeps[username].count++;
+        var bintel = intel.creeps[username].bodyparts;
         cr.body.forEach(function(bodyobj) {
             var btype = bodyobj.type;
             if(!bintel[btype])
@@ -54,4 +52,4 @@ Room.prototype.scout_room = function() {
     });
 };
 
-module.exports = {}
+module.exports = {};

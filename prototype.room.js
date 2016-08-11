@@ -1,5 +1,4 @@
-'use strict';var util = require("util");
-Room.prototype.scout_room = function() {
+'use strict';Room.prototype.scout_room = function() {
   this.memory.intel = {};
   var a = this.memory.intel;
   a.time_scouted = Game.time;

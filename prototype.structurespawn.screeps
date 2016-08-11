@@ -1,15 +1,15 @@
 StructureSpawn.prototype.get_memory = function() {
     return this.memory;
-}
+};
 
 StructureSpawn.prototype.check_creeps = function() {
     if(!this.memory.supported_creeps)
         return;
 
-    _.remove(this.memory.supported_creeps, function(creep_name, i, arr) {
+    _.remove(this.memory.supported_creeps, function(creep_name) {
         return !Game.creeps[creep_name];
     });
 
-    if(this.memory.supported_creeps.length == 0)
+    if(this.memory.supported_creeps.length === 0)
         this.memory.supported_creeps = undefined;
-}
+};

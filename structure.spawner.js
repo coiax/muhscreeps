@@ -1,7 +1,8 @@
-'use strict';var util = require("util"), task_manager = require("task_manager"), outcomes = task_manager.globals.outcomes;
+'use strict';var util = require("util"), task_manager = require("task_manager"), outcomes = task_manager.globals.outcomes, default_parts = [];
 function generate_default_parts() {
   for(var a = 1;;) {
-    for(var c = [], b = 0;b < a;b++) {
+    var c = [], b;
+    for(b = 0;b < a;b++) {
       c.push(WORK)
     }
     for(b = 0;b < a;b++) {
@@ -17,7 +18,6 @@ function generate_default_parts() {
     }
   }
 }
-var default_parts = [];
 generate_default_parts();
 function build_creep(a, c, b) {
   var d, f;
@@ -30,22 +30,22 @@ function build_creep(a, c, b) {
   d = default_parts;
   f && f.parts && (d = f.parts);
   f = a.room.energyAvailable;
-  var h, g;
-  for(g in d) {
-    var k = d[g];
+  var g, h;
+  for(h in d) {
+    var k = d[h];
     if(util.body_cost(k) <= f) {
-      h = k
+      g = k
     }else {
       break
     }
   }
-  if(h) {
+  if(g) {
     for(d = b.replace(".", "_") + c.creep_id;;) {
-      if(g = a.canCreateCreep(h, d), g == OK) {
+      if(h = a.canCreateCreep(g, d), h === OK) {
         c.currently_spawning = b;
         break
       }else {
-        if(g == ERR_NAME_EXISTS) {
+        if(h === ERR_NAME_EXISTS) {
           c.creep_id++
         }else {
           return
@@ -53,13 +53,13 @@ function build_creep(a, c, b) {
       }
     }
     c.creep_id++;
-    a.createCreep(h, d, {task_queue:[{type:b}]});
+    a.createCreep(g, d, {task_queue:[{type:b}]});
     a.memory.supported_creeps || (a.memory.supported_creeps = []);
     a.memory.supported_creeps.push(d)
   }
 }
 function setup(a, c) {
-  "undefined" == typeof a.creep_id && (a.creep_id = 1);
+  "undefined" === typeof a.creep_id && (a.creep_id = 1);
   a.currently_attempting = null;
   c.spawning || (a.currently_spawning = null)
 }
@@ -71,9 +71,11 @@ module.exports = {name:"structure.spawner", run:function(a, c) {
   a.required || (a.required = _.cloneDeep(default_required));
   for(var f in a.required) {
     var e = a.required[f];
-    "undefined" == typeof b[e.task] && (b[e.task] = 0, d.forEach(function(a) {
-      Game.creeps[a].has_task_in_queue(e.task) && b[e.task]++
-    }));
+    if("undefined" === typeof b[e.task]) {
+      for(var g = b[e.task] = 0;g < d.length;g++) {
+        Game.creeps[d[g]].has_task_in_queue(e.task) && b[e.task]++
+      }
+    }
     if(b[e.task] < e.amount) {
       build_creep(c, a, e.task);
       break

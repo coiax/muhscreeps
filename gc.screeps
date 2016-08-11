@@ -4,7 +4,7 @@ module.exports = {
             {collection: Memory.structures, comparison: Game.structures},
             {collection: Memory.creeps, comparison: Game.creeps},
             {collection: Memory.spawns, comparison: Game.spawns}
-        ]
+        ];
 
         maintained.forEach(function(obj) {
             var collection = obj.collection;
@@ -20,4 +20,4 @@ module.exports = {
             }
         });
     }
-}
+};

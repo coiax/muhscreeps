@@ -10,11 +10,11 @@ module.exports = {name:"role.assault", parts:[[TOUGH, MOVE, RANGED_ATTACK], [TOU
   if(b.hits < b.hitsMax) {
     b.say("run!");
     var a = Game.flags.Retreat, c = a.pos.roomName, d = b.pos.roomName;
-    c != d && (a = Game.map.findExit(d, c), a = b.pos.findClosestByRange(a))
+    c !== d && (a = Game.map.findExit(d, c), a = b.pos.findClosestByRange(a));
+    b.moveTo(a)
   }else {
-    a = Game.flags.Target
+    b.moveTo(Game.flags.Target)
   }
-  b.moveTo(a);
   return new outcomes.InProgress
 }};
 require("task_manager").register(module.exports.name, module.exports.run);

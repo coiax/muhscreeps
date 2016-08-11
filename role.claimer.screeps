@@ -6,11 +6,11 @@ function reservable_controller(room_name, username) {
     var mem = Memory.rooms[room_name];
     if(mem && mem.intel) {
         var intel = mem.intel;
-        if(intel.controller && (intel.controller.level == 0)) {
+        if(intel.controller && (intel.controller.level === 0)) {
             var ctr = intel.controller;
             if(!ctr.reservation) {
                 return true;
-            } else if((ctr.reservation.username == username) &&
+            } else if((ctr.reservation.username === username) &&
                 (ctr.reservation.ticksToEnd < RESERVE_THRESHOLD)) {
                 return true;
             }
@@ -23,7 +23,7 @@ module.exports = {
     name: "role.claimer",
     parts: [[MOVE, CLAIM,CLAIM], [MOVE,MOVE,CLAIM,CLAIM]],
     run: function(task, creep) {
-        if(typeof task.full_claim == 'undefined') {
+        if(typeof task.full_claim === 'undefined') {
             task.full_claim = false;
         }
         var controller = Game.getObjectById(task.controller_id);
@@ -47,7 +47,7 @@ module.exports = {
             task.destination_pos = mem.intel.controller.pos;
             return new outcomes.Rerun();
         } else if(!controller && destination) {
-            if(destination.roomName == current_room) {
+            if(destination.roomName === current_room) {
                 task.controller_id = creep.room.controller.id;
                 return new outcomes.Rerun();
             } else {
@@ -62,13 +62,13 @@ module.exports = {
             } else {
                 rc = creep.claimController(controller);
             }
-            if(rc == ERR_NOT_IN_RANGE) {
+            if(rc === ERR_NOT_IN_RANGE) {
                 creep.moveTo(controller);
                 return new outcomes.InProgress();
-            } else if(rc == ERR_INVALID_TARGET) {
+            } else if(rc === ERR_INVALID_TARGET) {
                 task.controller = null;
                 return new outcomes.Rerun();
-            } else if(rc == ERR_GCL_NOT_ENOUGH) {
+            } else if(rc === ERR_GCL_NOT_ENOUGH) {
                 task.full_claim = false;
                 return new outcomes.Rerun();
             } else {
@@ -76,6 +76,6 @@ module.exports = {
             }
         }
     }
-}
+};
 
 require('task_manager').register(module.exports.name, module.exports.run);

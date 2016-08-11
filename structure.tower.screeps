@@ -1,15 +1,5 @@
-var util = require('util');
 var task_manager = require('task_manager');
 var outcomes = task_manager.globals.outcomes;
-
-function efficient_tower_repair(tower, st) {
-    var dmg_taken = st.hitsMax - st.hits;
-    if(!dmg_taken)
-        return false;
-    var dist = tower.pos.getRangeTo(st);
-    var repair_amount = tower.expected_power("repair", dist);
-    return dmg_taken >= repair_amount;
-}
 
 module.exports = {
     name: "structure.tower",
@@ -32,10 +22,10 @@ module.exports = {
         }
         // 3) repair our structures, except ramparts
         if(!target) {
-            var target = tower.pos.findClosestByRange(
+            target = tower.pos.findClosestByRange(
                 FIND_MY_STRUCTURES, {filter:
                 function(st) {
-                    if(st.structureType == STRUCTURE_RAMPART)
+                    if(st.structureType === STRUCTURE_RAMPART)
                         return false;
                     return st.is_damaged();
                 }});
@@ -51,18 +41,13 @@ module.exports = {
                 order.push([STRUCTURE_WALL, STRUCTURE_RAMPART]);
             }
             for(var i in order) {
-                var stypes = order[i]; {
-                    var damaged = tower.room.find(FIND_STRUCTURES, {filter:
-                        function(st) {
-                            return _.includes(stypes, st.structureType) &&
-                                st.is_damaged();
-                    }});
-                    damaged = _.sortBy(damaged, _.property("hits"));
-                    if(damaged.length) {
-                        target = damaged[0];
-                        mode = "repair";
-                        break;
-                    }
+                var stypes = order[i];
+                var damaged = tower.pos.findDamagedStructures(stypes);
+                damaged = _.sortBy(damaged, _.property("hits"));
+                if(damaged.length) {
+                    target = damaged[0];
+                    mode = "repair";
+                    break;
                 }
             }
         }
@@ -74,5 +59,5 @@ module.exports = {
             return new outcomes.InProgress();
         }
     }
-}
+};
 task_manager.register(module.exports.name, module.exports.run);

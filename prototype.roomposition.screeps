@@ -11,9 +11,9 @@ RoomPosition.prototype.find = function() {
 
 RoomPosition.prototype.findStructures = function(stypes) {
     if(stypes) {
-        filter = function(st) {
+        var filter = function(st) {
             return st.is_type(stypes);
-        }
+        };
         return this.find(FIND_STRUCTURES, {filter: filter});
     } else {
         return this.find(FIND_STRUCTURES);
@@ -101,7 +101,7 @@ RoomPosition.prototype.is_terrain = function(terrain_type) {
     var contains = this.lookFor(LOOK_TERRAIN);
     for(var o in contains) {
         var obj = contains[o];
-        if((obj.type == 'terrain') && (obj.terrain == terrain_type)) {
+        if((obj.type === 'terrain') && (obj.terrain === terrain_type)) {
             return true;
         }
     }
@@ -117,7 +117,7 @@ RoomPosition.prototype.is_wall = function () {
 };
 
 RoomPosition.prototype.is_plain = function () {
-    return is_terrain('plain');
+    return this.is_terrain('plain');
 };
 
 RoomPosition.prototype.non_wall_adjacent = function () {
@@ -126,7 +126,7 @@ RoomPosition.prototype.non_wall_adjacent = function () {
 
 RoomPosition.prototype.walkable_adjacent = function () {
     return _.reject(this.ordinals(), function(mp) {return mp.has_obstacle();});
-}
+};
 
 RoomPosition.prototype.has_obstacle = function() {
     var items = [];

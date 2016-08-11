@@ -1,10 +1,10 @@
 'use strict';var util = require("util"), task_manager = require("task_manager"), outcomes = task_manager.globals.outcomes, role_name = "role.sentry";
 function room_has_sentry(b, c) {
-  var a = Game.rooms[other_roomname];
+  var a = Game.rooms[b];
   if(!a) {
     return!1
   }
-  if(a.controller && a.controller.owner && a.controller.owner.username == c) {
+  if(a.controller && a.controller.owner && a.controller.owner.username === c) {
     return!0
   }
   var a = a.find(FIND_MY_CREEPS), a = util.get_creeps_with_task(a, role_name), d;
@@ -31,8 +31,8 @@ module.exports.run = function(b, c) {
     }
     b.sentry_roomname = e[0]
   }
-  if(b.sentry_roomname && b.sentry_roomname != a) {
-    return new outcomes.PushTask({type:"travel_to_room", destination_room:e[0]})
+  if(b.sentry_roomname && b.sentry_roomname !== a) {
+    return new outcomes.PushTask({type:"travel_to_room", destination_room:b.sentry_roomname})
   }
   if(room_has_sentry(b.sentry_roomname, d)) {
     return b.sentry_roomname = void 0, new outcomes.Rerun

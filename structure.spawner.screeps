@@ -2,18 +2,20 @@ var util = require('util');
 var task_manager = require('task_manager');
 var outcomes = task_manager.globals.outcomes;
 
+var default_parts = [];
 
 function generate_default_parts() {
     var counter = 1;
     while(true) {
         var parts = [];
-        for (var i = 0; i < counter; i++) {
+        var i;
+        for (i = 0; i < counter; i++) {
             parts.push(WORK);
         }
-        for (var i = 0; i < counter; i++) {
+        for (i = 0; i < counter; i++) {
             parts.push(CARRY);
         }
-        for (var i = 0; i < counter; i++) {
+        for (i = 0; i < counter; i++) {
             parts.push(MOVE);
         }
         if(parts.length <= 50) {
@@ -25,13 +27,12 @@ function generate_default_parts() {
         }
     }
 }
-var default_parts = [];
 generate_default_parts();
 
 function build_creep(spawn, task_obj, initial_task) {
     var possible_parts;
     var role_module;
-    task_obj["currently_attempting"] = initial_task;
+    task_obj.currently_attempting = initial_task;
     try {
         role_module = require(initial_task);
     } catch(err) {
@@ -61,10 +62,10 @@ function build_creep(spawn, task_obj, initial_task) {
     var creep_name = initial_task.replace(".","_") + task_obj.creep_id;
     while(true) {
         var rc = spawn.canCreateCreep(selected_parts, creep_name);
-        if(rc == OK) {
+        if(rc === OK) {
             task_obj.currently_spawning = initial_task;
             break;
-        } else if(rc == ERR_NAME_EXISTS) {
+        } else if(rc === ERR_NAME_EXISTS) {
             task_obj.creep_id++;
             continue;
         } else {
@@ -74,7 +75,7 @@ function build_creep(spawn, task_obj, initial_task) {
     task_obj.creep_id++;
     var creep_memory = {
         task_queue: [{type: initial_task}]
-    }
+    };
     spawn.createCreep(selected_parts, creep_name, creep_memory);
     if(!spawn.memory.supported_creeps)
         spawn.memory.supported_creeps = [];
@@ -82,8 +83,8 @@ function build_creep(spawn, task_obj, initial_task) {
 }
 
 function setup(task, spawn) {
-    if (typeof task.creep_id == 'undefined') {
-        task.creep_id = 1
+    if (typeof task.creep_id === 'undefined') {
+        task.creep_id = 1;
     }
     task.currently_attempting = null;
     if(!spawn.spawning) {
@@ -122,13 +123,13 @@ module.exports = {
 
         for(var i in task.required) {
             var entry = task.required[i];
-            if(typeof counts[entry.task] == 'undefined') {
+            if(typeof counts[entry.task] === 'undefined') {
                 counts[entry.task] = 0;
-                supported_creeps.forEach(function(creep_name) {
-                    var creep = Game.creeps[creep_name];
+                for(var j=0; j < supported_creeps.length; j++) {
+                    var creep = Game.creeps[supported_creeps[j]];
                     if(creep.has_task_in_queue(entry.task))
                         counts[entry.task]++;
-                });
+                }
             }
             if(counts[entry.task] < entry.amount) {
                 build_creep(spawn, task, entry.task);
@@ -138,6 +139,6 @@ module.exports = {
 
         return new outcomes.InProgress();
     }
-}
+};
 
-task_manager.register(module.exports.name, module.exports.run)
+task_manager.register(module.exports.name, module.exports.run);

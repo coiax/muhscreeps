@@ -1,9 +1,9 @@
 'use strict';var util = require("util"), outcomes = require("task_manager.globals").outcomes, RESERVE_THRESHOLD = 4E3;
 function reservable_controller(b, c) {
   var a = Memory.rooms[b];
-  if(a && a.intel && (a = a.intel, a.controller && 0 == a.controller.level)) {
+  if(a && a.intel && (a = a.intel, a.controller && 0 === a.controller.level)) {
     if(a = a.controller, a.reservation) {
-      if(a.reservation.username == c && a.reservation.ticksToEnd < RESERVE_THRESHOLD) {
+      if(a.reservation.username === c && a.reservation.ticksToEnd < RESERVE_THRESHOLD) {
         return!0
       }
     }else {
@@ -13,7 +13,7 @@ function reservable_controller(b, c) {
   return!1
 }
 module.exports = {name:"role.claimer", parts:[[MOVE, CLAIM, CLAIM], [MOVE, MOVE, CLAIM, CLAIM]], run:function(b, c) {
-  "undefined" == typeof b.full_claim && (b.full_claim = !1);
+  "undefined" === typeof b.full_claim && (b.full_claim = !1);
   var a = Game.getObjectById(b.controller_id), d = util.memoryPosition(b.destination_pos), e = c.room.name;
   if(!a && !d) {
     var f = c.owner.username, a = util.room_walk(e, function(a) {
@@ -28,14 +28,14 @@ module.exports = {name:"role.claimer", parts:[[MOVE, CLAIM, CLAIM], [MOVE, MOVE,
     return new outcomes.Rerun
   }
   if(!a && d) {
-    if(d.roomName == e) {
+    if(d.roomName === e) {
       return b.controller_id = c.room.controller.id, new outcomes.Rerun
     }
     c.moveTo(d);
     return new outcomes.InProgress
   }
   if(a) {
-    return b.destination = null, d = b.full_claim ? c.claimController(a) : c.reserveController(a), d == ERR_NOT_IN_RANGE ? (c.moveTo(a), new outcomes.InProgress) : d == ERR_INVALID_TARGET ? (b.controller = null, new outcomes.Rerun) : d == ERR_GCL_NOT_ENOUGH ? (b.full_claim = !1, new outcomes.Rerun) : new outcomes.InProgress
+    return b.destination = null, d = b.full_claim ? c.claimController(a) : c.reserveController(a), d === ERR_NOT_IN_RANGE ? (c.moveTo(a), new outcomes.InProgress) : d === ERR_INVALID_TARGET ? (b.controller = null, new outcomes.Rerun) : d === ERR_GCL_NOT_ENOUGH ? (b.full_claim = !1, new outcomes.Rerun) : new outcomes.InProgress
   }
 }};
 require("task_manager").register(module.exports.name, module.exports.run);

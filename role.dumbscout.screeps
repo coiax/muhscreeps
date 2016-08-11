@@ -1,4 +1,3 @@
-var util = require('util');
 var task_manager = require('task_manager');
 var outcomes = task_manager.globals.outcomes;
 
@@ -25,7 +24,7 @@ module.exports = {
             var chosen_dir = _.sample(Object.keys(exits));
             chosen_room = exits[chosen_dir];
             // don't go back unless we have to.
-            if(chosen_room == task.old_room && _.size(exits) != 1)
+            if(chosen_room === task.old_room && _.size(exits) !== 1)
                 continue;
             delete exits[chosen_dir];
             // the number is a FIND_* constant.
@@ -38,10 +37,10 @@ module.exports = {
             type: "move_to_exit",
             destination: exit_position,
             destination_room: chosen_room
-        }
+        };
         task.old_room = current_room;
         return new outcomes.PushTask(new_task);
     }
-}
+};
 
 require('task_manager').register(module.exports.name, module.exports.run);

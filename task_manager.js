@@ -43,14 +43,14 @@
     return new outcomes.Failure("No CARRY parts.")
   }
   if(!c) {
-    return"build" == d.mode ? new outcomes.AlreadyComplete : new outcomes.Failure("Target not found.")
+    return"build" === d.mode ? new outcomes.AlreadyComplete : new outcomes.Failure("Target not found.")
   }
-  if(0 == b.carry.energy) {
+  if(0 === b.carry.energy) {
     return a ? new outcomes.PushTask({type:a}) : new outcomes.Failure("No energy, resupply disabled.")
   }
-  if("undefined" == typeof c.progress) {
+  if("undefined" === typeof c.progress) {
     d.mode = "repair";
-    if(c.hits == c.hitsMax) {
+    if(c.hits === c.hitsMax) {
       return new outcomes.AlreadyComplete
     }
     a = b.repair(c)
@@ -76,7 +76,6 @@
       return new outcomes.InProgress
   }
 }, resupply:function(d, b) {
-  _.sum(b.carry);
   if(b.is_full()) {
     return new outcomes.AlreadyComplete
   }
@@ -89,15 +88,15 @@
       if(a = b.pos.findClosestByRange(f), a.structureType) {
         d.gas_station_id = a.id
       }else {
-        return d = {type:"pickup", target_id:a.id}, new outcomes.PushTask(d)
+        return new outcomes.PushTask({type:"pickup", target_id:a.id})
       }
     }
   }
   if(!a) {
-    return d = {type:"harvest", timeout:30, no_resupply:!0}, new outcomes.PushTask(d)
+    return new outcomes.PushTask({type:"harvest", timeout:30, no_resupply:!0})
   }
   f = b.withdraw(a, RESOURCE_ENERGY);
-  return f == ERR_NOT_IN_RANGE ? (b.moveTo(a), new outcomes.InProgress) : f == ERR_NOT_ENOUGH_RESOURCES ? (d.gas_station_id = null, new outcomes.Rerun) : f != OK ? (b.say("rs!" + f), new outcomes.InProgress) : new outcomes.Complete
+  return f === ERR_NOT_IN_RANGE ? (b.moveTo(a), new outcomes.InProgress) : f === ERR_NOT_ENOUGH_RESOURCES ? (d.gas_station_id = null, new outcomes.Rerun) : f !== OK ? (b.say("rs!" + f), new outcomes.InProgress) : new outcomes.Complete
 }, renew:function(d, b) {
   if(1400 <= b.ticksToLive) {
     return new outcomes.AlreadyComplete
@@ -113,7 +112,7 @@
     }
   }
   if(!a) {
-    return outcome.Failure("No nearby spawn found.")
+    return new outcomes.Failure("No nearby spawn found.")
   }
   c = a.renewCreep(b);
   b.transfer(a, RESOURCE_ENERGY);
@@ -121,17 +120,17 @@
     case ERR_INVALID_TARGET:
     ;
     case ERR_NOT_OWNER:
-      return outcome.TaskError(c);
+      return new outcomes.TaskError(c);
     case OK:
     ;
     case ERR_BUSY:
-      return outcome.InProgress();
+      return new outcomes.InProgress;
     case ERR_NOT_ENOUGH_ENERGY:
-      return outcome.Failure("Spawn has not enough energy.");
+      return new outcomes.Failure("Spawn has not enough energy.");
     case ERR_FULL:
-      return outcome.AlreadyComplete();
+      return new outcomes.AlreadyComplete;
     case ERR_NOT_IN_RANGE:
-      return b.moveTo(a), outcome.InProgress()
+      return b.moveTo(a), new outcomes.InProgress
   }
 }, transfer_to:function(d, b) {
   var a = Game.getObjectById(d.target_id), c = util.memoryPosition(d.destination_pos), f = d.resource_type || RESOURCE_ENERGY, e = d.amount;
@@ -141,29 +140,29 @@
   if(!b.carry[f]) {
     return new outcomes.TaskError("Creep not carrying " + f)
   }
-  "undefined" != typeof e && (e = max(b.carry[f], e), d.amount = e);
+  "undefined" !== typeof e && (e = Math.max(b.carry[f], e), d.amount = e);
   if(!a) {
-    if(c.roomName == b.room.name) {
-      var c = c.look(LOOK_STRUCTURES), k;
-      for(k in c) {
-        var h = c[k], g = b.transfer(h, f, e);
-        if(g != ERR_INVALID_TARGET) {
-          a = h;
+    if(c.roomName === b.room.name) {
+      var c = c.look(LOOK_STRUCTURES), h;
+      for(h in c) {
+        var g = c[h];
+        if(b.transfer(g, f, e) !== ERR_INVALID_TARGET) {
+          a = g;
           d.target_id = a.id;
           break
         }
       }
       if(!a) {
-        var l = "No target found at destination."
+        var k = "No target found at destination."
       }
-      return new outcomes.TaskError(l)
+      return new outcomes.TaskError(k)
     }
     b.moveTo(c);
     return new outcomes.InProgress
   }
   d.destination_pos = a.pos;
-  g = b.transfer(a, f, e);
-  switch(g) {
+  f = b.transfer(a, f, e);
+  switch(f) {
     case ERR_NOT_OWNER:
     ;
     case ERR_BUSY:
@@ -173,7 +172,7 @@
     case ERR_INVALID_ARGS:
     ;
     case ERR_INVALID_TARGET:
-      return new outcomes.TaskError(g);
+      return new outcomes.TaskError(f);
     case ERR_FULL:
       return new outcomes.AlreadyComplete;
     case ERR_NOT_IN_RANGE:
@@ -194,13 +193,13 @@
   }
   switch(c) {
     case "heal":
-      if(a.hits == a.hitsMax) {
+      if(a.hits === a.hitsMax) {
         return new outcomes.AlreadyComplete
       }
       a = b.heal(a);
       break;
     case "repair":
-      if(a.hits == a.hitsMax) {
+      if(a.hits === a.hitsMax) {
         return new outcomes.AlreadyComplete
       }
       a = b.repair(a);
@@ -228,7 +227,7 @@
     return new outcomes.Failure("No target found.")
   }
   if(b.carryCapacity && b.is_full()) {
-    return d = {type:"deposit"}, new outcomes.PushTask(d)
+    return new outcomes.PushTask({type:"deposit"})
   }
   var c = b.dismantle(a);
   switch(c) {
@@ -244,7 +243,7 @@
   return b.pos.isEqualTo(a) ? (b.say("Aaaaaa!"), b.move(Math.floor(8 * Math.random() + 1)), new outcomes.InProgress) : new outcomes.AlreadyComplete
 }, move_to:function(d, b) {
   var a = Game.getObjectById(d.target_id), a = a ? a.pos : util.memoryPosition(d.destination_pos);
-  return!a ? new outcomes.TaskError("No destination found.") : b.pos.isEqualTo(a) ? new outcomes.AlreadyComplete : b.moveTo(a) == ERR_NO_PATH ? new outcomes.Failure("No path found.") : new outcomes.InProgress
+  return!a ? new outcomes.TaskError("No destination found.") : b.pos.isEqualTo(a) ? new outcomes.AlreadyComplete : b.moveTo(a) === ERR_NO_PATH ? new outcomes.Failure("No path found.") : new outcomes.InProgress
 }, suicide:function(d, b) {
   b.suicide();
   return new outcomes.Complete
@@ -259,7 +258,7 @@
       d.spawn_id = a.id
     }
   }
-  return!a ? (b.suicide(), new outcomes.Complete) : a.recycleCreep(b) == ERR_NOT_IN_RANGE ? (b.moveTo(a), new outcomes.InProgress) : new outcomes.Complete
+  return!a ? (b.suicide(), new outcomes.Complete) : a.recycleCreep(b) === ERR_NOT_IN_RANGE ? (b.moveTo(a), new outcomes.InProgress) : new outcomes.Complete
 }, pickup:function(d, b) {
   if(b.is_full()) {
     return new outcomes.AlreadyComplete
@@ -269,21 +268,21 @@
     return new outcomes.Failure("No target found.")
   }
   var c = b.pickup(a);
-  return c == ERR_NOT_IN_RANGE ? (b.moveTo(a), new outcomes.InProgress) : c == ERR_INVALID_TARGET ? new outcomes.Failure(c) : new outcomes.Complete
+  return c === ERR_NOT_IN_RANGE ? (b.moveTo(a), new outcomes.InProgress) : c === ERR_INVALID_TARGET ? new outcomes.Failure(c) : new outcomes.Complete
 }, travel_to_room:function(d, b) {
   var a = d.destination_room, c = b.room.name;
   if(!a) {
     return new outcomes.TaskError("No room given.")
   }
-  if(c == a) {
+  if(c === a) {
     return new outcomes.AlreadyComplete
   }
   if(!d.route) {
-    rc = Game.map.findRoute(c, a);
-    if(rc == ERR_NO_PATH) {
+    a = Game.map.findRoute(c, a);
+    if(a === ERR_NO_PATH) {
       return new outcomes.Failure("No path to destination.")
     }
-    d.route = rc;
+    d.route = a;
     d.route_index = 0
   }
   c = d.route[d.route_index];
@@ -292,10 +291,10 @@
   return(c = b.pos.findClosestByPath(c.exit)) ? new outcomes.PushTask({type:"move_to_exit", destination:c, destination_room:a}) : new outcomes.Failure("No path to exit.")
 }, move_to_exit:function(d, b) {
   var a = util.memoryPosition(d.destination), c = d.destination_room, f = b.room.name;
-  if(c == f || b.pos == a) {
+  if(c === f || b.pos === a) {
     return new outcomes.AlreadyComplete
   }
-  if(!a || !c || a.roomName != f) {
+  if(!a || !c || a.roomName !== f) {
     return new outcomes.TaskError("Invalid destination/room")
   }
   b.moveTo(a);
@@ -320,9 +319,6 @@
     c = c.room.name;
     d.target_room = c
   }
-  if(c = b.pos.findClosestByRange(storages)) {
-    return new outcomes.PushTask({type:"transfer_to", target_id:c.id, resource_type:a})
-  }
   b.drop(a);
   return new outcomes.TaskError("Could not find storage.")
 }};
@@ -332,18 +328,18 @@ module.exports = {globals:require("task_manager.globals"), task_functions:task_f
   for(var a = 100;b && b.length && 0 < a;) {
     a--;
     var c = b[0];
-    "undefined" == typeof c.times_run && (c.times_run = 0);
-    var f = c.type, e, k = cpu_tracker.start("tasks", f), h = task_functions[f];
-    if(h) {
+    "undefined" === typeof c.times_run && (c.times_run = 0);
+    var f = c.type, e, h = cpu_tracker.start("tasks", f), g = task_functions[f];
+    if(g) {
       try {
-        e = h(c, d)
-      }catch(g) {
-        console.log(g.stack), e = new outcomes.TaskError("Exception: " + g)
+        e = g(c, d)
+      }catch(k) {
+        console.log(k.stack), e = new outcomes.TaskError("Exception: " + k)
       }
     }else {
       e = new outcomes.TaskError("No handler for task type.")
     }
-    cpu_tracker.stop(k);
+    cpu_tracker.stop(h);
     e && e.outcome && (e = new outcomes.TaskError("Outcome is old format."));
     e || (e = new outcomes.TaskError("No outcome returned."));
     c.times_run >= c.timeout && (e.pop = !0);
@@ -356,6 +352,6 @@ module.exports = {globals:require("task_manager.globals"), task_functions:task_f
       break
     }
   }
-  0 == a && cpu_debug("Task queue sanity timed out for " + d)
+  0 === a && cpu_debug("Task queue sanity timed out for " + d)
 }};
 

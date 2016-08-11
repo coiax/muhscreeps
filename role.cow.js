@@ -9,7 +9,7 @@
     });
     for(var h in Game.creeps) {
       var k = Game.creeps[h];
-      if(b.name != k.name) {
+      if(b.name !== k.name) {
         var f = k.has_task_in_queue(module.exports.name);
         f && (f = Game.getObjectById(f.source_id), g[f] += k.body_part_count(WORK))
       }
@@ -23,7 +23,7 @@
     return b.say("Moo..."), new outcomes.InProgress
   }
   var e = util.memoryPosition(d.pasture_loc);
-  e && 1 != e.getRangeTo(c) && (b.say("Moo?"), e = d.pasture_loc = null);
+  e && 1 !== e.getRangeTo(c) && (b.say("Moo?"), e = d.pasture_loc = null);
   e || (a = c.pos.walkable_adjacent(), e = _.sample(a), d.pasture_loc = e);
   if(!e) {
     return b.say("...moo"), d.pasture_loc = null, d.source_id = null, new outcomes.InProgress
@@ -39,12 +39,12 @@
   }
   a = Game.getObjectById(d.output_container_id);
   a || (h = b.pos.findInRange(FIND_STRUCTURES, 1, {filter:function(a) {
-    return a.structureType == STRUCTURE_CONTAINER
+    return a.structureType === STRUCTURE_CONTAINER
   }}), h.length && (a = h[0], d.output_container_id = a.id));
   if(!a) {
-    a = b.pos.findInRange(FIND_CONSTRUCTION_SITES, 1, filter = function(a) {
-      return a.structureType == STRUCTURE_CONTAINER
-    });
+    a = b.pos.findInRange(FIND_CONSTRUCTION_SITES, 1, {filter:function(a) {
+      return a.structureType === STRUCTURE_CONTAINER
+    }});
     if(a.length) {
       c = a[0]
     }else {

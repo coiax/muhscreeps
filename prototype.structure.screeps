@@ -1,3 +1,5 @@
+var util = require('util');
+
 _.extend(Structure.prototype, require('mixin.log'));
 _.extend(Structure.prototype, require('mixin.task_stack'));
 _.extend(Structure.prototype, require('mixin.common'));
@@ -13,7 +15,7 @@ Structure.prototype.get_memory = function() {
         Memory.structures[this.id] = {};
         return Memory.structures[this.id];
     }
-}
+};
 
 Structure.prototype.maintain_cost = function() {
     var decay = 0;
@@ -38,8 +40,8 @@ Structure.prototype.maintain_cost = function() {
             }
             decay_time = ROAD_DECAY_TIME;
             break;
-    };
-    if((decay == 0) || (decay_time == 0)) {
+    }
+    if((decay === 0) || (decay_time === 0)) {
         return 0;
     }
     var hits_per_tick = decay / decay_time;
@@ -48,7 +50,7 @@ Structure.prototype.maintain_cost = function() {
 };
 
 Structure.prototype.is_type = function(stypes) {
-    if(stypes.constructor != Array) {
+    if(stypes.constructor !== Array) {
         stypes = [stypes];
     }
     return _.includes(stypes, this.structureType);
@@ -59,12 +61,17 @@ Structure.prototype.is_full = function() {
         return null;
     if(this.store) {
         var total = _.sum(this.store);
-        return total == this.storeCapacity;
+        return total === this.storeCapacity;
     } else {
-        if(typeof this.energy == 'undefined')
+        if(typeof this.energy === 'undefined')
             return null;
-        if(typeof this.energyCapacity == 'undefined')
+        if(typeof this.energyCapacity === 'undefined')
             return null;
-        return this.energy == this.energyCapacity;
+        return this.energy === this.energyCapacity;
     }
+};
+
+Structure.prototype.is_autorepairable = function() {
+    return util.is_damaged(this) &&
+        this.is_type([STRUCTURE_ROAD, STRUCTURE_CONTAINER]);
 };

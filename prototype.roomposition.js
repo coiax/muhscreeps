@@ -6,9 +6,9 @@ RoomPosition.prototype.find = function() {
   }
 };
 RoomPosition.prototype.findStructures = function(a) {
-  return a ? (filter = function(b) {
+  return a ? this.find(FIND_STRUCTURES, {filter:function(b) {
     return b.is_type(a)
-  }, this.find(FIND_STRUCTURES, {filter:filter})) : this.find(FIND_STRUCTURES)
+  }}) : this.find(FIND_STRUCTURES)
 };
 RoomPosition.prototype.findDamagedStructures = function(a) {
   return _.filter(this.findStructures(a), util.is_damaged)
@@ -63,7 +63,7 @@ RoomPosition.prototype.is_terrain = function(a) {
   var b = this.lookFor(LOOK_TERRAIN), c;
   for(c in b) {
     var d = b[c];
-    if("terrain" == d.type && d.terrain == a) {
+    if("terrain" === d.type && d.terrain === a) {
       return!0
     }
   }
@@ -76,7 +76,7 @@ RoomPosition.prototype.is_wall = function() {
   return this.is_terrain("wall")
 };
 RoomPosition.prototype.is_plain = function() {
-  return is_terrain("plain")
+  return this.is_terrain("plain")
 };
 RoomPosition.prototype.non_wall_adjacent = function() {
   return _.reject(this.ordinals(), function(a) {

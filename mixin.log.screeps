@@ -7,11 +7,11 @@ module.exports.log = function(level, subsystem, message) {
 
     var log_entry = {level: level, message: message, tick: Game.time,
         subsystem: subsystem};
-    if(typeof this.say != 'undefined')
+    if(typeof this.say !== 'undefined')
         this.say(subsystem + ":" + message);
     memory.log.push(log_entry);
-    util.keep_n_values(memory.log, 20); 
-}
+    util.keep_n_values(memory.log, 20);
+};
 
 module.exports.warning = function(subsystem, warning_msg) {
     this.log("warning", subsystem, warning_msg);

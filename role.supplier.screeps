@@ -13,15 +13,16 @@ module.exports = {
         while(true) {
             var part_list = [];
             carries++;
-            if(carries % 2 == 0)
+            if(carries % 2 === 0)
                 moves++;
-            for(var i = 0; i < carries; i++)
+            var i;
+            for(i = 0; i < carries; i++)
                 part_list.push(CARRY);
             if(carries < 3) {
                 part_list.push(WORK);
             }
-            for(var i = 0; i < moves; i++)
-                part_list.push(MOVE)
+            for(i = 0; i < moves; i++)
+                part_list.push(MOVE);
             if(part_list.length > 50) {
                 break;
             } else {
@@ -31,24 +32,26 @@ module.exports = {
     },
 
     run: function(task, creep) {
-        if(creep.carry.energy == 0) {
+        if(creep.carry.energy === 0) {
             var new_task = {type: "resupply"};
             return new outcomes.PushTask(new_task);
         }
+        var stype;
         var stypes = [[STRUCTURE_EXTENSION, STRUCTURE_SPAWN], STRUCTURE_TOWER, STRUCTURE_STORAGE];
         var target;
+        var filter = function(st) {
+            return util.needs_energy(st) && st.is_type(stype);
+        };
         for(var i in stypes) {
-            var stype = stypes[i];
-            target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {filter:
-                function(st) {
-                    return (util.needs_energy(st) && st.is_type(stype));
-            }});
+            stype = stypes[i];
+            target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES,
+                {filter: filter});
             if(target)
                 break;
         }
         if(target) {
-            var new_task = {type: "transfer_to", target_id: target.id};
-            return new outcomes.PushTask(new_task);
+            var new_task2 = {type: "transfer_to", target_id: target.id};
+            return new outcomes.PushTask(new_task2);
         } else {
             // wander randomly.
             creep.say("sidle");

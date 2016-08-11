@@ -5,12 +5,12 @@ var outcomes = task_manager.globals.outcomes;
 var role_name = "role.sentry";
 
 function room_has_sentry(room_name, owner_username) {
-    var room = Game.rooms[other_roomname];
+    var room = Game.rooms[room_name];
     if(!room)
         return false;
     // An owned controller also counts.
     if(room.controller && room.controller.owner &&
-        room.controller.owner.username == owner_username)
+        room.controller.owner.username === owner_username)
         return true;
     var creeps = room.find(FIND_MY_CREEPS);
     var other_sentries = util.get_creeps_with_task(creeps, role_name);
@@ -21,7 +21,7 @@ function room_has_sentry(room_name, owner_username) {
             return true;
     }
     return false;
-};
+}
 
 module.exports.name = role_name;
 module.exports.parts = [[MOVE]];
@@ -40,9 +40,9 @@ module.exports.run = function(task, creep) {
         task.sentry_roomname = sentryless_rooms[0];
     }
 
-    if(task.sentry_roomname && (task.sentry_roomname != current_room)) {
+    if(task.sentry_roomname && (task.sentry_roomname !== current_room)) {
         var new_task = {type: "travel_to_room",
-            destination_room: sentryless_rooms[0]};
+            destination_room: task.sentry_roomname};
         return new outcomes.PushTask(new_task);
     }
     // Now check that the room hasn't gained a sentry while we were

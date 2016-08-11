@@ -42,16 +42,16 @@ var roleCow = {
             });
             for(var name in Game.creeps) {
                 var other = Game.creeps[name];
-                if(creep.name == other.name) {
+                if(creep.name === other.name) {
                     continue;
                 }
-                var other_task = other.has_task_in_queue(module.exports.name)
+                var other_task = other.has_task_in_queue(module.exports.name);
                 if(!other_task) {
                     continue;
                 }
                 var other_source = Game.getObjectById(other_task.source_id);
                 cow_strength[other_source] += other.body_part_count(WORK);
-            };
+            }
             sources = _.sortBy(sources, function(s) {
                 return cow_strength[s];
             });
@@ -66,7 +66,7 @@ var roleCow = {
         }
 
         var pasture = util.memoryPosition(task.pasture_loc);
-        if(pasture && pasture.getRangeTo(source) != 1) {
+        if(pasture && pasture.getRangeTo(source) !== 1) {
             creep.say("Moo?");
             task.pasture_loc = null;
             pasture = null;
@@ -86,7 +86,7 @@ var roleCow = {
 
         if(!pasture.isEqualTo(creep.pos)) {
             if(pasture.isNearTo(creep)) {
-                var other_creeps = pasture.lookFor(FIND_CREEPS)
+                var other_creeps = pasture.lookFor(FIND_CREEPS);
                 if(other_creeps && other_creeps.length) {
                     other_creeps.forEach(function(other) {
                         if(!other.has_task_in_queue(module.exports.name)) {
@@ -113,7 +113,7 @@ var roleCow = {
             // Then scan for a container to move stuff into
             var containers = creep.pos.findInRange(FIND_STRUCTURES, 1,
                 {filter : function(structure) {
-                    return structure.structureType == STRUCTURE_CONTAINER;
+                    return structure.structureType === STRUCTURE_CONTAINER;
             }});
             if(containers.length) {
                 container = containers[0];
@@ -128,16 +128,16 @@ var roleCow = {
         // possible can.
         if(!container) {
             var sites = creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 1,
-                filter = function(site) {
-                    return site.structureType == STRUCTURE_CONTAINER;
-            });
+                {filter : function(site) {
+                    return site.structureType === STRUCTURE_CONTAINER;
+            }});
             var site;
             if(sites.length) {
                 site = sites[0];
             } else {
                 var opposite_dir = source.pos.getDirectionTo(creep);
                 var site_pos = creep.pos.step(opposite_dir);
-                var rc = site_pos.createConstructionSite(STRUCTURE_CONTAINER);
+                site_pos.createConstructionSite(STRUCTURE_CONTAINER);
                 // It will be found next work tick.
                 return new outcomes.InProgress();
             }
@@ -151,7 +151,7 @@ var roleCow = {
         }
         // Then spend the rest of our lifespan harvesting and moving that
         // into the container, repairing the container first if needed.
-        var rc = creep.harvest(source);
+        creep.harvest(source);
 
         // A repair order will trump the harvest order if it's possible
         // to repair (ie. energy is stored, WORK parts are present)

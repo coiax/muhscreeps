@@ -6,7 +6,7 @@ _.extend(Structure.prototype, require('mixin.common'));
 
 Creep.prototype.get_memory = function() {
     return this.memory;
-}
+};
 
 Creep.prototype.wants_renew = function() {
     if(this.ticksToLive < 100 && this.has_flag("renew") &&
@@ -18,7 +18,7 @@ Creep.prototype.wants_renew = function() {
 };
 
 Creep.prototype.renew_cost = function() {
-    return floor(600 / this.body.length);
+    return Math.floor(600 / this.body.length);
 };
 
 Creep.prototype.body_cost = function() {
@@ -32,7 +32,7 @@ Creep.prototype.body_cost = function() {
 Creep.prototype.body_part_count = function(btype, ignore_injured) {
     var sum = 0;
     this.body.forEach(function(obj) {
-        if((obj.type == btype) && (!ignore_injured || obj.hits == 100))
+        if((obj.type === btype) && (!ignore_injured || obj.hits === 100))
             sum++;
     });
     return sum;
@@ -49,12 +49,12 @@ Creep.prototype.maintain_cost = function() {
 
 Creep.prototype.is_full = function() {
     var total = _.sum(this.carry);
-    return total == this.carryCapacity;
+    return total === this.carryCapacity;
 };
 
 Creep.prototype.is_empty = function() {
     var total = _.sum(this.carry);
-    return total == 0;
+    return total === 0;
 };
 
 Creep.prototype.get_support = function() {
@@ -71,20 +71,20 @@ Creep.prototype.add_flag = function(flag_name) {
     if(!this.memory.flags)
         this.memory.flags = [];
     if(!_.includes(this.memory.flags, flag_name))
-        this.memory.flags.push(flag_name)
+        this.memory.flags.push(flag_name);
 };
 
 Creep.prototype.clear_flag = function(flag_name) {
     if(!this.memory.flags)
         return;
-    _.pull(this.memory, flag_name)
-    if(this.memory.flags.length == 0)
+    _.pull(this.memory, flag_name);
+    if(this.memory.flags.length === 0)
         this.memory.flags = undefined;
 };
 
 Creep.prototype.has_flag = function(flag_name) {
     if(this.memory.flags) {
-        return _.includes(this.memory.flags, flag_name)
+        return _.includes(this.memory.flags, flag_name);
     } else {
         return false;
     }

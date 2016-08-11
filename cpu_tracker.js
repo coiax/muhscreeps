@@ -1,18 +1,12 @@
 'use strict';var util = require("util");
 function setup() {
   Memory.cpu || (Memory.cpu = {enabled:!1, values_kept:1E3});
-  "undefined" == typeof Memory.cpu.enabled && (Memory.cpu.enabled = !1);
+  "undefined" === typeof Memory.cpu.enabled && (Memory.cpu.enabled = !1);
   Memory.cpu.values_kept || (Memory.cpu.values_kept = 1E3)
 }
 function add_value(a, b) {
   a.push(b);
   util.keep_n_values(a, Memory.cpu.values_kept)
-}
-function calculate_average(a) {
-  var b = 0;
-  return a ? (a.forEach(function(a) {
-    b += a.used
-  }), b / a.length) : 0
 }
 function record(a, b) {
   var c = Game.time;
@@ -47,7 +41,7 @@ function start(a, b) {
 }
 function stop(a) {
   var b = Game.cpu.getUsed();
-  a && ("undefined" != typeof a.time_started && "undefined" != typeof a.arbitary && "undefined" != typeof a.task_name) && record_arbitary(a.arbitary, a.task_name, b - a.time_started)
+  a && ("undefined" !== typeof a.time_started && "undefined" !== typeof a.arbitary && "undefined" !== typeof a.task_name) && record_arbitary(a.arbitary, a.task_name, b - a.time_started)
 }
 module.exports = {record_arbitary:record_arbitary, record_main:function() {
   return record_arbitary("main", null, Game.cpu.getUsed())

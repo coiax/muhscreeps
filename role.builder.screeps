@@ -1,12 +1,6 @@
 var task_manager = require('task_manager');
 var outcomes = require('task_manager.globals').outcomes;
 
-function sort_construction_sites(con_sites) {
-    return _.orderBy(con_sites, function(con_site) {
-        return con_site.progressTotal - con_site.progress;
-    }, "desc");
-}
-
 function sort_structures(structs) {
     return _.sortBy(structs, function(struct) {
         return struct.hits;
@@ -17,21 +11,21 @@ var roleBuilder = {
     name: "role.builder",
     /** @param {Creep} creep **/
     run: function(task, creep) {
-        var dismantle_flag = Game.flags["Dismantle"];
+        var dismantle_flag = Game.flags.Dismantle;
         var assigned_num;
         if(dismantle_flag) {
             if(!dismantle_flag.memory.assigned_creeps) {
-                dismantle_flag.memory.assigned_creeps = []
+                dismantle_flag.memory.assigned_creeps = [];
             }
             _.remove(dismantle_flag.memory.assigned_creeps, function(elem) {
                 return !Game.creeps[elem];
             });
-            var assigned_num = dismantle_flag.memory.assigned_creeps.length;
+            assigned_num = dismantle_flag.memory.assigned_creeps.length;
         }
-        if(typeof assigned_num != 'undefined' && assigned_num < 2) {
+        if(typeof assigned_num !== 'undefined' && assigned_num < 2) {
             dismantle_flag.memory.assigned_creeps.push(creep.name);
             if(!dismantle_flag.room) {
-                creep.moveTo(dismantle_flag)
+                creep.moveTo(dismantle_flag);
                 return new outcomes.InProgress();
             }
             var items = dismantle_flag.pos.findInRange(FIND_STRUCTURES, 0);
@@ -43,7 +37,7 @@ var roleBuilder = {
                 dismantle_flag.remove();
             }
         }
-        if(creep.carry.energy == 0) {
+        if(creep.carry.energy === 0) {
             return new outcomes.PushTask({type: "resupply"});
         }
 
@@ -51,13 +45,13 @@ var roleBuilder = {
         var dam_struct = sort_structures(
             creep.room.find(FIND_MY_STRUCTURES, {
                 filter: function(structure) {
-                    return (structure.structureType != STRUCTURE_RAMPART) &&
+                    return (structure.structureType !== STRUCTURE_RAMPART) &&
                         structure.hits < structure.hitsMax;
             }}));
         var dam_neu_struct = sort_structures(
             creep.room.find(FIND_STRUCTURES, {
                 filter: function(structure) {
-                    return structure.hits < structure.hitsMax
+                    return structure.hits < structure.hitsMax;
             }}));
         var target;
         if(con_site) {
@@ -68,8 +62,8 @@ var roleBuilder = {
             target = dam_neu_struct[0];
         }
         if(target) {
-            var new_task = {type: "construct", target_id: target.id};
-            return new outcomes.PushTask(new_task);
+            var new_task2 = {type: "construct", target_id: target.id};
+            return new outcomes.PushTask(new_task2);
         } else {
             creep.say("no work");
             return new outcomes.InProgress();

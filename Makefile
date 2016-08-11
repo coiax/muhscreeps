@@ -4,7 +4,7 @@ CC := closure-compiler
 FLAGS := --formatting PRETTY_PRINT --language_in=ECMASCRIPT5_STRICT
 
 %.js : %.screeps
-	#jslint $<
+	jshint $<
 	$(CC) $(FLAGS) --js $< --js_output_file $@
 
 all: $(addsuffix .js, $(basename $(wildcard *.screeps)))

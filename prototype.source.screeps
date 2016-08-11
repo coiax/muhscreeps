@@ -1,5 +1,5 @@
 Source.prototype.is_harvestable = function(creep) {
-    if(this.energy == 0) {
+    if(this.energy === 0) {
         return false;
     }
     if(creep) {
@@ -12,4 +12,4 @@ Source.prototype.is_harvestable = function(creep) {
     } else {
         return false;
     }
-}
+};
