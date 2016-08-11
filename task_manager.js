@@ -146,9 +146,9 @@ var cpu_tracker = require("cpu_tracker"), util = require("util"), cpu_debug = ut
     if(d.roomName == b.room.name) {
       var d = d.look(LOOK_STRUCTURES), k;
       for(k in d) {
-        var g = d[k], h = b.transfer(g, f, e);
-        if(h != ERR_INVALID_TARGET) {
-          a = g;
+        var h = d[k], g = b.transfer(h, f, e);
+        if(g != ERR_INVALID_TARGET) {
+          a = h;
           c.target_id = a.id;
           break
         }
@@ -162,98 +162,7 @@ var cpu_tracker = require("cpu_tracker"), util = require("util"), cpu_debug = ut
     return new outcomes.InProgress
   }
   c.destination_pos = a.pos;
-  h = b.transfer(a, f, e);
-  switch(h) {
-    case ERR_NOT_OWNER:
-    ;
-    case ERR_BUSY:
-    ;
-    case ERR_NOT_ENOUGH_RESOURCES:
-    ;
-    case ERR_INVALID_ARGS:
-    ;
-    case ERR_INVALID_TARGET:
-      return new outcomes.TaskError(h);
-    case ERR_FULL:
-      return new outcomes.AlreadyComplete;
-    case ERR_NOT_IN_RANGE:
-      return b.moveTo(a), new outcomes.InProgress;
-    case OK:
-      return new outcomes.Complete
-  }
-}, tower_target:function(c, b) {
-  target = Game.getObjectById(c.target_id);
-  mode = c.mode;
-  if(!target) {
-    return new outcomes.Failure("No target.")
-  }
-  if(!mode) {
-    return new outcomes.TaskError("No mode.")
-  }
-  if(b.energy < TOWER_ENERGY_COST) {
-    return new outcomes.InProgress
-  }
-  var a;
-  switch(mode) {
-    case "heal":
-      if(target.hits == target.hitsMax) {
-        return new outcomes.AlreadyComplete
-      }
-      a = b.heal(target);
-      break;
-    case "repair":
-      if(target.hits == target.hitsMax) {
-        return new outcomes.AlreadyComplete
-      }
-      a = b.repair(target);
-      break;
-    case "attack":
-      a = b.attack(target);
-      break;
-    default:
-      return new outcomes.TaskError("Bad mode " + mode)
-  }
-  switch(a) {
-    case ERR_INVALID_TARGET:
-    ;
-    case ERR_RCL_NOT_ENOUGH:
-    ;
-    case ERR_NOT_ENOUGH_RESOURCES:
-      return new outcomes.TaskError(a);
-    case OK:
-      return new outcomes.InProgress
-  }
-}, dismantle:function(c, b) {
-  b.add_flag("no_autopickup");
-  var a = Game.getObj, d = c.amount;
-  if(!a && !destination) {
-    return new outcomes.TaskError("No target or destination.")
-  }
-  if(!b.carry[resource_type]) {
-    return new outcomes.TaskError("Creep not carrying " + resource_type)
-  }
-  "undefined" != typeof d && (d = max(b.carry[resource_type], d), c.amount = d);
-  if(!a) {
-    if(destination.roomName == b.room.name) {
-      var f = destination.look(LOOK_STRUCTURES), e;
-      for(e in f) {
-        var k = f[e], g = b.transfer(k, resource_type, d);
-        if(g != ERR_INVALID_TARGET) {
-          a = k;
-          c.target_id = a.id;
-          break
-        }
-      }
-      if(!a) {
-        var h = "No target found at destination."
-      }
-      return new outcomes.TaskError(h)
-    }
-    b.moveTo(destination);
-    return new outcomes.InProgress
-  }
-  c.destination_pos = a.pos;
-  g = b.transfer(a, resource_type, d);
+  g = b.transfer(a, f, e);
   switch(g) {
     case ERR_NOT_OWNER:
     ;
@@ -320,7 +229,7 @@ var cpu_tracker = require("cpu_tracker"), util = require("util"), cpu_debug = ut
   if(!a) {
     return new outcomes.Failure("No target found.")
   }
-  if(b.is_full()) {
+  if(b.carryCapacity && b.is_full()) {
     return c = {type:"deposit"}, new outcomes.PushTask(c)
   }
   var d = b.dismantle(a);
@@ -426,12 +335,12 @@ module.exports = {globals:require("task_manager.globals"), task_functions:task_f
     a--;
     var d = b[0];
     "undefined" == typeof d.times_run && (d.times_run = 0);
-    var f = d.type, e, k = cpu_tracker.start("tasks", f), g = task_functions[f];
-    if(g) {
+    var f = d.type, e, k = cpu_tracker.start("tasks", f), h = task_functions[f];
+    if(h) {
       try {
-        e = g(d, c)
-      }catch(h) {
-        console.log(h.stack), e = new outcomes.TaskError("Exception: " + h)
+        e = h(d, c)
+      }catch(g) {
+        console.log(g.stack), e = new outcomes.TaskError("Exception: " + g)
       }
     }else {
       e = new outcomes.TaskError("No handler for task type.")

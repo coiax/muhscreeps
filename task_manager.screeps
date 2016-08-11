@@ -288,109 +288,11 @@ var task_functions = {
     },
     dismantle : function(task, creep) {
         creep.add_flag("no_autopickup");
-        var target = Game.getObj
-        var amount = task.amount;
-
-        if(!target && !destination)
-            return new outcomes.TaskError("No target or destination.");
-
-        if(!creep.carry[resource_type])
-            return new outcomes.TaskError("Creep not carrying " + resource_type);
-
-        if(typeof amount != 'undefined') {
-            amount = max(creep.carry[resource_type], amount);
-            task.amount = amount;
-        }
-
-        if(!target) {
-            if(destination.roomName == creep.room.name) {
-                var look = destination.look(LOOK_STRUCTURES);
-                for(var i in look) {
-                    var st = look[i];
-                    var rc = creep.transfer(st, resource_type, amount);
-                    if(rc == ERR_INVALID_TARGET) {
-                        continue;
-                    } else {
-                        target = st;
-                        task.target_id = target.id;
-                        break;
-                    }
-                }
-                if(!target)
-                    var msg = "No target found at destination.";
-                    return new outcomes.TaskError(msg);
-            } else {
-                creep.moveTo(destination);
-                return new outcomes.InProgress();
-            }
-        }
-        task.destination_pos = target.pos;
-        var rc = creep.transfer(target, resource_type, amount);
-        switch(rc) {
-            case ERR_NOT_OWNER:
-            case ERR_BUSY:
-            case ERR_NOT_ENOUGH_RESOURCES:
-            case ERR_INVALID_ARGS:
-            case ERR_INVALID_TARGET:
-                return new outcomes.TaskError(rc);
-            case ERR_FULL:
-                return new outcomes.AlreadyComplete();
-            case ERR_NOT_IN_RANGE:
-                creep.moveTo(target);
-                return new outcomes.InProgress();
-            case OK:
-                return new outcomes.Complete();
-        }
-    },
-    tower_target : function(task, tower) {
-        target = Game.getObjectById(task.target_id);
-        mode = task.mode;
-        // The task timing out is done by the task manager.
-        if(!target)
-            return new outcomes.Failure("No target.");
-
-        if(!mode)
-            return new outcomes.TaskError("No mode.");
-
-        if(tower.energy < TOWER_ENERGY_COST)
-            return new outcomes.InProgress();
-
-        var rc;
-        switch(mode) {
-            case "heal":
-                if(target.hits == target.hitsMax) {
-                    return new outcomes.AlreadyComplete();
-                }
-                rc = tower.heal(target);
-                break;
-            case "repair":
-                if(target.hits == target.hitsMax) {
-                    return new outcomes.AlreadyComplete();
-                }
-                rc = tower.repair(target);
-                break;
-            case "attack":
-                rc = tower.attack(target);
-                break;
-            default:
-                return new outcomes.TaskError("Bad mode " + mode);
-        }
-        switch(rc) {
-            case ERR_INVALID_TARGET:
-            case ERR_RCL_NOT_ENOUGH:
-            case ERR_NOT_ENOUGH_RESOURCES:
-                return new outcomes.TaskError(rc);
-            case OK:
-                return new outcomes.InProgress();
-        }
-    },
-    dismantle : function(task, creep) {
-        creep.add_flag("no_autopickup");
         var target = Game.getObjectById(task.target_id);
         if(!target)
             return new outcomes.Failure("No target found.");
 
-        if(creep.is_full()) {
+        if(creep.carryCapacity && creep.is_full()) {
             var task = {type: "deposit"}
             return new outcomes.PushTask(task);
         }
