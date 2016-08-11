@@ -22,10 +22,10 @@ module.exports.loop = function() {
           if(!a.has_tasks()) {
             switch(c) {
               case STRUCTURE_TOWER:
-                a.add_task({type:"structure.tower"});
+                a.add_task({type:"structure_tower"});
                 break;
               case STRUCTURE_SPAWN:
-                a.add_task({type:"structure.spawner"})
+                a.add_task({type:"structure_spawner"})
             }
           }
           a.has_tasks() && task_manager.run_task_queue(a, e.task_queue)

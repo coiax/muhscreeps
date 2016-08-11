@@ -300,7 +300,7 @@
   b.moveTo(a);
   return new outcomes.InProgress
 }, taskless:function(d, b) {
-  var a = b.body_part_count(WORK), c = b.body_part_count(CARRY), a = b.body_part_count(CLAIM) ? "role.claimer" : !a && !c ? "role.dumbscout" : a && !c ? "role.cow" : !a && c ? "role.supplier" : _.sample(["role.supplier", "role.cow", "role.upgrader", "role.builder"]);
+  var a = b.body_part_count(WORK), c = b.body_part_count(CARRY), a = b.body_part_count(CLAIM) ? "role_claimer" : !a && !c ? "role_dumbscout" : a && !c ? "role_cow" : !a && c ? "role_supplier" : _.sample(["role_supplier", "role_cow", "role_upgrader", "role_builder"]);
   return new outcomes.ReplaceTask({type:a})
 }, idle:function(d, b) {
   b.say("Zzz");

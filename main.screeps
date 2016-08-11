@@ -54,10 +54,10 @@ module.exports.loop = function () {
         if(!structure.has_tasks()) {
             switch(stype) {
                 case STRUCTURE_TOWER:
-                    structure.add_task({type: "structure.tower"});
+                    structure.add_task({type: "structure_tower"});
                     break;
                 case STRUCTURE_SPAWN:
-                    structure.add_task({type: "structure.spawner"});
+                    structure.add_task({type: "structure_spawner"});
                     break;
             }
         }

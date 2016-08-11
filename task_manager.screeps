@@ -452,16 +452,16 @@ var task_functions = {
         var can_claim = creep.body_part_count(CLAIM);
         var purpose;
         if(can_claim) {
-            purpose = "role.claimer";
+            purpose = "role_claimer";
         } else if(!can_work && !can_carry) {
-            purpose = "role.dumbscout";
+            purpose = "role_dumbscout";
         } else if(can_work && !can_carry) {
-            purpose = "role.cow";
+            purpose = "role_cow";
         } else if(!can_work && can_carry) {
-            purpose = "role.supplier";
+            purpose = "role_supplier";
         } else {
-            purpose = _.sample(["role.supplier","role.cow","role.upgrader",
-                "role.builder"]);
+            purpose = _.sample(["role_supplier","role_cow","role_upgrader",
+                "role_builder"]);
         }
         return new outcomes.ReplaceTask({type: purpose});
     },
