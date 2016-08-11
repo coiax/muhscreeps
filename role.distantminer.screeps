@@ -1,6 +1,6 @@
 var util = require('util');
 var task_manager = require('task_manager');
-var outcomes = task_manager.globals.outcomes;
+var outcomes = task_manager.outcomes;
 
 function is_suitable_room(rn) {
     var room = Game.rooms[rn];
@@ -25,8 +25,7 @@ function is_suitable_room(rn) {
     }
 }
 
-module.exports.name = "role.distantminer";
-module.exports.run = function(task, creep) {
+function role_distantminer(task, creep) {
     var current_room = creep.room.name;
 
     var rooms = util.room_walk(current_room, is_suitable_room);
@@ -48,6 +47,6 @@ module.exports.run = function(task, creep) {
     } else {
         return new outcomes.Failure("No suitable mining sites found.");
     }
-};
+}
 
-require('task_manager').register(module.exports.name, module.exports.run);
+task_manager.register(role_distantminer);

@@ -1,4 +1,4 @@
-'use strict';var util = require("util"), task_manager = require("task_manager"), outcomes = task_manager.globals.outcomes, default_parts = [];
+'use strict';var util = require("util"), task_manager = require("task_manager"), outcomes = task_manager.outcomes, default_parts = [];
 function generate_default_parts() {
   for(var a = 1;;) {
     var c = [], b;
@@ -20,32 +20,27 @@ function generate_default_parts() {
 }
 generate_default_parts();
 function build_creep(a, c, b) {
-  var d, f;
+  var e;
   c.currently_attempting = b;
-  try {
-    f = require(b)
-  }catch(e) {
-    console.log("Error importing task '" + b + "': " + e)
-  }
-  d = default_parts;
-  f && f.parts && (d = f.parts);
-  f = a.room.energyAvailable;
-  var g, h;
-  for(h in d) {
-    var k = d[h];
-    if(util.body_cost(k) <= f) {
-      g = k
+  var g = task_manager.get(b);
+  e = default_parts;
+  g && g.parts && (e = g.parts);
+  var g = a.room.energyAvailable, d, f;
+  for(f in e) {
+    var h = e[f];
+    if(util.body_cost(h) <= g) {
+      d = h
     }else {
       break
     }
   }
-  if(g) {
-    for(d = b.replace(".", "_") + c.creep_id;;) {
-      if(h = a.canCreateCreep(g, d), h === OK) {
+  if(d) {
+    for(e = b.replace(".", "_") + c.creep_id;;) {
+      if(f = a.canCreateCreep(d, e), f === OK) {
         c.currently_spawning = b;
         break
       }else {
-        if(h === ERR_NAME_EXISTS) {
+        if(f === ERR_NAME_EXISTS) {
           c.creep_id++
         }else {
           return
@@ -53,9 +48,9 @@ function build_creep(a, c, b) {
       }
     }
     c.creep_id++;
-    a.createCreep(g, d, {task_queue:[{type:b}]});
+    a.createCreep(d, e, {task_queue:[{type:b}]});
     a.memory.supported_creeps || (a.memory.supported_creeps = []);
-    a.memory.supported_creeps.push(d)
+    a.memory.supported_creeps.push(e)
   }
 }
 function setup(a, c) {
@@ -63,25 +58,25 @@ function setup(a, c) {
   a.currently_attempting = null;
   c.spawning || (a.currently_spawning = null)
 }
-var default_required = [{task:"role.supplier", amount:1}, {task:"role.cow", amount:1}, {task:"role.upgrader", amount:1}, {task:"role.builder", amount:1}, {task:"role.cow", amount:2}, {task:"role.supplier", amount:2}, {task:"role.cow", amount:3}, {task:"role.supplier", amount:3}, {task:"role.cow", amount:4}, {task:"role.supplier", amount:4}, {task:"role.upgrader", amount:3}, {task:"role.builder", amount:4}, {task:"role.dumbscout", amount:10}, {task:"role.sentry", amount:4}, {task:"role.claimer", amount:1}];
-module.exports = {name:"structure.spawner", run:function(a, c) {
+var default_required = [{task:"role_supplier", amount:1}, {task:"role_cow", amount:1}, {task:"role_upgrader", amount:1}, {task:"role_builder", amount:1}, {task:"role_cow", amount:2}, {task:"role_supplier", amount:2}, {task:"role_cow", amount:3}, {task:"role_supplier", amount:3}, {task:"role_cow", amount:4}, {task:"role_supplier", amount:4}, {task:"role_upgrader", amount:3}, {task:"role_builder", amount:4}, {task:"role_dumbscout", amount:10}, {task:"role_sentry", amount:4}, {task:"role_claimer", amount:1}];
+function structure_spawner(a, c) {
   setup(a, c);
   c.check_creeps();
-  var b = {}, d = c.memory.supported_creeps || [];
+  var b = {}, e = c.memory.supported_creeps || [];
   a.required || (a.required = _.cloneDeep(default_required));
-  for(var f in a.required) {
-    var e = a.required[f];
-    if("undefined" === typeof b[e.task]) {
-      for(var g = b[e.task] = 0;g < d.length;g++) {
-        Game.creeps[d[g]].has_task_in_queue(e.task) && b[e.task]++
+  for(var g in a.required) {
+    var d = a.required[g];
+    if("undefined" === typeof b[d.task]) {
+      for(var f = b[d.task] = 0;f < e.length;f++) {
+        Game.creeps[e[f]].has_task_in_queue(d.task) && b[d.task]++
       }
     }
-    if(b[e.task] < e.amount) {
-      build_creep(c, a, e.task);
+    if(b[d.task] < d.amount) {
+      build_creep(c, a, d.task);
       break
     }
   }
   return new outcomes.InProgress
-}};
-task_manager.register(module.exports.name, module.exports.run);
+}
+task_manager.register(structure_spawner);
 

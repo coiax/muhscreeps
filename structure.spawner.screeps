@@ -1,6 +1,6 @@
 var util = require('util');
 var task_manager = require('task_manager');
-var outcomes = task_manager.globals.outcomes;
+var outcomes = task_manager.outcomes;
 
 var default_parts = [];
 
@@ -29,19 +29,15 @@ function generate_default_parts() {
 }
 generate_default_parts();
 
-function build_creep(spawn, task_obj, initial_task) {
+function build_creep(spawn, task_obj, initial_task_name) {
     var possible_parts;
-    var role_module;
-    task_obj.currently_attempting = initial_task;
-    try {
-        role_module = require(initial_task);
-    } catch(err) {
-        console.log("Error importing task '" + initial_task + "': " + err);
-        // just eat it.
-    }
+    task_obj.currently_attempting = initial_task_name;
+
+    var task_function = task_manager.get(initial_task_name);
+
     possible_parts = default_parts;
-    if(role_module && role_module.parts) {
-        possible_parts = role_module.parts;
+    if(task_function && task_function.parts) {
+        possible_parts = task_function.parts;
     }
 
     var capacity = spawn.room.energyAvailable;
@@ -59,11 +55,11 @@ function build_creep(spawn, task_obj, initial_task) {
     if(!selected_parts) {
         return;
     }
-    var creep_name = initial_task.replace(".","_") + task_obj.creep_id;
+    var creep_name = initial_task_name.replace(".","_") + task_obj.creep_id;
     while(true) {
         var rc = spawn.canCreateCreep(selected_parts, creep_name);
         if(rc === OK) {
-            task_obj.currently_spawning = initial_task;
+            task_obj.currently_spawning = initial_task_name;
             break;
         } else if(rc === ERR_NAME_EXISTS) {
             task_obj.creep_id++;
@@ -74,7 +70,7 @@ function build_creep(spawn, task_obj, initial_task) {
     }
     task_obj.creep_id++;
     var creep_memory = {
-        task_queue: [{type: initial_task}]
+        task_queue: [{type: initial_task_name}]
     };
     spawn.createCreep(selected_parts, creep_name, creep_memory);
     if(!spawn.memory.supported_creeps)
@@ -93,52 +89,49 @@ function setup(task, spawn) {
 }
 
 var default_required = [
-    {task: "role.supplier", amount: 1},
-    {task: "role.cow", amount: 1},
-    {task: "role.upgrader", amount: 1},
-    {task: "role.builder", amount: 1},
-    {task: "role.cow", amount: 2},
-    {task: "role.supplier", amount: 2},
-    {task: "role.cow", amount: 3},
-    {task: "role.supplier", amount: 3},
-    {task: "role.cow", amount: 4},
-    {task: "role.supplier", amount: 4},
-    {task: "role.upgrader", amount: 3},
-    {task: "role.builder", amount: 4},
-    {task: "role.dumbscout", amount: 10},
-    {task: "role.sentry", amount: 4},
-    {task: "role.claimer", amount: 1}
+    {task: "role_supplier", amount: 1},
+    {task: "role_cow", amount: 1},
+    {task: "role_upgrader", amount: 1},
+    {task: "role_builder", amount: 1},
+    {task: "role_cow", amount: 2},
+    {task: "role_supplier", amount: 2},
+    {task: "role_cow", amount: 3},
+    {task: "role_supplier", amount: 3},
+    {task: "role_cow", amount: 4},
+    {task: "role_supplier", amount: 4},
+    {task: "role_upgrader", amount: 3},
+    {task: "role_builder", amount: 4},
+    {task: "role_dumbscout", amount: 10},
+    {task: "role_sentry", amount: 4},
+    {task: "role_claimer", amount: 1}
 ];
 
-module.exports = {
-    name : "structure.spawner",
-    run : function(task, spawn) {
-        setup(task, spawn);
-        spawn.check_creeps();
-        var counts = {};
-        var supported_creeps = spawn.memory.supported_creeps || [];
+function structure_spawner(task, spawn) {
+    setup(task, spawn);
+    spawn.check_creeps();
+    var counts = {};
+    var supported_creeps = spawn.memory.supported_creeps || [];
 
-        if(!task.required)
-            task.required = _.cloneDeep(default_required);
+    if(!task.required)
+        task.required = _.cloneDeep(default_required);
 
-        for(var i in task.required) {
-            var entry = task.required[i];
-            if(typeof counts[entry.task] === 'undefined') {
-                counts[entry.task] = 0;
-                for(var j=0; j < supported_creeps.length; j++) {
-                    var creep = Game.creeps[supported_creeps[j]];
-                    if(creep.has_task_in_queue(entry.task))
-                        counts[entry.task]++;
-                }
-            }
-            if(counts[entry.task] < entry.amount) {
-                build_creep(spawn, task, entry.task);
-                break;
+    for(var i in task.required) {
+        var entry = task.required[i];
+        if(typeof counts[entry.task] === 'undefined') {
+            counts[entry.task] = 0;
+            for(var j=0; j < supported_creeps.length; j++) {
+                var creep = Game.creeps[supported_creeps[j]];
+                if(creep.has_task_in_queue(entry.task))
+                    counts[entry.task]++;
             }
         }
-
-        return new outcomes.InProgress();
+        if(counts[entry.task] < entry.amount) {
+            build_creep(spawn, task, entry.task);
+            break;
+        }
     }
-};
 
-task_manager.register(module.exports.name, module.exports.run);
+    return new outcomes.InProgress();
+}
+
+task_manager.register(structure_spawner);

@@ -1,5 +1,5 @@
-'use strict';var outcomes = require("task_manager.globals").outcomes;
-module.exports = {name:"role.assault", parts:[[TOUGH, MOVE, RANGED_ATTACK], [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, RANGED_ATTACK, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE]], run:function(e, b) {
+'use strict';var task_manager = require("task_manager"), outcomes = task_manager.outcomes;
+function role_assault(e, b) {
   var a = [];
   a.length || (a = b.pos.findInRange(FIND_HOSTILE_STRUCTURES, 3, {filter:function(a) {
     return a.is_type(STRUCTURE_TOWER)
@@ -16,6 +16,7 @@ module.exports = {name:"role.assault", parts:[[TOUGH, MOVE, RANGED_ATTACK], [TOU
     b.moveTo(Game.flags.Target)
   }
   return new outcomes.InProgress
-}};
-require("task_manager").register(module.exports.name, module.exports.run);
+}
+role_assault.parts = [[TOUGH, MOVE, RANGED_ATTACK], [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, RANGED_ATTACK, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE]];
+task_manager.register(role_assault);
 

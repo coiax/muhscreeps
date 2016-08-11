@@ -1,10 +1,10 @@
-'use strict';var task_manager = require("task_manager"), outcomes = require("task_manager.globals").outcomes;
+'use strict';var task_manager = require("task_manager"), outcomes = task_manager.outcomes;
 function sort_structures(e) {
   return _.sortBy(e, function(b) {
     return b.hits
   })
 }
-var roleBuilder = {name:"role.builder", run:function(e, b) {
+function role_builder(e, b) {
   var a = Game.flags.Dismantle, c;
   a && (a.memory.assigned_creeps || (a.memory.assigned_creeps = []), _.remove(a.memory.assigned_creeps, function(a) {
     return!Game.creeps[a]
@@ -35,7 +35,6 @@ var roleBuilder = {name:"role.builder", run:function(e, b) {
   }
   b.say("no work");
   return new outcomes.InProgress
-}};
-module.exports = roleBuilder;
-task_manager.register(roleBuilder.name, roleBuilder.run);
+}
+task_manager.register(role_builder);
 

@@ -1,8 +1,6 @@
 var util = require('util');
 var task_manager = require('task_manager');
-var outcomes = task_manager.globals.outcomes;
-
-var role_name = "role.sentry";
+var outcomes = task_manager.outcomes;
 
 function room_has_sentry(room_name, owner_username) {
     var room = Game.rooms[room_name];
@@ -13,19 +11,17 @@ function room_has_sentry(room_name, owner_username) {
         room.controller.owner.username === owner_username)
         return true;
     var creeps = room.find(FIND_MY_CREEPS);
-    var other_sentries = util.get_creeps_with_task(creeps, role_name);
+    var other_sentries = util.get_creeps_with_task(creeps, "role_sentry");
     for(var i in other_sentries) {
         var other_creep = other_sentries[i];
-        var sentry_task = other_creep.has_task_in_queue(role_name);
+        var sentry_task = other_creep.has_task_in_queue("role_sentry");
         if(sentry_task.on_watch)
             return true;
     }
     return false;
 }
 
-module.exports.name = role_name;
-module.exports.parts = [[MOVE]];
-module.exports.run = function(task, creep) {
+function role_sentry(task, creep) {
     if(task.on_watch)
         return new outcomes.InProgress();
 
@@ -54,6 +50,8 @@ module.exports.run = function(task, creep) {
     }
     task.on_watch = true;
     return new outcomes.InProgress();
-};
+}
 
-task_manager.register(module.exports.name, module.exports.run);
+role_sentry.parts = [[MOVE]];
+
+task_manager.register(role_sentry);

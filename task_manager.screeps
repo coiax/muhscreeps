@@ -505,9 +505,18 @@ var task_functions = {
 };
 module.exports = {
     globals: require('task_manager.globals'),
+    outcomes: require('task_manager.globals').outcomes,
     task_functions: task_functions,
-    register: function(name, func) {
-        task_functions[name] = func;
+    register: function(task_function) {
+        if(typeof task_function !== 'function')
+            throw "Non-function registered.";
+        var name = task_function.name;
+        if(!name)
+            throw "Unnamed task function.";
+        task_functions[name] = task_function;
+    },
+    get: function(name) {
+        return task_functions[name];
     },
     run_task_queue: function(owner, tq) {
         var sanity = 100;

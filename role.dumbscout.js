@@ -1,5 +1,5 @@
-'use strict';var task_manager = require("task_manager"), outcomes = task_manager.globals.outcomes;
-module.exports = {name:"role.dumbscout", parts:[[MOVE]], run:function(f, c) {
+'use strict';var task_manager = require("task_manager"), outcomes = task_manager.outcomes;
+function role_dumbscout(f, c) {
   c.notifyWhenAttacked(!1);
   for(var g = c.room.name, a = Game.map.describeExits(g), d, b;!_.isEmpty(a) && !b;) {
     var e = _.sample(Object.keys(a));
@@ -12,6 +12,7 @@ module.exports = {name:"role.dumbscout", parts:[[MOVE]], run:function(f, c) {
   a = {type:"move_to_exit", destination:b, destination_room:d};
   f.old_room = g;
   return new outcomes.PushTask(a)
-}};
-require("task_manager").register(module.exports.name, module.exports.run);
+}
+role_dumbscout.parts = [[MOVE]];
+task_manager.register(role_dumbscout);
 

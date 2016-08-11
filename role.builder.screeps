@@ -1,5 +1,5 @@
 var task_manager = require('task_manager');
-var outcomes = require('task_manager.globals').outcomes;
+var outcomes = task_manager.outcomes;
 
 function sort_structures(structs) {
     return _.sortBy(structs, function(struct) {
@@ -7,69 +7,64 @@ function sort_structures(structs) {
     });
 }
 
-var roleBuilder = {
-    name: "role.builder",
-    /** @param {Creep} creep **/
-    run: function(task, creep) {
-        var dismantle_flag = Game.flags.Dismantle;
-        var assigned_num;
-        if(dismantle_flag) {
-            if(!dismantle_flag.memory.assigned_creeps) {
-                dismantle_flag.memory.assigned_creeps = [];
-            }
-            _.remove(dismantle_flag.memory.assigned_creeps, function(elem) {
-                return !Game.creeps[elem];
-            });
-            assigned_num = dismantle_flag.memory.assigned_creeps.length;
+function role_builder(task, creep) {
+    var dismantle_flag = Game.flags.Dismantle;
+    var assigned_num;
+    if(dismantle_flag) {
+        if(!dismantle_flag.memory.assigned_creeps) {
+            dismantle_flag.memory.assigned_creeps = [];
         }
-        if(typeof assigned_num !== 'undefined' && assigned_num < 2) {
-            dismantle_flag.memory.assigned_creeps.push(creep.name);
-            if(!dismantle_flag.room) {
-                creep.moveTo(dismantle_flag);
-                return new outcomes.InProgress();
-            }
-            var items = dismantle_flag.pos.findInRange(FIND_STRUCTURES, 0);
-            if(items && items.length) {
-                var item = items[0];
-                var new_task = {type: "dismantle", target_id: item.id};
-                return new outcomes.PushTask(new_task);
-            } else {
-                dismantle_flag.remove();
-            }
-        }
-        if(creep.carry.energy === 0) {
-            return new outcomes.PushTask({type: "resupply"});
-        }
-
-        var con_site = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
-        var dam_struct = sort_structures(
-            creep.room.find(FIND_MY_STRUCTURES, {
-                filter: function(structure) {
-                    return (structure.structureType !== STRUCTURE_RAMPART) &&
-                        structure.hits < structure.hitsMax;
-            }}));
-        var dam_neu_struct = sort_structures(
-            creep.room.find(FIND_STRUCTURES, {
-                filter: function(structure) {
-                    return structure.hits < structure.hitsMax;
-            }}));
-        var target;
-        if(con_site) {
-            target = con_site;
-        } else if(dam_struct.length) {
-            target = dam_struct[0];
-        } else if(dam_neu_struct.length) {
-            target = dam_neu_struct[0];
-        }
-        if(target) {
-            var new_task2 = {type: "construct", target_id: target.id};
-            return new outcomes.PushTask(new_task2);
-        } else {
-            creep.say("no work");
+        _.remove(dismantle_flag.memory.assigned_creeps, function(elem) {
+            return !Game.creeps[elem];
+        });
+        assigned_num = dismantle_flag.memory.assigned_creeps.length;
+    }
+    if(typeof assigned_num !== 'undefined' && assigned_num < 2) {
+        dismantle_flag.memory.assigned_creeps.push(creep.name);
+        if(!dismantle_flag.room) {
+            creep.moveTo(dismantle_flag);
             return new outcomes.InProgress();
         }
+        var items = dismantle_flag.pos.findInRange(FIND_STRUCTURES, 0);
+        if(items && items.length) {
+            var item = items[0];
+            var new_task = {type: "dismantle", target_id: item.id};
+            return new outcomes.PushTask(new_task);
+        } else {
+            dismantle_flag.remove();
+        }
     }
-};
+    if(creep.carry.energy === 0) {
+        return new outcomes.PushTask({type: "resupply"});
+    }
 
-module.exports = roleBuilder;
-task_manager.register(roleBuilder.name, roleBuilder.run);
+    var con_site = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
+    var dam_struct = sort_structures(
+        creep.room.find(FIND_MY_STRUCTURES, {
+            filter: function(structure) {
+                return (structure.structureType !== STRUCTURE_RAMPART) &&
+                    structure.hits < structure.hitsMax;
+        }}));
+    var dam_neu_struct = sort_structures(
+        creep.room.find(FIND_STRUCTURES, {
+            filter: function(structure) {
+                return structure.hits < structure.hitsMax;
+        }}));
+    var target;
+    if(con_site) {
+        target = con_site;
+    } else if(dam_struct.length) {
+        target = dam_struct[0];
+    } else if(dam_neu_struct.length) {
+        target = dam_neu_struct[0];
+    }
+    if(target) {
+        var new_task2 = {type: "construct", target_id: target.id};
+        return new outcomes.PushTask(new_task2);
+    } else {
+        creep.say("no work");
+        return new outcomes.InProgress();
+    }
+}
+
+task_manager.register(role_builder);

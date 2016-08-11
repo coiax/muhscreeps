@@ -1,167 +1,165 @@
 var util = require('util');
 var task_manager = require('task_manager');
-var outcomes = task_manager.globals.outcomes;
+var outcomes = task_manager.outcomes;
 
-var roleCow = {
-    name: "role.cow",
-    parts: [
-        [WORK, CARRY, MOVE],
-        [WORK, WORK, CARRY, MOVE],
-        [WORK, WORK, WORK, CARRY, MOVE, MOVE],
-        [WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE],
-        [WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE],
-        [WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE]
-    ],
-    /*
-    The "cow" role.
+/*
+The "cow" role.
 
-    1) Find the source in the current room with the least cow power.
-    2) Pick a location adjacent to that source
-    3) Move to that location
-    4) If there isn't a container, construct one, harvesting as needed
-    5) Constantly harvest and deposit in the container, repairing as needed.
-    */
-    /* Some notes:
-        - An unowned source generates 1500 energy / 300 ticks, which is
-            5/energy tick, equivalent to 2.5 WORK body parts.
-        - Owned sources, are 10 e/t, == 5 WORK
-        - Source Keeper sources are 15 e/t == 7.5 WORK body parts.
-        A work rate lower than the source generation loses a % of the
-        energy per tick; much more than overprovisioning does.
+1) Find the source in the current room with the least cow power.
+2) Pick a location adjacent to that source
+3) Move to that location
+4) If there isn't a container, construct one, harvesting as needed
+5) Constantly harvest and deposit in the container, repairing as needed.
+*/
+/* Some notes:
+    - An unowned source generates 1500 energy / 300 ticks, which is
+        5/energy tick, equivalent to 2.5 WORK body parts.
+    - Owned sources, are 10 e/t, == 5 WORK
+    - Source Keeper sources are 15 e/t == 7.5 WORK body parts.
+    A work rate lower than the source generation loses a % of the
+    energy per tick; much more than overprovisioning does.
 
-    */
-    run: function(task, creep) {
-        creep.add_flag("no_autorepair");
-        var source = Game.getObjectById(task.source_id);
-        if(!source) {
-            creep.say("Mooo!");
-            var sources = creep.room.find(FIND_SOURCES);
-            var cow_strength = {};
-            sources.forEach(function(s) {
-                cow_strength[s] = 0;
-            });
-            for(var name in Game.creeps) {
-                var other = Game.creeps[name];
-                if(creep.name === other.name) {
-                    continue;
-                }
-                var other_task = other.has_task_in_queue(module.exports.name);
-                if(!other_task) {
-                    continue;
-                }
-                var other_source = Game.getObjectById(other_task.source_id);
-                cow_strength[other_source] += other.body_part_count(WORK);
+*/
+function role_cow(task, creep) {
+    creep.add_flag("no_autorepair");
+    var source = Game.getObjectById(task.source_id);
+    if(!source) {
+        creep.say("Mooo!");
+        var sources = creep.room.find(FIND_SOURCES);
+        var cow_strength = {};
+        sources.forEach(function(s) {
+            cow_strength[s] = 0;
+        });
+        for(var name in Game.creeps) {
+            var other = Game.creeps[name];
+            if(creep.name === other.name) {
+                continue;
             }
-            sources = _.sortBy(sources, function(s) {
-                return cow_strength[s];
-            });
-            if(sources.length) {
-                source = sources[0];
-                task.source_id = source.id;
+            var other_task = other.has_task_in_queue(role_cow.name);
+            if(!other_task) {
+                continue;
             }
+            var other_source = Game.getObjectById(other_task.source_id);
+            cow_strength[other_source] += other.body_part_count(WORK);
         }
-        if(!source) {
-            creep.say("Moo...");
-            return new outcomes.InProgress();
+        sources = _.sortBy(sources, function(s) {
+            return cow_strength[s];
+        });
+        if(sources.length) {
+            source = sources[0];
+            task.source_id = source.id;
         }
-
-        var pasture = util.memoryPosition(task.pasture_loc);
-        if(pasture && pasture.getRangeTo(source) !== 1) {
-            creep.say("Moo?");
-            task.pasture_loc = null;
-            pasture = null;
-        }
-
-        if(!pasture) {
-            var potential_pasture = source.pos.walkable_adjacent();
-            pasture = _.sample(potential_pasture);
-            task.pasture_loc = pasture;
-        }
-        if(!pasture) {
-            creep.say("...moo");
-            task.pasture_loc = null;
-            task.source_id = null;
-            return new outcomes.InProgress();
-        }
-
-        if(!pasture.isEqualTo(creep.pos)) {
-            if(pasture.isNearTo(creep)) {
-                var other_creeps = pasture.lookFor(FIND_CREEPS);
-                if(other_creeps && other_creeps.length) {
-                    other_creeps.forEach(function(other) {
-                        if(!other.has_task_in_queue(module.exports.name)) {
-                            // maybe you should move your fat ass out of the way
-                            // because I'm the next drag super star.
-                            creep.say("Mooove");
-                            other.add_task({type: "leave", pos: pasture});
-                        } else {
-                            // this location has been taken by another cow.
-                            task.source_id = null;
-                            task.pasture_loc = null;
-                        }
-                    });
-                }
-                if(!task.pasture_loc)
-                    return new outcomes.InProgress();
-            }
-            creep.moveTo(pasture);
-            return new outcomes.InProgress();
-        }
-
-        var container = Game.getObjectById(task.output_container_id);
-        if(!container) {
-            // Then scan for a container to move stuff into
-            var containers = creep.pos.findInRange(FIND_STRUCTURES, 1,
-                {filter : function(structure) {
-                    return structure.structureType === STRUCTURE_CONTAINER;
-            }});
-            if(containers.length) {
-                container = containers[0];
-                task.output_container_id = container.id;
-            }
-        }
-
-        // If not present, then place the construction site and then
-        // build it
-        // TODO the container should be placed where all adjacent spots
-        // to the source can access it, if not possible, where as many as
-        // possible can.
-        if(!container) {
-            var sites = creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 1,
-                {filter : function(site) {
-                    return site.structureType === STRUCTURE_CONTAINER;
-            }});
-            var site;
-            if(sites.length) {
-                site = sites[0];
-            } else {
-                var opposite_dir = source.pos.getDirectionTo(creep);
-                var site_pos = creep.pos.step(opposite_dir);
-                site_pos.createConstructionSite(STRUCTURE_CONTAINER);
-                // It will be found next work tick.
-                return new outcomes.InProgress();
-            }
-            var new_task = {type: "construct",
-                target_id: site.id, resupply:"harvest"};
-            return new outcomes.PushTask(new_task);
-        }
-        if(container && (container.pos.getRangeTo(creep) > 1)) {
-            task.output_container_id = null;
-            return new outcomes.InProgress();
-        }
-        // Then spend the rest of our lifespan harvesting and moving that
-        // into the container, repairing the container first if needed.
-        creep.harvest(source);
-
-        // A repair order will trump the harvest order if it's possible
-        // to repair (ie. energy is stored, WORK parts are present)
-        if(container.hits < container.hitsMax) {
-            creep.repair(container);
-        } else {
-            creep.transfer(container, RESOURCE_ENERGY);
-        }
+    }
+    if(!source) {
+        creep.say("Moo...");
         return new outcomes.InProgress();
     }
-};
-task_manager.register(roleCow.name, roleCow.run);
-module.exports = roleCow;
+
+    var pasture = util.memoryPosition(task.pasture_loc);
+    if(pasture && pasture.getRangeTo(source) !== 1) {
+        creep.say("Moo?");
+        task.pasture_loc = null;
+        pasture = null;
+    }
+
+    if(!pasture) {
+        var potential_pasture = source.pos.walkable_adjacent();
+        pasture = _.sample(potential_pasture);
+        task.pasture_loc = pasture;
+    }
+    if(!pasture) {
+        creep.say("...moo");
+        task.pasture_loc = null;
+        task.source_id = null;
+        return new outcomes.InProgress();
+    }
+
+    if(!pasture.isEqualTo(creep.pos)) {
+        if(pasture.isNearTo(creep)) {
+            var other_creeps = pasture.lookFor(FIND_CREEPS);
+            if(other_creeps && other_creeps.length) {
+                other_creeps.forEach(function(other) {
+                    if(!other.has_task_in_queue(module.exports.name)) {
+                        // maybe you should move your fat ass out of the way
+                        // because I'm the next drag super star.
+                        creep.say("Mooove");
+                        other.add_task({type: "leave", pos: pasture});
+                    } else {
+                        // this location has been taken by another cow.
+                        task.source_id = null;
+                        task.pasture_loc = null;
+                    }
+                });
+            }
+            if(!task.pasture_loc)
+                return new outcomes.InProgress();
+        }
+        creep.moveTo(pasture);
+        return new outcomes.InProgress();
+    }
+
+    var container = Game.getObjectById(task.output_container_id);
+    if(!container) {
+        // Then scan for a container to move stuff into
+        var containers = creep.pos.findInRange(FIND_STRUCTURES, 1,
+            {filter : function(structure) {
+                return structure.structureType === STRUCTURE_CONTAINER;
+        }});
+        if(containers.length) {
+            container = containers[0];
+            task.output_container_id = container.id;
+        }
+    }
+
+    // If not present, then place the construction site and then
+    // build it
+    // TODO the container should be placed where all adjacent spots
+    // to the source can access it, if not possible, where as many as
+    // possible can.
+    if(!container) {
+        var sites = creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 1,
+            {filter : function(site) {
+                return site.structureType === STRUCTURE_CONTAINER;
+        }});
+        var site;
+        if(sites.length) {
+            site = sites[0];
+        } else {
+            var opposite_dir = source.pos.getDirectionTo(creep);
+            var site_pos = creep.pos.step(opposite_dir);
+            site_pos.createConstructionSite(STRUCTURE_CONTAINER);
+            // It will be found next work tick.
+            return new outcomes.InProgress();
+        }
+        var new_task = {type: "construct",
+            target_id: site.id, resupply:"harvest"};
+        return new outcomes.PushTask(new_task);
+    }
+    if(container && (container.pos.getRangeTo(creep) > 1)) {
+        task.output_container_id = null;
+        return new outcomes.InProgress();
+    }
+    // Then spend the rest of our lifespan harvesting and moving that
+    // into the container, repairing the container first if needed.
+    creep.harvest(source);
+
+    // A repair order will trump the harvest order if it's possible
+    // to repair (ie. energy is stored, WORK parts are present)
+    if(container.hits < container.hitsMax) {
+        creep.repair(container);
+    } else {
+        creep.transfer(container, RESOURCE_ENERGY);
+    }
+    return new outcomes.InProgress();
+}
+
+role_cow.parts = [
+    [WORK, CARRY, MOVE],
+    [WORK, WORK, CARRY, MOVE],
+    [WORK, WORK, WORK, CARRY, MOVE, MOVE],
+    [WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE],
+    [WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE],
+    [WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE]
+];
+
+task_manager.register(role_cow);

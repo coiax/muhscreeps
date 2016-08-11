@@ -1,46 +1,44 @@
 var task_manager = require('task_manager');
-var outcomes = task_manager.globals.outcomes;
+var outcomes = task_manager.outcomes;
 
-module.exports = {
-    name: "role.dumbscout",
-    parts: [[MOVE]],
-    run: function(task, creep) {
-        creep.notifyWhenAttacked(false);
-        var current_room = creep.room.name;
+function role_dumbscout(task, creep) {
+    creep.notifyWhenAttacked(false);
+    var current_room = creep.room.name;
 
-        var exits = Game.map.describeExits(current_room);
+    var exits = Game.map.describeExits(current_room);
 
-        /* Returns the exits information in the following format,
-        or null if the room not found.
-        {
-            "1": "W8N4",    // TOP
-            "3": "W7N3",    // RIGHT
-            "5": "W8N2",    // BOTTOM
-            "7": "W9N3"     // LEFT
-        } */
-        var chosen_room;
-        var exit_position;
-        while(!_.isEmpty(exits) && !exit_position) {
-            var chosen_dir = _.sample(Object.keys(exits));
-            chosen_room = exits[chosen_dir];
-            // don't go back unless we have to.
-            if(chosen_room === task.old_room && _.size(exits) !== 1)
-                continue;
-            delete exits[chosen_dir];
-            // the number is a FIND_* constant.
-            var numeric_dir = parseInt(chosen_dir);
-            exit_position = creep.pos.findClosestByPath(numeric_dir);
-        }
-        if(!exit_position)
-            return new outcomes.Failure("Cannot reach any exits.");
-        var new_task = {
-            type: "move_to_exit",
-            destination: exit_position,
-            destination_room: chosen_room
-        };
-        task.old_room = current_room;
-        return new outcomes.PushTask(new_task);
+    /* Returns the exits information in the following format,
+    or null if the room not found.
+    {
+        "1": "W8N4",    // TOP
+        "3": "W7N3",    // RIGHT
+        "5": "W8N2",    // BOTTOM
+        "7": "W9N3"     // LEFT
+    } */
+    var chosen_room;
+    var exit_position;
+    while(!_.isEmpty(exits) && !exit_position) {
+        var chosen_dir = _.sample(Object.keys(exits));
+        chosen_room = exits[chosen_dir];
+        // don't go back unless we have to.
+        if(chosen_room === task.old_room && _.size(exits) !== 1)
+            continue;
+        delete exits[chosen_dir];
+        // the number is a FIND_* constant.
+        var numeric_dir = parseInt(chosen_dir);
+        exit_position = creep.pos.findClosestByPath(numeric_dir);
     }
-};
+    if(!exit_position)
+        return new outcomes.Failure("Cannot reach any exits.");
+    var new_task = {
+        type: "move_to_exit",
+        destination: exit_position,
+        destination_room: chosen_room
+    };
+    task.old_room = current_room;
+    return new outcomes.PushTask(new_task);
+}
 
-require('task_manager').register(module.exports.name, module.exports.run);
+role_dumbscout.parts = [[MOVE]];
+
+task_manager.register(role_dumbscout);

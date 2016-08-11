@@ -1,8 +1,46 @@
-var outcomes = require('task_manager.globals').outcomes;
+var task_manager = require('task_manager');
+var outcomes = task_manager.outcomes;
 
-module.exports = {
-    name : "role.assault",
-    parts : [[TOUGH,MOVE,RANGED_ATTACK],[
+function role_assault(task, creep) {
+    var targets = [];
+    if(!targets.length) {
+        targets = creep.pos.findInRange(FIND_HOSTILE_STRUCTURES, 3,
+            {filter: function(st) {
+                return st.is_type(STRUCTURE_TOWER);
+        }});
+    }
+    if(!targets.length) {
+        targets = creep.pos.findInRange(FIND_HOSTILE_STRUCTURES, 3);
+    }
+    if(!targets.length) {
+        targets = creep.pos.findInRange(FIND_HOSTILE_CREEPS, 3);
+    }
+
+    if(targets.length) {
+        creep.rangedAttack(targets[0]);
+        creep.say("pew!", true);
+    }
+
+    if(creep.hits < creep.hitsMax) {
+        creep.say("run!");
+        var run_flag = Game.flags.Retreat;
+        var flag_room = run_flag.pos.roomName;
+        var creep_room = creep.pos.roomName;
+        if(flag_room !== creep_room) {
+            var exit_dir = Game.map.findExit(creep_room, flag_room);
+            var exit = creep.pos.findClosestByRange(exit_dir);
+            creep.moveTo(exit);
+        } else {
+            creep.moveTo(run_flag);
+        }
+        return new outcomes.InProgress();
+    } else {
+        var target_flag = Game.flags.Target;
+        creep.moveTo(target_flag);
+        return new outcomes.InProgress();
+    }
+}
+role_assault.parts = [[TOUGH,MOVE,RANGED_ATTACK],[
 TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,
 TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,
 TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,
@@ -14,46 +52,6 @@ MOVE,MOVE,MOVE,MOVE,MOVE,
 MOVE,MOVE,MOVE,MOVE,MOVE,
 MOVE,MOVE,MOVE,MOVE,MOVE,
 MOVE
-        ]],
-    run : function(task, creep) {
-        var targets = [];
-        if(!targets.length) {
-            targets = creep.pos.findInRange(FIND_HOSTILE_STRUCTURES, 3,
-                {filter: function(st) {
-                    return st.is_type(STRUCTURE_TOWER);
-            }});
-        }
-        if(!targets.length) {
-            targets = creep.pos.findInRange(FIND_HOSTILE_STRUCTURES, 3);
-        }
-        if(!targets.length) {
-            targets = creep.pos.findInRange(FIND_HOSTILE_CREEPS, 3);
-        }
+]];
 
-        if(targets.length) {
-            creep.rangedAttack(targets[0]);
-            creep.say("pew!", true);
-        }
-
-        if(creep.hits < creep.hitsMax) {
-            creep.say("run!");
-            var run_flag = Game.flags.Retreat;
-            var flag_room = run_flag.pos.roomName;
-            var creep_room = creep.pos.roomName;
-            if(flag_room !== creep_room) {
-                var exit_dir = Game.map.findExit(creep_room, flag_room);
-                var exit = creep.pos.findClosestByRange(exit_dir);
-                creep.moveTo(exit);
-            } else {
-                creep.moveTo(run_flag);
-            }
-            return new outcomes.InProgress();
-        } else {
-            var target_flag = Game.flags.Target;
-            creep.moveTo(target_flag);
-            return new outcomes.InProgress();
-        }
-    }
-};
-
-require('task_manager').register(module.exports.name, module.exports.run);
+task_manager.register(role_assault);

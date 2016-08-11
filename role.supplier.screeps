@@ -1,64 +1,61 @@
 var util = require('util');
 var task_manager = require('task_manager');
-var outcomes = task_manager.globals.outcomes;
+var outcomes = task_manager.outcomes;
 
-module.exports = {
-    name: "role.supplier",
-    parts: null,
-    part_generator: function() {
-        module.exports.parts = [[CARRY,WORK,MOVE]];
-        var parts = module.exports.parts;
-        var carries = 1;
-        var moves = 1;
-        while(true) {
-            var part_list = [];
-            carries++;
-            if(carries % 2 === 0)
-                moves++;
-            var i;
-            for(i = 0; i < carries; i++)
-                part_list.push(CARRY);
-            if(carries < 3) {
-                part_list.push(WORK);
-            }
-            for(i = 0; i < moves; i++)
-                part_list.push(MOVE);
-            if(part_list.length > 50) {
-                break;
-            } else {
-                parts.push(part_list);
-            }
-        }
-    },
 
-    run: function(task, creep) {
-        if(creep.carry.energy === 0) {
-            var new_task = {type: "resupply"};
-            return new outcomes.PushTask(new_task);
+function role_supplier(task, creep) {
+    if(creep.carry.energy === 0) {
+        var new_task = {type: "resupply"};
+        return new outcomes.PushTask(new_task);
+    }
+    var stype;
+    var stypes = [[STRUCTURE_EXTENSION, STRUCTURE_SPAWN], STRUCTURE_TOWER, STRUCTURE_STORAGE];
+    var target;
+    var filter = function(st) {
+        return util.needs_energy(st) && st.is_type(stype);
+    };
+    for(var i in stypes) {
+        stype = stypes[i];
+        target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES,
+            {filter: filter});
+        if(target)
+            break;
+    }
+    if(target) {
+        var new_task2 = {type: "transfer_to", target_id: target.id};
+        return new outcomes.PushTask(new_task2);
+    } else {
+        // wander randomly.
+        creep.say("sidle");
+        creep.move(Math.floor((Math.random() * 8) + 1));
+        return new outcomes.InProgress();
+    }
+}
+
+(function part_generator() {
+    role_supplier.parts = [[CARRY,WORK,MOVE]];
+    var parts = role_supplier.parts;
+    var carries = 1;
+    var moves = 1;
+    while(true) {
+        var part_list = [];
+        carries++;
+        if(carries % 2 === 0)
+            moves++;
+        var i;
+        for(i = 0; i < carries; i++)
+            part_list.push(CARRY);
+        if(carries < 3) {
+            part_list.push(WORK);
         }
-        var stype;
-        var stypes = [[STRUCTURE_EXTENSION, STRUCTURE_SPAWN], STRUCTURE_TOWER, STRUCTURE_STORAGE];
-        var target;
-        var filter = function(st) {
-            return util.needs_energy(st) && st.is_type(stype);
-        };
-        for(var i in stypes) {
-            stype = stypes[i];
-            target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES,
-                {filter: filter});
-            if(target)
-                break;
-        }
-        if(target) {
-            var new_task2 = {type: "transfer_to", target_id: target.id};
-            return new outcomes.PushTask(new_task2);
+        for(i = 0; i < moves; i++)
+            part_list.push(MOVE);
+        if(part_list.length > 50) {
+            break;
         } else {
-            // wander randomly.
-            creep.say("sidle");
-            creep.move(Math.floor((Math.random() * 8) + 1));
-            return new outcomes.InProgress();
+            parts.push(part_list);
         }
     }
-};
-task_manager.register(module.exports.name, module.exports.run);
-module.exports.part_generator();
+})();
+
+task_manager.register(role_supplier);

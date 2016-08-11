@@ -1,4 +1,4 @@
-'use strict';var util = require("util"), outcomes = require("task_manager.globals").outcomes, RESERVE_THRESHOLD = 4E3;
+'use strict';var util = require("util"), task_manager = require("task_manager"), outcomes = task_manager.outcomes, RESERVE_THRESHOLD = 4E3;
 function reservable_controller(b, c) {
   var a = Memory.rooms[b];
   if(a && a.intel && (a = a.intel, a.controller && 0 === a.controller.level)) {
@@ -12,7 +12,7 @@ function reservable_controller(b, c) {
   }
   return!1
 }
-module.exports = {name:"role.claimer", parts:[[MOVE, CLAIM, CLAIM], [MOVE, MOVE, CLAIM, CLAIM]], run:function(b, c) {
+function role_claimer(b, c) {
   "undefined" === typeof b.full_claim && (b.full_claim = !1);
   var a = Game.getObjectById(b.controller_id), d = util.memoryPosition(b.destination_pos), e = c.room.name;
   if(!a && !d) {
@@ -37,6 +37,7 @@ module.exports = {name:"role.claimer", parts:[[MOVE, CLAIM, CLAIM], [MOVE, MOVE,
   if(a) {
     return b.destination = null, d = b.full_claim ? c.claimController(a) : c.reserveController(a), d === ERR_NOT_IN_RANGE ? (c.moveTo(a), new outcomes.InProgress) : d === ERR_INVALID_TARGET ? (b.controller = null, new outcomes.Rerun) : d === ERR_GCL_NOT_ENOUGH ? (b.full_claim = !1, new outcomes.Rerun) : new outcomes.InProgress
   }
-}};
-require("task_manager").register(module.exports.name, module.exports.run);
+}
+role_claimer.parts = [[MOVE, CLAIM, CLAIM], [MOVE, MOVE, CLAIM, CLAIM]];
+task_manager.register(role_claimer);
 

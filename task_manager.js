@@ -322,8 +322,17 @@
   b.drop(a);
   return new outcomes.TaskError("Could not find storage.")
 }};
-module.exports = {globals:require("task_manager.globals"), task_functions:task_functions, register:function(d, b) {
-  task_functions[d] = b
+module.exports = {globals:require("task_manager.globals"), outcomes:require("task_manager.globals").outcomes, task_functions:task_functions, register:function(d) {
+  if("function" !== typeof d) {
+    throw"Non-function registered.";
+  }
+  var b = d.name;
+  if(!b) {
+    throw"Unnamed task function.";
+  }
+  task_functions[b] = d
+}, get:function(d) {
+  return task_functions[d]
 }, run_task_queue:function(d, b) {
   for(var a = 100;b && b.length && 0 < a;) {
     a--;

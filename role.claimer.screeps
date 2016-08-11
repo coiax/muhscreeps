@@ -1,5 +1,6 @@
 var util = require('util');
-var outcomes = require('task_manager.globals').outcomes;
+var task_manager = require('task_manager');
+var outcomes = task_manager.outcomes;
 var RESERVE_THRESHOLD = 4000;
 
 function reservable_controller(room_name, username) {
@@ -19,63 +20,60 @@ function reservable_controller(room_name, username) {
     return false;
 }
 
-module.exports = {
-    name: "role.claimer",
-    parts: [[MOVE, CLAIM,CLAIM], [MOVE,MOVE,CLAIM,CLAIM]],
-    run: function(task, creep) {
-        if(typeof task.full_claim === 'undefined') {
-            task.full_claim = false;
+function role_claimer(task, creep) {
+    if(typeof task.full_claim === 'undefined') {
+        task.full_claim = false;
+    }
+    var controller = Game.getObjectById(task.controller_id);
+    var destination = util.memoryPosition(task.destination_pos);
+    var current_room = creep.room.name;
+    if(!controller && !destination) {
+        var owner_name = creep.owner.username;
+        var rooms;
+        rooms = util.room_walk(current_room, function(other_room) {
+            return reservable_controller(other_room, owner_name);
+        });
+        if(!rooms.length) {
+            creep.say("noclaim");
+            var outcome = new outcomes.InProgress();
+            outcome.error = "No rooms found.";
+            return outcome;
         }
-        var controller = Game.getObjectById(task.controller_id);
-        var destination = util.memoryPosition(task.destination_pos);
-        var current_room = creep.room.name;
-        if(!controller && !destination) {
-            var owner_name = creep.owner.username;
-            var rooms;
-            rooms = util.room_walk(current_room, function(other_room) {
-                return reservable_controller(other_room, owner_name);
-            });
-            if(!rooms.length) {
-                creep.say("noclaim");
-                var outcome = new outcomes.InProgress();
-                outcome.error = "No rooms found.";
-                return outcome;
-            }
-            var room = _.sample(rooms);
-            creep.say(room);
-            var mem = Memory.rooms[room];
-            task.destination_pos = mem.intel.controller.pos;
+        var room = _.sample(rooms);
+        creep.say(room);
+        var mem = Memory.rooms[room];
+        task.destination_pos = mem.intel.controller.pos;
+        return new outcomes.Rerun();
+    } else if(!controller && destination) {
+        if(destination.roomName === current_room) {
+            task.controller_id = creep.room.controller.id;
             return new outcomes.Rerun();
-        } else if(!controller && destination) {
-            if(destination.roomName === current_room) {
-                task.controller_id = creep.room.controller.id;
-                return new outcomes.Rerun();
-            } else {
-                creep.moveTo(destination);
-                return new outcomes.InProgress();
-            }
-        } else if(controller) {
-            task.destination = null;
-            var rc;
-            if(!task.full_claim) {
-                rc = creep.reserveController(controller);
-            } else {
-                rc = creep.claimController(controller);
-            }
-            if(rc === ERR_NOT_IN_RANGE) {
-                creep.moveTo(controller);
-                return new outcomes.InProgress();
-            } else if(rc === ERR_INVALID_TARGET) {
-                task.controller = null;
-                return new outcomes.Rerun();
-            } else if(rc === ERR_GCL_NOT_ENOUGH) {
-                task.full_claim = false;
-                return new outcomes.Rerun();
-            } else {
-                return new outcomes.InProgress();
-            }
+        } else {
+            creep.moveTo(destination);
+            return new outcomes.InProgress();
+        }
+    } else if(controller) {
+        task.destination = null;
+        var rc;
+        if(!task.full_claim) {
+            rc = creep.reserveController(controller);
+        } else {
+            rc = creep.claimController(controller);
+        }
+        if(rc === ERR_NOT_IN_RANGE) {
+            creep.moveTo(controller);
+            return new outcomes.InProgress();
+        } else if(rc === ERR_INVALID_TARGET) {
+            task.controller = null;
+            return new outcomes.Rerun();
+        } else if(rc === ERR_GCL_NOT_ENOUGH) {
+            task.full_claim = false;
+            return new outcomes.Rerun();
+        } else {
+            return new outcomes.InProgress();
         }
     }
-};
+}
+role_claimer.parts = [[MOVE, CLAIM,CLAIM], [MOVE,MOVE,CLAIM,CLAIM]];
 
-require('task_manager').register(module.exports.name, module.exports.run);
+task_manager.register(role_claimer);

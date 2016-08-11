@@ -1,4 +1,5 @@
-'use strict';var util = require("util"), task_manager = require("task_manager"), outcomes = task_manager.globals.outcomes, roleCow = {name:"role.cow", parts:[[WORK, CARRY, MOVE], [WORK, WORK, CARRY, MOVE], [WORK, WORK, WORK, CARRY, MOVE, MOVE], [WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE], [WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE], [WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE]], run:function(d, b) {
+'use strict';var util = require("util"), task_manager = require("task_manager"), outcomes = task_manager.outcomes;
+function role_cow(d, b) {
   b.add_flag("no_autorepair");
   var c = Game.getObjectById(d.source_id);
   if(!c) {
@@ -10,7 +11,7 @@
     for(var h in Game.creeps) {
       var k = Game.creeps[h];
       if(b.name !== k.name) {
-        var f = k.has_task_in_queue(module.exports.name);
+        var f = k.has_task_in_queue(role_cow.name);
         f && (f = Game.getObjectById(f.source_id), g[f] += k.body_part_count(WORK))
       }
     }
@@ -58,7 +59,7 @@
   b.harvest(c);
   a.hits < a.hitsMax ? b.repair(a) : b.transfer(a, RESOURCE_ENERGY);
   return new outcomes.InProgress
-}};
-task_manager.register(roleCow.name, roleCow.run);
-module.exports = roleCow;
+}
+role_cow.parts = [[WORK, CARRY, MOVE], [WORK, WORK, CARRY, MOVE], [WORK, WORK, WORK, CARRY, MOVE, MOVE], [WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE], [WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE], [WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE]];
+task_manager.register(role_cow);
 

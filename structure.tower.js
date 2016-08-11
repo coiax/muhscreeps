@@ -1,5 +1,5 @@
-'use strict';var task_manager = require("task_manager"), outcomes = task_manager.globals.outcomes;
-module.exports = {name:"structure.tower", run:function(f, b) {
+'use strict';var task_manager = require("task_manager"), outcomes = task_manager.outcomes;
+function structure_tower(f, b) {
   if(b.energy < TOWER_ENERGY_COST) {
     return new outcomes.InProgress
   }
@@ -22,6 +22,6 @@ module.exports = {name:"structure.tower", run:function(f, b) {
     }
   }
   return a ? new outcomes.PushTask({type:"tower_target", target_id:a.id, mode:c, timeout:25}) : new outcomes.InProgress
-}};
-task_manager.register(module.exports.name, module.exports.run);
+}
+task_manager.register(structure_tower);
 
