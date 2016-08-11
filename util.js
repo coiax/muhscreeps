@@ -1,4 +1,4 @@
-function needs_energy(a) {
+'use strict';function needs_energy(a) {
   return!a.isActive() ? !1 : a.store ? _.sum(a.store) < a.storeCapacity : "undefined" == typeof a.energy || "undefined" == typeof a.energyCapacity ? !1 : a.energy < a.energyCapacity
 }
 function is_damaged(a) {
