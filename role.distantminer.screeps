@@ -11,6 +11,8 @@ function is_suitable_room(rn) {
     if(intel.controller && intel.controller.level)
         return false;
     if(room) {
+        if(room.controller && room.controller.level)
+            return false;
         var sources = room.find(FIND_SOURCES, {filter:
             function(src) {
                 return src.is_harvestable();

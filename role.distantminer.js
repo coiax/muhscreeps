@@ -2,7 +2,7 @@ var util = require("util"), task_manager = require("task_manager"), outcomes = t
 function is_suitable_room(a) {
   var b = Game.rooms[a];
   a = util.room_intel(a);
-  return!a || a.controller && a.controller.level ? !1 : b ? b.find(FIND_SOURCES, {filter:function(a) {
+  return!a || a.controller && a.controller.level ? !1 : b ? b.controller && b.controller.level ? !1 : b.find(FIND_SOURCES, {filter:function(a) {
     return a.is_harvestable()
   }}).length : a.sources && a.sources.length ? !0 : !1
 }
