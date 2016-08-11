@@ -1,4 +1,4 @@
-var util = require("util"), outcomes = require("task_manager.globals").outcomes, RESERVE_THRESHOLD = 4E3;
+'use strict';var util = require("util"), outcomes = require("task_manager.globals").outcomes, RESERVE_THRESHOLD = 4E3;
 function reservable_controller(b, c) {
   var a = Memory.rooms[b];
   if(a && a.intel && (a = a.intel, a.controller && 0 == a.controller.level)) {

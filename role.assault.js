@@ -1,4 +1,4 @@
-var outcomes = require("task_manager.globals").outcomes;
+'use strict';var outcomes = require("task_manager.globals").outcomes;
 module.exports = {name:"role.assault", parts:[[TOUGH, MOVE, RANGED_ATTACK], [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, RANGED_ATTACK, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE]], run:function(e, b) {
   var a = [];
   a.length || (a = b.pos.findInRange(FIND_HOSTILE_STRUCTURES, 3, {filter:function(a) {

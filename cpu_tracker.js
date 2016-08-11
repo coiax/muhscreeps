@@ -1,4 +1,4 @@
-var util = require("util");
+'use strict';var util = require("util");
 function setup() {
   Memory.cpu || (Memory.cpu = {enabled:!1, values_kept:1E3});
   "undefined" == typeof Memory.cpu.enabled && (Memory.cpu.enabled = !1);

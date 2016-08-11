@@ -1,4 +1,4 @@
-_.extend(Structure.prototype, require("mixin.log"));
+'use strict';_.extend(Structure.prototype, require("mixin.log"));
 _.extend(Structure.prototype, require("mixin.task_stack"));
 _.extend(Structure.prototype, require("mixin.common"));
 Structure.prototype.get_memory = function() {

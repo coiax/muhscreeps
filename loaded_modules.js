@@ -1,4 +1,4 @@
-require("prototype.creep");
+'use strict';require("prototype.creep");
 require("prototype.structure");
 require("prototype.source");
 require("prototype.room");

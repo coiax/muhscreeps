@@ -1,4 +1,4 @@
-module.exports = {};
+'use strict';module.exports = {};
 var outcomes = {};
 module.exports.outcomes = outcomes;
 function Base() {

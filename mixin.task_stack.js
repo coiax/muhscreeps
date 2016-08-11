@@ -1,4 +1,4 @@
-module.exports.add_task = function(a) {
+'use strict';module.exports.add_task = function(a) {
   var b = this.get_memory();
   b.task_queue || (b.task_queue = []);
   b.task_queue.unshift(a)

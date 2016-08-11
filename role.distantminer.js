@@ -1,4 +1,4 @@
-var util = require("util"), task_manager = require("task_manager"), outcomes = task_manager.globals.outcomes;
+'use strict';var util = require("util"), task_manager = require("task_manager"), outcomes = task_manager.globals.outcomes;
 function is_suitable_room(a) {
   var b = Game.rooms[a];
   a = util.room_intel(a);

@@ -1,4 +1,4 @@
-var util = require("util"), task_manager = require("task_manager"), outcomes = task_manager.globals.outcomes;
+'use strict';var util = require("util"), task_manager = require("task_manager"), outcomes = task_manager.globals.outcomes;
 function efficient_tower_repair(d, b) {
   var a = b.hitsMax - b.hits;
   if(!a) {

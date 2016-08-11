@@ -1,4 +1,4 @@
-var util = require("util"), task_manager = require("task_manager"), outcomes = task_manager.globals.outcomes;
+'use strict';var util = require("util"), task_manager = require("task_manager"), outcomes = task_manager.globals.outcomes;
 module.exports = {name:"role.supplier", parts:null, part_generator:function() {
   module.exports.parts = [[CARRY, WORK, MOVE]];
   for(var e = module.exports.parts, a = 1, b = 1;;) {

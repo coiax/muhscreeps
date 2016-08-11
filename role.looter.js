@@ -1,4 +1,4 @@
-var task_manager = require("task_manager"), outcomes = task_manager.globals.outcomes;
+'use strict';var task_manager = require("task_manager"), outcomes = task_manager.globals.outcomes;
 module.exports = {name:"role.looter", parts:null, generate_parts:function() {
   module.exports.parts = [[CARRY, MOVE]];
   for(var d = module.exports.parts, c = 1;;) {

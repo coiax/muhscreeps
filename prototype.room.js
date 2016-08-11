@@ -1,4 +1,4 @@
-var util = require("util");
+'use strict';var util = require("util");
 Room.prototype.scout_room = function() {
   this.memory.intel = {};
   var a = this.memory.intel;

@@ -1,4 +1,4 @@
-var util = require("util"), task_manager = require("task_manager"), outcomes = task_manager.globals.outcomes;
+'use strict';var util = require("util"), task_manager = require("task_manager"), outcomes = task_manager.globals.outcomes;
 function generate_default_parts() {
   for(var a = 1;;) {
     for(var c = [], b = 0;b < a;b++) {

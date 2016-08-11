@@ -1,4 +1,4 @@
-var util = require("util");
+'use strict';var util = require("util");
 module.exports.log = function(a, b, d) {
   var c = this.get_memory();
   c.log || (c.log = []);

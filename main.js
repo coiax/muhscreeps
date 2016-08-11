@@ -1,4 +1,4 @@
-require("loaded_modules");
+'use strict';require("loaded_modules");
 var gc = require("gc"), cpu_tracker = require("cpu_tracker"), task_manager = require("task_manager"), util = require("util"), cpu_debug = util.cpu_debug;
 module.exports.loop = function() {
   var b = Game.cpu.bucket;

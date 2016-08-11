@@ -1,4 +1,4 @@
-var util = require("util"), task_manager = require("task_manager"), outcomes = task_manager.globals.outcomes, role_name = "role.sentry";
+'use strict';var util = require("util"), task_manager = require("task_manager"), outcomes = task_manager.globals.outcomes, role_name = "role.sentry";
 function room_has_sentry(b, c) {
   var a = Game.rooms[other_roomname];
   if(!a) {

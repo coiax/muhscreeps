@@ -1,4 +1,4 @@
-var task_manager = require("task_manager"), outcomes = require("task_manager.globals").outcomes;
+'use strict';var task_manager = require("task_manager"), outcomes = require("task_manager.globals").outcomes;
 function sort_construction_sites(e) {
   return _.orderBy(e, function(b) {
     return b.progressTotal - b.progress

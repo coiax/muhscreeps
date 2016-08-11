@@ -1,4 +1,4 @@
-StructureSpawn.prototype.get_memory = function() {
+'use strict';StructureSpawn.prototype.get_memory = function() {
   return this.memory
 };
 StructureSpawn.prototype.check_creeps = function() {

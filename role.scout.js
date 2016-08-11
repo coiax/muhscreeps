@@ -1,4 +1,4 @@
-var util = require("util");
+'use strict';var util = require("util");
 function setup(a, b) {
 }
 function remove_visited(a, b) {

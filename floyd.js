@@ -1,4 +1,4 @@
-function floyd_room(h, e) {
+'use strict';function floyd_room(h, e) {
   for(var k = e.plain_cost || 2, l = e.road_cost || 1, m = e.swamp_cost || 10, a = [], d = 0;50 > d;d++) {
     for(;;d++) {
       a.push(h.getPositionAt(d, 0))

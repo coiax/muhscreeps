@@ -1,4 +1,4 @@
-var cpu_tracker = require("cpu_tracker"), util = require("util"), cpu_debug = util.cpu_debug, globals = require("task_manager.globals"), outcomes = globals.outcomes, task_functions = {harvest:function(c, b) {
+'use strict';var cpu_tracker = require("cpu_tracker"), util = require("util"), cpu_debug = util.cpu_debug, globals = require("task_manager.globals"), outcomes = globals.outcomes, task_functions = {harvest:function(c, b) {
   if(b.is_full()) {
     return outcomes.AlreadyComplete()
   }

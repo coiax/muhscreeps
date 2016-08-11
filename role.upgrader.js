@@ -1,4 +1,4 @@
-var task_manager = require("task_manager"), outcomes = task_manager.globals.outcomes, roleUpgrader = {name:"role.upgrader", run:function(b, a) {
+'use strict';var task_manager = require("task_manager"), outcomes = task_manager.globals.outcomes, roleUpgrader = {name:"role.upgrader", run:function(b, a) {
   if(0 == a.carry.energy) {
     return new outcomes.PushTask({type:"resupply"})
   }

@@ -1,4 +1,4 @@
-var util = require("util");
+'use strict';var util = require("util");
 RoomPosition.prototype.find = function() {
   var a = Game.rooms[this.roomName];
   return a ? a.find.apply(a, arguments) : function() {

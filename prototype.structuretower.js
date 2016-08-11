@@ -1,4 +1,4 @@
-StructureTower.prototype.expected_power = function(d, b) {
+'use strict';StructureTower.prototype.expected_power = function(d, b) {
   var a;
   switch(d) {
     case "attack":
