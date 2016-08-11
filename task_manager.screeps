@@ -245,8 +245,8 @@ var task_functions = {
         }
     },
     tower_target : function(task, tower) {
-        target = Game.getObjectById(task.target_id);
-        mode = task.mode;
+        var target = Game.getObjectById(task.target_id);
+        var mode = task.mode;
         // The task timing out is done by the task manager.
         if(!target)
             return new outcomes.Failure("No target.");
