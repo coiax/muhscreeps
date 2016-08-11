@@ -5,25 +5,25 @@ function needs_energy(st) {
         var total = _.sum(st.store);
         return total < st.storeCapacity;
     } else {
-        if(typeof st.energy == 'undefined')
+        if(typeof st.energy === 'undefined')
             return false;
-        if(typeof st.energyCapacity == 'undefined')
+        if(typeof st.energyCapacity === 'undefined')
             return false;
         return st.energy < st.energyCapacity;
     }
-};
+}
 
 function is_damaged(obj) {
-    if(typeof obj.hits == 'undefined')
+    if(typeof obj.hits === 'undefined')
         return false;
-    if(typeof obj.hitsMax == 'undefined')
+    if(typeof obj.hitsMax === 'undefined')
         return false;
     return obj.hits < obj.hitsMax;
-};
+}
 
 function cpulog(msg) {
     console.log(Game.cpu.getUsed() + " " + msg);
-};
+}
 
 function mean(arr) {
     return _.sum(arr) / arr.length;
@@ -50,22 +50,24 @@ function room_walk(roomname, func, opts) {
     var room_list = [roomname];
     var matching_rooms = [];
     var next_list = [];
-    while((matching_rooms.length == 0) && (depth < maximum_depth)) {
-        room_list.forEach(function(rn) {
-            if(visited_rooms[rn])
-                return;
-            visited_rooms[rn] = true;
-            if(func(rn, depth)) {
-                matching_rooms.push(rn);
-            } else {
-                exits = Game.map.describeExits(rn);
-                for(var dir in exits) {
-                    var other_rn = exits[dir];
-                    if(!visited_rooms[other_rn])
-                        next_list.push(other_rn);
-                }
+
+    var for_each_room = function(rn) {
+        if(visited_rooms[rn])
+            return;
+        visited_rooms[rn] = true;
+        if(func(rn, depth)) {
+            matching_rooms.push(rn);
+        } else {
+            var exits = Game.map.describeExits(rn);
+            for(var dir in exits) {
+                var other_rn = exits[dir];
+                if(!visited_rooms[other_rn])
+                    next_list.push(other_rn);
             }
-        });
+        }
+    };
+    while((matching_rooms.length === 0) && (depth < maximum_depth)) {
+        room_list.forEach(for_each_room);
         depth++;
         room_list = next_list;
         next_list = [];
@@ -119,4 +121,4 @@ module.exports = {
             return Memory.rooms[roomname].intel;
         return null;
     }
-}
+};

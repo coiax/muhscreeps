@@ -1,8 +1,8 @@
 'use strict';function needs_energy(a) {
-  return!a.isActive() ? !1 : a.store ? _.sum(a.store) < a.storeCapacity : "undefined" == typeof a.energy || "undefined" == typeof a.energyCapacity ? !1 : a.energy < a.energyCapacity
+  return!a.isActive() ? !1 : a.store ? _.sum(a.store) < a.storeCapacity : "undefined" === typeof a.energy || "undefined" === typeof a.energyCapacity ? !1 : a.energy < a.energyCapacity
 }
 function is_damaged(a) {
-  return"undefined" == typeof a.hits || "undefined" == typeof a.hitsMax ? !1 : a.hits < a.hitsMax
+  return"undefined" === typeof a.hits || "undefined" === typeof a.hitsMax ? !1 : a.hits < a.hitsMax
 }
 function cpulog(a) {
   console.log(Game.cpu.getUsed() + " " + a)
@@ -23,19 +23,20 @@ function room_walk(a, b, c) {
   c = c && c.maximum_depth || 10;
   var d = 0, e = {};
   a = [a];
-  for(var f = [], g = [];0 == f.length && d < c;) {
-    a.forEach(function(a) {
-      if(!e[a]) {
-        if(e[a] = !0, b(a, d)) {
-          f.push(a)
-        }else {
-          exits = Game.map.describeExits(a);
-          for(var c in exits) {
-            a = exits[c], e[a] || g.push(a)
-          }
+  for(var f = [], g = [], k = function(a) {
+    if(!e[a]) {
+      if(e[a] = !0, b(a, d)) {
+        f.push(a)
+      }else {
+        a = Game.map.describeExits(a);
+        for(var c in a) {
+          var h = a[c];
+          e[h] || g.push(h)
         }
       }
-    }), d++, a = g, g = []
+    }
+  };0 === f.length && d < c;) {
+    a.forEach(k), d++, a = g, g = []
   }
   return f
 }
