@@ -237,7 +237,7 @@ var cpu_tracker = require("cpu_tracker"), util = require("util"), cpu_debug = ut
     case ERR_NOT_IN_RANGE:
       return b.moveTo(a), new outcomes.InProgress;
     case OK:
-      return new outcomes.Complete;
+      return new outcomes.InProgress;
     default:
       return new outcomes.TaskError(d)
   }

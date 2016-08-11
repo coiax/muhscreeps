@@ -302,7 +302,7 @@ var task_functions = {
                 creep.moveTo(target);
                 return new outcomes.InProgress();
             case OK:
-                return new outcomes.Complete();
+                return new outcomes.InProgress();
             default:
                 return new outcomes.TaskError(rc);
         }
