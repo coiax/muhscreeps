@@ -14,7 +14,6 @@ require("role.dumbscout");
 require("role.guard");
 require("role.supplier");
 require("role.upgrader");
-require("role.looter");
 require("role.sentry");
 require("structure.tower");
 require("structure.spawner");
