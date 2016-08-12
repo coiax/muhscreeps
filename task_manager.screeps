@@ -525,7 +525,7 @@ module.exports = {
 
         var sanity = 100;
         var index = 0;
-        while(tq && tq.length && index < tq.length && sanity <= 0) {
+        while(tq && tq.length && index < tq.length && sanity >= 0) {
             sanity--;
             var task = tq[index];
             if(typeof task.times_run === 'undefined') {

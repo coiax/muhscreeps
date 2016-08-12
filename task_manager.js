@@ -335,7 +335,7 @@ module.exports = {globals:require("task_manager.globals"), outcomes:require("tas
   return task_functions[c]
 }, run_task_queue:function(c) {
   if(c.has_tasks()) {
-    for(var b = c.get_task_queue(), a = 100, d = 0;b && b.length && d < b.length && 0 >= a;) {
+    for(var b = c.get_task_queue(), a = 100, d = 0;b && b.length && d < b.length && 0 <= a;) {
       a--;
       b = b[d];
       "undefined" === typeof b.times_run && (b.times_run = 0);
