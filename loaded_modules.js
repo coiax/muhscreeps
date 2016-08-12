@@ -17,4 +17,5 @@ require("role.upgrader");
 require("role.sentry");
 require("structure.tower");
 require("structure.spawner");
+require("task.room_spawn");
 
