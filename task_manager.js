@@ -323,13 +323,9 @@
   return new outcomes.TaskError("Could not find storage.")
 }};
 module.exports = {globals:require("task_manager.globals"), outcomes:require("task_manager.globals").outcomes, task_functions:task_functions, register:function(c) {
-  if("function" !== typeof c) {
-    throw"Non-function registered.";
-  }
+  "function" !== typeof c && console.log("Non-function registered.");
   var b = c.name;
-  if(!b) {
-    throw"Unnamed task function.";
-  }
+  b || console.log("Unnamed task function.");
   task_functions[b] = c
 }, get:function(c) {
   return task_functions[c]

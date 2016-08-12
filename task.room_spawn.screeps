@@ -1,7 +1,7 @@
 var task_manager = require('task_manager');
 var outcomes = task_manager.outcomes;
 
-var room_spawn = function(task, room) {
+var room_spawn = function room_spawn(task, room) {
     console.log("Running task(room_spawn) for " + room);
     return new outcomes.NextTask();
 };
