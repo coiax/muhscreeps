@@ -1,4 +1,5 @@
 _.extend(Room.prototype, require('mixin.task_stack'));
+_.extend(Room.prototype, require('mixin.log'));
 
 Room.prototype.scout_room = function() {
     this.memory.intel = {};
