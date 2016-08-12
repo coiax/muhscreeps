@@ -6,7 +6,7 @@ module.exports.loop = function() {
   if(500 > c) {
     console.log("Bucket is at " + c + ". Halting execution.")
   }else {
-    if(c = cpu_tracker.start("internal", "memory_decode"), Memory.config || (Memory.config = {}), cpu_tracker.stop(c), "undefined" === typeof Memory.config.use_pathfinder && (Memory.config.use_pathfinder = !1), "undefined" === typeof Memory.config.cpu_debug && (Memory.config.cpu_debug = !1), "undefined" === typeof Memory.config.just_exit && (Memory.config.just_exit = !1), PathFinder.use(Memory.config.use_pathfinder), !Memory.config.just_exit) {
+    if(!Memory && (c = cpu_tracker.start("internal", "memory_decode"), Memory.config || (Memory.config = {}), cpu_tracker.stop(c), "undefined" === typeof Memory.config.use_pathfinder && (Memory.config.use_pathfinder = !1), "undefined" === typeof Memory.config.cpu_debug && (Memory.config.cpu_debug = !1), "undefined" === typeof Memory.config.just_exit && (Memory.config.just_exit = !1), PathFinder.use(Memory.config.use_pathfinder), !Memory.config.just_exit)) {
       cpu_debug("Start mainloop");
       c = cpu_tracker.start("internal", "gc");
       gc.gc();
