@@ -27,4 +27,8 @@ module.exports.has_tasks = function() {
   var a = this.get_memory();
   return a && a.task_queue && a.task_queue.length ? !0 : !1
 };
+module.exports.get_task_queue = function() {
+  var a = this.get_memory();
+  return!a ? null : (a = a.task_queue) ? a : null
+};
 

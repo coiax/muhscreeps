@@ -521,8 +521,7 @@ module.exports = {
     run_task_queue: function(owner) {
         if(!owner.has_tasks())
             return;
-        var memory = owner.get_memory();
-        var tq = memory.task_queue;
+        var tq = owner.get_task_queue();
 
         var sanity = 100;
         var index = 0;
@@ -538,6 +537,7 @@ module.exports = {
             var t1 = cpu_tracker.start("tasks", ttype);
 
             var func = task_functions[ttype];
+            cpu_debug("Running task " + ttype);
             if(func) {
                 try {
                     outcome = func(task, owner);
@@ -587,7 +587,7 @@ module.exports = {
             }
             // When dealing with a task queue of length 1 and pop and push,
             // there's a chance that the array object will change.
-            tq = memory.task_queue;
+            tq = owner.get_task_queue();
         }
         if(sanity === 0)
             cpu_debug("Task queue sanity timed out for " + owner);

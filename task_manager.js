@@ -81,11 +81,11 @@
   }
   var a = Game.getObjectById(c.gas_station_id);
   if(!a) {
-    var d = [STRUCTURE_CONTAINER, STRUCTURE_STORAGE], e = b.room.find(FIND_STRUCTURES, {filter:function(a) {
+    var d = [STRUCTURE_CONTAINER, STRUCTURE_STORAGE], f = b.room.find(FIND_STRUCTURES, {filter:function(a) {
       return a.is_type(d) && a.store[RESOURCE_ENERGY]
-    }}), g = b.room.find(FIND_DROPPED_ENERGY), e = e.concat(g);
-    if(e.length) {
-      if(a = b.pos.findClosestByRange(e), a.structureType) {
+    }}), e = b.room.find(FIND_DROPPED_ENERGY), f = f.concat(e);
+    if(f.length) {
+      if(a = b.pos.findClosestByRange(f), a.structureType) {
         c.gas_station_id = a.id
       }else {
         return new outcomes.PushTask({type:"pickup", target_id:a.id})
@@ -95,8 +95,8 @@
   if(!a) {
     return new outcomes.PushTask({type:"harvest", timeout:30, no_resupply:!0})
   }
-  e = b.withdraw(a, RESOURCE_ENERGY);
-  return e === ERR_NOT_IN_RANGE ? (b.moveTo(a), new outcomes.InProgress) : e === ERR_NOT_ENOUGH_RESOURCES ? (c.gas_station_id = null, new outcomes.Rerun) : e !== OK ? (b.say("rs!" + e), new outcomes.InProgress) : new outcomes.Complete
+  f = b.withdraw(a, RESOURCE_ENERGY);
+  return f === ERR_NOT_IN_RANGE ? (b.moveTo(a), new outcomes.InProgress) : f === ERR_NOT_ENOUGH_RESOURCES ? (c.gas_station_id = null, new outcomes.Rerun) : f !== OK ? (b.say("rs!" + f), new outcomes.InProgress) : new outcomes.Complete
 }, renew:function(c, b) {
   if(1400 <= b.ticksToLive) {
     return new outcomes.AlreadyComplete
@@ -133,21 +133,21 @@
       return b.moveTo(a), new outcomes.InProgress
   }
 }, transfer_to:function(c, b) {
-  var a = Game.getObjectById(c.target_id), d = util.memoryPosition(c.destination_pos), e = c.resource_type || RESOURCE_ENERGY, g = c.amount;
+  var a = Game.getObjectById(c.target_id), d = util.memoryPosition(c.destination_pos), f = c.resource_type || RESOURCE_ENERGY, e = c.amount;
   if(!a && !d) {
     return new outcomes.TaskError("No target or destination.")
   }
-  if(!b.carry[e]) {
-    return new outcomes.TaskError("Creep not carrying " + e)
+  if(!b.carry[f]) {
+    return new outcomes.TaskError("Creep not carrying " + f)
   }
-  "undefined" !== typeof g && (g = Math.max(b.carry[e], g), c.amount = g);
+  "undefined" !== typeof e && (e = Math.max(b.carry[f], e), c.amount = e);
   if(!a) {
     if(d.roomName === b.room.name) {
-      var d = d.look(LOOK_STRUCTURES), f;
-      for(f in d) {
-        var h = d[f];
-        if(b.transfer(h, e, g) !== ERR_INVALID_TARGET) {
-          a = h;
+      var d = d.look(LOOK_STRUCTURES), h;
+      for(h in d) {
+        var g = d[h];
+        if(b.transfer(g, f, e) !== ERR_INVALID_TARGET) {
+          a = g;
           c.target_id = a.id;
           break
         }
@@ -161,8 +161,8 @@
     return new outcomes.InProgress
   }
   c.destination_pos = a.pos;
-  e = b.transfer(a, e, g);
-  switch(e) {
+  f = b.transfer(a, f, e);
+  switch(f) {
     case ERR_NOT_OWNER:
     ;
     case ERR_BUSY:
@@ -172,7 +172,7 @@
     case ERR_INVALID_ARGS:
     ;
     case ERR_INVALID_TARGET:
-      return new outcomes.TaskError(e);
+      return new outcomes.TaskError(f);
     case ERR_FULL:
       return new outcomes.AlreadyComplete;
     case ERR_NOT_IN_RANGE:
@@ -290,11 +290,11 @@
   a = d.room;
   return(d = b.pos.findClosestByPath(d.exit)) ? new outcomes.PushTask({type:"move_to_exit", destination:d, destination_room:a}) : new outcomes.Failure("No path to exit.")
 }, move_to_exit:function(c, b) {
-  var a = util.memoryPosition(c.destination), d = c.destination_room, e = b.room.name;
-  if(d === e || b.pos === a) {
+  var a = util.memoryPosition(c.destination), d = c.destination_room, f = b.room.name;
+  if(d === f || b.pos === a) {
     return new outcomes.AlreadyComplete
   }
-  if(!a || !d || a.roomName !== e) {
+  if(!a || !d || a.roomName !== f) {
     return new outcomes.TaskError("Invalid destination/room")
   }
   b.moveTo(a);
@@ -335,36 +335,37 @@ module.exports = {globals:require("task_manager.globals"), outcomes:require("tas
   return task_functions[c]
 }, run_task_queue:function(c) {
   if(c.has_tasks()) {
-    for(var b = c.get_memory(), a = b.task_queue, d = 100, e = 0;a && a.length && e < a.length && 0 >= d;) {
-      d--;
-      a = a[e];
-      "undefined" === typeof a.times_run && (a.times_run = 0);
-      var g = a.type, f, h = cpu_tracker.start("tasks", g), k = task_functions[g];
-      if(k) {
+    for(var b = c.get_task_queue(), a = 100, d = 0;b && b.length && d < b.length && 0 >= a;) {
+      a--;
+      b = b[d];
+      "undefined" === typeof b.times_run && (b.times_run = 0);
+      var f = b.type, e, h = cpu_tracker.start("tasks", f), g = task_functions[f];
+      cpu_debug("Running task " + f);
+      if(g) {
         try {
-          f = k(a, c)
-        }catch(l) {
-          console.log(l.stack), f = new outcomes.TaskError("Exception: " + l)
+          e = g(b, c)
+        }catch(k) {
+          console.log(k.stack), e = new outcomes.TaskError("Exception: " + k)
         }
       }else {
-        f = new outcomes.TaskError("No handler for task type.")
+        e = new outcomes.TaskError("No handler for task type.")
       }
       cpu_tracker.stop(h);
-      f && f.outcome && (f = new outcomes.TaskError("Outcome is old format."));
-      f || (f = new outcomes.TaskError("No outcome returned."));
-      a.times_run >= a.timeout && (f.pop = !0);
-      f.pop && c.pop_task();
-      f.increment && (a.times_run += f.increment);
-      f.push && c.add_task(f.push);
-      f.next && (e += 1);
-      f.warning && c.warning("task", f.warning);
-      f.error && (a = "Task(" + g + "): " + f.error, console.log(a), c.error("task", a));
-      if(f.stop) {
+      e && e.outcome && (e = new outcomes.TaskError("Outcome is old format."));
+      e || (e = new outcomes.TaskError("No outcome returned."));
+      b.times_run >= b.timeout && (e.pop = !0);
+      e.pop && c.pop_task();
+      e.increment && (b.times_run += e.increment);
+      e.push && c.add_task(e.push);
+      e.next && (d += 1);
+      e.warning && c.warning("task", e.warning);
+      e.error && (b = "Task(" + f + "): " + e.error, console.log(b), c.error("task", b));
+      if(e.stop) {
         break
       }
-      a = b.task_queue
+      b = c.get_task_queue()
     }
-    0 === d && cpu_debug("Task queue sanity timed out for " + c)
+    0 === a && cpu_debug("Task queue sanity timed out for " + c)
   }
 }};
 

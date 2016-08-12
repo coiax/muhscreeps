@@ -45,3 +45,16 @@ module.exports.has_tasks = function() {
         return false;
     }
 };
+
+module.exports.get_task_queue = function get_task_queue() {
+    var memory = this.get_memory();
+    if(!memory)
+        return null;
+    var tq = memory.task_queue;
+    if(tq) {
+        return tq;
+    } else {
+        return null;
+    }
+};
+
