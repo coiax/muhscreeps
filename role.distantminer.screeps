@@ -2,6 +2,15 @@ var util = require('util');
 var task_manager = require('task_manager');
 var outcomes = task_manager.outcomes;
 
+/* Each room with a spawn claims 0 or more external mining spots surrounding
+   it. It then sends out miners capable of mining into local containers.
+   Then the local containers are emptied regularly into the room's
+   storage.
+*/
+
+// A mining spot must be accessible from the spawn point. It must not be
+// claimed by another spawn
+
 function is_suitable_room(rn) {
     var room = Game.rooms[rn];
     var intel = util.room_intel(rn);
