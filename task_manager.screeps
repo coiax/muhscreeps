@@ -537,7 +537,6 @@ module.exports = {
             var t1 = cpu_tracker.start("tasks", ttype);
 
             var func = task_functions[ttype];
-            cpu_debug("Running task " + ttype);
             if(func) {
                 try {
                     outcome = func(task, owner);

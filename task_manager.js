@@ -340,7 +340,6 @@ module.exports = {globals:require("task_manager.globals"), outcomes:require("tas
       b = b[d];
       "undefined" === typeof b.times_run && (b.times_run = 0);
       var f = b.type, e, h = cpu_tracker.start("tasks", f), g = task_functions[f];
-      cpu_debug("Running task " + f);
       if(g) {
         try {
           e = g(b, c)
