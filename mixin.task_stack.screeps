@@ -3,17 +3,22 @@ module.exports.add_task = function(obj) {
     if(!memory.task_queue) {
         memory.task_queue = [];
     }
-    memory.task_queue.unshift(obj);
+    var task = obj;
+    if(typeof obj === 'string')
+        task = {type: obj};
+    memory.task_queue.unshift(task);
 };
 
 module.exports.pop_task = function() {
+    var returnval = null;
     var memory = this.get_memory();
     if(memory.task_queue) {
-        memory.task_queue.shift();
+        returnval = memory.task_queue.shift();
         if(memory.task_queue.length === 0) {
             memory.task_queue = undefined;
         }
     }
+    return returnval;
 };
 
 module.exports.has_task_in_queue = function(ttype) {
@@ -34,7 +39,7 @@ module.exports.has_task_in_queue = function(ttype) {
 
 module.exports.has_tasks = function() {
     var memory = this.get_memory();
-    if(memory.task_queue && memory.task_queue.length) {
+    if(memory && memory.task_queue && memory.task_queue.length) {
         return true;
     } else {
         return false;

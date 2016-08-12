@@ -518,11 +518,17 @@ module.exports = {
     get: function(name) {
         return task_functions[name];
     },
-    run_task_queue: function(owner, tq) {
+    run_task_queue: function(owner) {
+        if(!owner.has_tasks())
+            return;
+        var memory = owner.get_memory();
+        var tq = memory.task_queue;
+
         var sanity = 100;
-        while(tq && tq.length && sanity > 0) {
+        var index = 0;
+        while(tq && tq.length && index < tq.length && sanity <= 0) {
             sanity--;
-            var task = tq[0];
+            var task = tq[index];
             if(typeof task.times_run === 'undefined') {
                 task.times_run = 0;
             }
@@ -563,6 +569,9 @@ module.exports = {
             if(outcome.push)
                 owner.add_task(outcome.push);
 
+            if(outcome.next)
+                index += 1;
+
             if(outcome.warning)
                 owner.warning("task", outcome.warning);
 
@@ -575,9 +584,10 @@ module.exports = {
 
             if(outcome.stop) {
                 break;
-            } else {
-                continue;
             }
+            // When dealing with a task queue of length 1 and pop and push,
+            // there's a chance that the array object will change.
+            tq = memory.task_queue;
         }
         if(sanity === 0)
             cpu_debug("Task queue sanity timed out for " + owner);

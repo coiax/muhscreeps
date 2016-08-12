@@ -1,4 +1,5 @@
-'use strict';Room.prototype.scout_room = function() {
+'use strict';_.extend(Room.prototype, require("mixin.task_stack"));
+Room.prototype.scout_room = function() {
   this.memory.intel = {};
   var a = this.memory.intel;
   a.time_scouted = Game.time;
@@ -30,6 +31,9 @@
       d[a]++
     })
   })
+};
+Room.prototype.get_memory = function() {
+  return this.memory
 };
 module.exports = {};
 

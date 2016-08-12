@@ -40,6 +40,13 @@ module.exports.loop = function () {
         cpu_debug("Scouting " + roomName);
         var room = Game.rooms[roomName];
         room.scout_room();
+
+        var has_spawns = room.find(FIND_MY_SPAWNS).length;
+        var has_spawn_task = room.has_task_in_queue("room_spawn");
+        if(has_spawns && !has_spawn_task)
+            room.add_task("room_spawn");
+
+        task_manager.run_task_queue(room);
     }
     cpu_tracker.stop(t3);
 
@@ -49,20 +56,15 @@ module.exports.loop = function () {
         if(!structure.isActive())
             continue;
 
-        var memory = structure.get_memory();
         cpu_debug("Running tasks for " + sid + "(" + stype + ")");
         if(!structure.has_tasks()) {
             switch(stype) {
                 case STRUCTURE_TOWER:
-                    structure.add_task({type: "structure_tower"});
-                    break;
-                case STRUCTURE_SPAWN:
-                    structure.add_task({type: "structure_spawner"});
+                    structure.add_task("structure_tower");
                     break;
             }
         }
-        if(structure.has_tasks())
-            task_manager.run_task_queue(structure, memory.task_queue);
+        task_manager.run_task_queue(structure);
     }
     for(var name in Game.creeps) {
         var creep = Game.creeps[name];
@@ -89,12 +91,12 @@ module.exports.loop = function () {
         }
 
         if(creep.wants_renew())
-            creep.add_task({type:"renew"});
+            creep.add_task("renew");
 
         if(!creep.has_tasks() && !creep.has_flag("no_autotask"))
-            creep.add_task({type: "taskless"});
+            creep.add_task("taskless");
 
-        task_manager.run_task_queue(creep, creep.memory.task_queue);
+        task_manager.run_task_queue(creep);
     }
     cpu_debug("Recording total CPU usage.");
     cpu_tracker.record_main();

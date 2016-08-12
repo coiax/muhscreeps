@@ -20,6 +20,8 @@ function Base() {
     this.warning = null;
     // Stop loop execution
     this.stop = false;
+    // Increments the task queue index, to treat the stack like a list.
+    this.next = false;
 }
 
 outcomes.Base = Base;
@@ -99,3 +101,12 @@ function Rerun() {
 Rerun.prototype = Object.create(Base.prototype);
 Rerun.prototype.constructor = Rerun;
 outcomes.Rerun = Rerun;
+
+function NextTask() {
+    Base.call(this);
+    this.next = true;
+    this.increment = 1;
+}
+NextTask.prototype = Object.create(Base.prototype);
+NextTask.prototype.constructor = NextTask;
+outcomes.NextTask = NextTask;

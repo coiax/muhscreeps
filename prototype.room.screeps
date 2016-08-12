@@ -1,3 +1,5 @@
+_.extend(Room.prototype, require('mixin.task_stack'));
+
 Room.prototype.scout_room = function() {
     this.memory.intel = {};
     var intel = this.memory.intel;
@@ -50,6 +52,10 @@ Room.prototype.scout_room = function() {
             bintel[btype]++;
         });
     });
+};
+
+Room.prototype.get_memory = function get_memory() {
+    return this.memory;
 };
 
 module.exports = {};

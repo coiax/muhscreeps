@@ -4,7 +4,7 @@ module.exports.outcomes = outcomes;
 function Base() {
   this.increment = this.pop = !1;
   this.warning = this.error = this.push = null;
-  this.stop = !1
+  this.next = this.stop = !1
 }
 outcomes.Base = Base;
 function AlreadyComplete() {
@@ -68,4 +68,12 @@ function Rerun() {
 Rerun.prototype = Object.create(Base.prototype);
 Rerun.prototype.constructor = Rerun;
 outcomes.Rerun = Rerun;
+function NextTask() {
+  Base.call(this);
+  this.next = !0;
+  this.increment = 1
+}
+NextTask.prototype = Object.create(Base.prototype);
+NextTask.prototype.constructor = NextTask;
+outcomes.NextTask = NextTask;
 
