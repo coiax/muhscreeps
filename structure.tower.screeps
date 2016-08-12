@@ -18,6 +18,11 @@ function structure_tower(task, tower) {
         target = tower.pos.findClosestByRange(hurt_friendlies);
         mode = "heal";
     }
+    // Only spend the first 50% of power on repairs, keep some in reserve
+    // for pew pewing enemy creeps.
+    if(tower.energy < (tower.energyCapacity / 2)) {
+        return new outcomes.InProgress();
+    }
     // 3) repair our structures, except ramparts
     if(!target) {
         target = tower.pos.findClosestByRange(

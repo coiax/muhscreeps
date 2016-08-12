@@ -6,6 +6,9 @@ function structure_tower(f, b) {
   var a, c;
   a || (a = b.pos.findClosestByRange(FIND_HOSTILE_CREEPS), c = "attack");
   a || (a = b.pos.findDamagedFriendlyCreeps(), a = b.pos.findClosestByRange(a), c = "heal");
+  if(b.energy < b.energyCapacity / 2) {
+    return new outcomes.InProgress
+  }
   a || (a = b.pos.findClosestByRange(FIND_MY_STRUCTURES, {filter:function(a) {
     return a.structureType === STRUCTURE_RAMPART ? !1 : a.is_damaged()
   }}), c = "repair");
