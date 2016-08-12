@@ -102,7 +102,6 @@ var default_required = [
     {task: "role_upgrader", amount: 3},
     {task: "role_builder", amount: 4},
     {task: "role_dumbscout", amount: 10},
-    {task: "role_sentry", amount: 4},
     {task: "role_claimer", amount: 1}
 ];
 

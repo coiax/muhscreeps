@@ -58,7 +58,7 @@ function setup(a, c) {
   a.currently_attempting = null;
   c.spawning || (a.currently_spawning = null)
 }
-var default_required = [{task:"role_supplier", amount:1}, {task:"role_cow", amount:1}, {task:"role_upgrader", amount:1}, {task:"role_builder", amount:1}, {task:"role_cow", amount:2}, {task:"role_supplier", amount:2}, {task:"role_cow", amount:3}, {task:"role_supplier", amount:3}, {task:"role_cow", amount:4}, {task:"role_supplier", amount:4}, {task:"role_upgrader", amount:3}, {task:"role_builder", amount:4}, {task:"role_dumbscout", amount:10}, {task:"role_sentry", amount:4}, {task:"role_claimer", amount:1}];
+var default_required = [{task:"role_supplier", amount:1}, {task:"role_cow", amount:1}, {task:"role_upgrader", amount:1}, {task:"role_builder", amount:1}, {task:"role_cow", amount:2}, {task:"role_supplier", amount:2}, {task:"role_cow", amount:3}, {task:"role_supplier", amount:3}, {task:"role_cow", amount:4}, {task:"role_supplier", amount:4}, {task:"role_upgrader", amount:3}, {task:"role_builder", amount:4}, {task:"role_dumbscout", amount:10}, {task:"role_claimer", amount:1}];
 function structure_spawner(a, c) {
   setup(a, c);
   c.check_creeps();
