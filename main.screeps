@@ -12,8 +12,10 @@ module.exports.loop = function () {
         console.log("Bucket is at " + bucket + ". Halting execution.");
         return;
     }
-    if(Memory)
+    if(Memory) {
+        console.log("AAAAAAAAAAAAAAA");
         return;
+    }
     var t1 = cpu_tracker.start("internal", "memory_decode");
     if(!Memory.config)
         Memory.config = {};
