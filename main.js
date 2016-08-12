@@ -1,6 +1,7 @@
 'use strict';require("loaded_modules");
 var gc = require("gc"), cpu_tracker = require("cpu_tracker"), task_manager = require("task_manager"), util = require("util"), cpu_debug = util.cpu_debug;
 module.exports.loop = function() {
+  Memory.config.cpu_debug = !0;
   var c = Game.cpu.bucket;
   if(500 > c) {
     console.log("Bucket is at " + c + ". Halting execution.")

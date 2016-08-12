@@ -6,6 +6,7 @@ var util = require('util');
 var cpu_debug = util.cpu_debug;
 
 module.exports.loop = function () {
+    Memory.config.cpu_debug = true;
     var bucket = Game.cpu.bucket;
     if(bucket < 500) {
         console.log("Bucket is at " + bucket + ". Halting execution.");
