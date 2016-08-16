@@ -141,7 +141,22 @@ function role_cow(task, creep) {
     }
     // Then spend the rest of our lifespan harvesting and moving that
     // into the container, repairing the container first if needed.
-    creep.harvest(source);
+    var rc = creep.harvest(source);
+    switch(rc) {
+        case OK:
+            break;
+        case ERR_NOT_ENOUGH_RESOURCES:
+            var ticks_to_sleep = source.ticksToRegeneration;
+            var idle_task = {type: "idle", timeout: ticks_to_sleep};
+            return new outcomes.PushTask(idle_task);
+        case ERR_NOT_OWNER:
+        case ERR_BUSY:
+        case ERR_NOT_FOUND:
+        case ERR_INVALID_TARGET:
+        case ERR_NOT_IN_RANGE:
+        case ERR_NO_BODYPART:
+            return new outcomes.TaskError("Harvest error " + rc);
+    }
 
     // A repair order will trump the harvest order if it's possible
     // to repair (ie. energy is stored, WORK parts are present)

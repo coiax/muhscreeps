@@ -4,19 +4,19 @@ function role_cow(d, b) {
   var c = Game.getObjectById(d.source_id);
   if(!c) {
     b.say("Mooo!");
-    var a = b.room.find(FIND_SOURCES), g = {};
+    var a = b.room.find(FIND_SOURCES), h = {};
     a.forEach(function(a) {
-      g[a] = 0
+      h[a] = 0
     });
-    for(var h in Game.creeps) {
-      var k = Game.creeps[h];
+    for(var f in Game.creeps) {
+      var k = Game.creeps[f];
       if(b.name !== k.name) {
-        var f = k.has_task_in_queue(role_cow.name);
-        f && (f = Game.getObjectById(f.source_id), g[f] += k.body_part_count(WORK))
+        var g = k.has_task_in_queue(role_cow.name);
+        g && (g = Game.getObjectById(g.source_id), h[g] += k.body_part_count(WORK))
       }
     }
     a = _.sortBy(a, function(a) {
-      return g[a]
+      return h[a]
     });
     a.length && (c = a[0], d.source_id = c.id)
   }
@@ -39,9 +39,9 @@ function role_cow(d, b) {
     return new outcomes.InProgress
   }
   a = Game.getObjectById(d.output_container_id);
-  a || (h = b.pos.findInRange(FIND_STRUCTURES, 1, {filter:function(a) {
+  a || (f = b.pos.findInRange(FIND_STRUCTURES, 1, {filter:function(a) {
     return a.structureType === STRUCTURE_CONTAINER
-  }}), h.length && (a = h[0], d.output_container_id = a.id));
+  }}), f.length && (a = f[0], d.output_container_id = a.id));
   if(!a) {
     a = b.pos.findInRange(FIND_CONSTRUCTION_SITES, 1, {filter:function(a) {
       return a.structureType === STRUCTURE_CONTAINER
@@ -56,7 +56,23 @@ function role_cow(d, b) {
   if(a && 1 < a.pos.getRangeTo(b)) {
     return d.output_container_id = null, new outcomes.InProgress
   }
-  b.harvest(c);
+  f = b.harvest(c);
+  switch(f) {
+    case ERR_NOT_ENOUGH_RESOURCES:
+      return new outcomes.PushTask({type:"idle", timeout:c.ticksToRegeneration});
+    case ERR_NOT_OWNER:
+    ;
+    case ERR_BUSY:
+    ;
+    case ERR_NOT_FOUND:
+    ;
+    case ERR_INVALID_TARGET:
+    ;
+    case ERR_NOT_IN_RANGE:
+    ;
+    case ERR_NO_BODYPART:
+      return new outcomes.TaskError("Harvest error " + f)
+  }
   a.hits < a.hitsMax ? b.repair(a) : b.transfer(a, RESOURCE_ENERGY);
   return new outcomes.InProgress
 }
